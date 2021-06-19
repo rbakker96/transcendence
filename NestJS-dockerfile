@@ -4,12 +4,12 @@ FROM node:15.4
 WORKDIR /usr/src/app
 
 # Install app dependencies
-COPY /NestJS/package*.json ./
+COPY /Nestjs/package*.json ./
 
 RUN npm install
 
 # Bundle app source
-COPY /NestJS .
+COPY /Nestjs .
 
 EXPOSE 8000
 
