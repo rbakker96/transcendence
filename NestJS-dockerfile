@@ -1,0 +1,16 @@
+FROM node:15.4
+
+# Create app directory, this is in our container/in our image
+WORKDIR /usr/src/app
+
+# Install app dependencies
+COPY /NestJS/package*.json ./
+
+RUN npm install
+
+# Bundle app source
+COPY /NestJS .
+
+EXPOSE 8000
+
+CMD npm run start:dev

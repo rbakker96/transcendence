@@ -1,0 +1,16 @@
+FROM node:15.4
+
+# Create app directory, this is in our container/in our image
+WORKDIR /usr/src/app
+
+# Install app dependencies
+COPY /React/package*.json ./
+
+RUN npm install
+
+# Bundle app source
+COPY /React .
+
+EXPOSE 8080
+
+CMD [ "npm", "start" ]

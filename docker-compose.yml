@@ -1,0 +1,37 @@
+version: "3.9"
+services:
+
+  react:
+    build:
+      dockerfile: React-dockerfile
+      context: .
+    depends_on:
+      - nestjs
+    volumes:
+      - ./React:/usr/src/app
+    ports:
+      - "8080:3000"
+
+  nestjs:
+    build:
+      dockerfile: NestJS-dockerfile
+      context: .
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: postgres://user:password@postgres:5432/database
+      NODE_ENV: development
+      PORT: 8000
+    volumes:
+      - ./Nestjs:/usr/src/app
+    ports:
+      - "8000:8000"
+
+  postgres:
+    image: postgres:13.3
+    ports:
+      - "35000:5432"
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: database
