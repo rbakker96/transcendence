@@ -1,24 +1,24 @@
-import React from 'react';
-import { BrowserRouter, Route } from "react-router-dom";
+import React from "react";
+import { Route } from "react-router-dom";
 import Register from "./components/users/Register";
 import Login from "./components/users/Login";
-import './App.css';
+import ChatContent from "./components/chat/ChatContent";
 
 function App() {
   return (
-      <div className="App">
-        <BrowserRouter>
-          <main>
-
-              <Route exact path={'/'} component={Login} />
-
-              <Route path={'/register'} component={Register}  />
-
-              {/*<Route path={'/profile'} component={Profile}  />*/}
-
-          </main>
-        </BrowserRouter>
-      </div>
+    <div>
+      <main>
+        <Route exact path={"/"}>
+          <Login />
+        </Route>
+        <Route path={"/register"}>
+          <Register />
+        </Route>
+        <Route path={"/chat-content"}>
+          <ChatContent />
+        </Route>
+      </main>
+    </div>
   );
 }
 
