@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Route } from "react-router-dom";
 import Register from "./components/users/Register";
 import Login from "./components/users/Login";
+import Message from "./components/message/messagelandingpage"
 import './App.css';
 
 function App() {
@@ -15,7 +16,8 @@ function App() {
               <Route path={'/register'} component={Register}  />
 
               {/*<Route path={'/profile'} component={Profile}  />*/}
-
+			  <Route path={'/message'} component={Message}  />
+			
           </main>
         </BrowserRouter>
       </div>
