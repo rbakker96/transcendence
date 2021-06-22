@@ -28,6 +28,13 @@
 .content {
     text-align: center;
     padding: 1rem;
+    flex-direction: column;
+}
+
+.directMessage {
+    display: flex;
+    flex-direction: row;
+    text-align: center;
 }
 
 .content h3 {
