@@ -1,13 +1,15 @@
 import React, { Component } from "react";
 import classes from "./stylesheets/Channel.module.css";
 import './stylesheets/messagelandingpage.css';
+import {Link, Route} from "react-router-dom";
+import {useHistory} from 'react-router-dom';
+import Message from "./message";
 
-
-
-
-
-class messagelandingpage extends Component{
-
+class MessageLandingPage extends Component{
+    constructor(props : any){ // change later{
+    super(props);
+    this.state = false;
+    }
     DummyData = [
         {
             channelID: 1,
@@ -87,12 +89,11 @@ class messagelandingpage extends Component{
     ]
 
     renderChannels(){
-        // hier moet de channel informatie gepast worden zodat het in een loop kan gebeure
         return (
             <ul className="list-group lijst">
                 <li className="list-group-item d-flex justify-content-between align-items-center">
                     {this.DummyData.map(item=>(
-                        <div className="list-group-item d-flex justify-content-between align-items-center">
+                        <div onClick={(e) => GoToMessage(item.channelID, e)} className="list-group-item d-flex justify-content-between align-items-center">
                         <ul>
                             <li key={2}>{item.Name}</li>
                             <span className="badge badge-primary badge-pill">2</span>
@@ -109,11 +110,11 @@ class messagelandingpage extends Component{
             <ul className="list-group lijst">
                 <li className="list-group-item d-flex justify-content-between align-items-center">
                     {this.DummyDirectMessage.map(item=>(
-                        <div className="list-group-item d-flex justify-content-between align-items-center">
+                        <div onClick={(e) => GoToMessage(item.channelID, e)} className="list-group-item d-flex justify-content-between align-items-center">
                             <ul className={classes.directMessage}>
                                 {item.participants.map(participants=>(
                                     <div>
-                                    <li key={2}>{participants}</li>
+                                    <li key={2}>{participants},</li>
                                     </div>))}
                             </ul>
                         </div>
@@ -134,13 +135,13 @@ class messagelandingpage extends Component{
               </a>
                 <ul className="nav nav-pills flex-column mb-auto">
                   <li className="nav-item">
-                    <a href="http://localhost:8080/" className="nav-link active" aria-current="page"> <svg className="bi me-2" width="16" height="16"></svg>Channels</a>
+                    <h1> Channels</h1>
                       <div>
                           {this.renderChannels()}
                       </div>
                   </li>
                   <li>
-                    <a href="http://localhost:8080/" className="nav-link text-white"><svg className="bi me-2" width="16" height="16"></svg>Direct messages</a>
+                    <h1> Direct messages</h1>
                         <div>
                             {this.renderDirectMessage()}
                         </div>
@@ -154,4 +155,4 @@ class messagelandingpage extends Component{
 }
 
 
-export default messagelandingpage
+export default MessageLandingPage
