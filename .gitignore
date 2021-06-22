@@ -1,3 +1,1 @@
-./React/node_modules
-
-./React/test
+./React/node_modules/*
