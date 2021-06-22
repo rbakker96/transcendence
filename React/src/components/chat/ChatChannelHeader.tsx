@@ -5,7 +5,7 @@ type ChatChannelHeaderProps = {
 
 function ChatChannelHeader(props: ChatChannelHeaderProps) {
   console.log("ChatChannelHeader");
-
+  // need to map to channelName
   return (<div>Active channel: {props.channelId}</div>);
 }
 

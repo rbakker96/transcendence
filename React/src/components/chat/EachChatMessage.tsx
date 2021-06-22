@@ -1,4 +1,4 @@
-import { Comment, Badge } from "antd";
+import { Comment } from "antd";
 
 type EachChatMessageProps = {
   userId: number;

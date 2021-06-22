@@ -1,4 +1,5 @@
 import ChatContent from "../components/chat/ChatContent";
+import 'antd/dist/antd.css';
 import { Row, Col } from "antd";
 
 function ChatPage() {
@@ -9,7 +10,7 @@ function ChatPage() {
           <p>PLACEHOLDER[SIDE BAR]</p>
         </Col>
         <Col className="gutter-row" span={20}>
-          <ChatContent activeChannelId={1} />
+          <ChatContent activeChannelId={2} />
         </Col>
       </Row>
     </div>

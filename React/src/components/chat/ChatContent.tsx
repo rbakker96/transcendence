@@ -1,6 +1,5 @@
 import ChatChannelHeader from "./ChatChannelHeader";
 import ChatChannelMessages from "./ChatChannelMessages";
-import 'antd/dist/antd.css';
 
 const MESSAGE_DATA = [
   {
