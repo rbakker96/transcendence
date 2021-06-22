@@ -14,14 +14,12 @@ function EachChatMessage(props: EachChatMessageProps) {
 
   return (
     <div>
-      <Badge count={4}>
         <Comment
           content={props.messageContent}
           author={props.userName}
           avatar={props.userAvatar}
           datetime={props.messageTimeStamp}
         />
-      </Badge>
     </div>
   );
 }
