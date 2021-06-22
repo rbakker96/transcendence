@@ -1,5 +1,6 @@
 import ChatChannelHeader from "./ChatChannelHeader";
 import ChatChannelMessages from "./ChatChannelMessages";
+import 'antd/dist/antd.css';
 
 const MESSAGE_DATA = [
   {
@@ -8,8 +9,8 @@ const MESSAGE_DATA = [
     userName: "user1",
     userAvatar: "https://i.pravatar.cc/300",
     messageTimeStamp:
-      "Tue Jun 22 2021 13:19:43 GMT+0200 (Central European Summer Time)",
-    messageContent: "user1: this is my 1st message",
+      "Tue Jun 22 2021 13:19:43",
+    messageContent: "this is my 1st message",
     channelId: 1,
     channelName: "Channel1",
   },
@@ -19,8 +20,8 @@ const MESSAGE_DATA = [
     userName: "user2",
     userAvatar: "https://i.pravatar.cc/301",
     messageTimeStamp:
-      "Tue Jun 22 2021 13:20:33 GMT+0200 (Central European Summer Time)",
-    messageContent: "user2: this is my 1st message",
+      "Tue Jun 22 2021 13:20:33",
+    messageContent: "this is my 1st message",
     channelId: 2,
     channelName: "Channel2",
   },
@@ -30,8 +31,8 @@ const MESSAGE_DATA = [
     userName: "user1",
     userAvatar: "https://i.pravatar.cc/300",
     messageTimeStamp:
-      "Tue Jun 22 2021 13:20:40 GMT+0200 (Central European Summer Time)",
-    messageContent: "user1: this is my 2nd message",
+      "Tue Jun 22 2021 13:20:40",
+    messageContent: "this is my 2nd message",
     channelId: 1,
     channelName: "Channel1",
   },
@@ -41,8 +42,8 @@ const MESSAGE_DATA = [
     userName: "user2",
     userAvatar: "https://i.pravatar.cc/301",
     messageTimeStamp:
-      "Tue Jun 22 2021 13:20:52 GMT+0200 (Central European Summer Time)",
-    messageContent: "user2: this is my 2nd message",
+      "Tue Jun 22 2021 13:20:52",
+    messageContent: "this is my 2nd message",
     channelId: 2,
     channelName: "Channel2",
   },

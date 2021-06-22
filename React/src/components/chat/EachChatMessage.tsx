@@ -1,3 +1,5 @@
+import { Comment, Badge } from "antd";
+
 type EachChatMessageProps = {
   userId: number;
   userName: string;
@@ -12,9 +14,14 @@ function EachChatMessage(props: EachChatMessageProps) {
 
   return (
     <div>
-      <img src={props.userAvatar} alt={props.userName} />
-      <p>{props.messageContent}</p>
-      <p>{props.messageTimeStamp}</p>
+      <Badge count={4}>
+        <Comment
+          content={props.messageContent}
+          author={props.userName}
+          avatar={props.userAvatar}
+          datetime={props.messageTimeStamp}
+        />
+      </Badge>
     </div>
   );
 }

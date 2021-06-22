@@ -22,15 +22,15 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
       {props.allChatMessages
         .filter((message) => message.channelId === props.activeChannelId)
         .map((message) => (
-          <EachChatMessage
-            key={message.messageId}
-            userId={message.userId}
-            userName={message.userName}
-            userAvatar={message.userAvatar}
-            messageTimeStamp={message.messageTimeStamp}
-            messageContent={message.messageContent}
-            channelName={message.channelName}
-          />
+            <EachChatMessage
+              key={message.messageId}
+              userId={message.userId}
+              userName={message.userName}
+              userAvatar={message.userAvatar}
+              messageTimeStamp={message.messageTimeStamp}
+              messageContent={message.messageContent}
+              channelName={message.channelName}
+            />
         ))}
     </div>
   );

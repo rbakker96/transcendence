@@ -2,7 +2,7 @@ import React from "react";
 import { Route } from "react-router-dom";
 // import Register from "./components/users/Register";
 // import Login from "./components/users/Login";
-import ChatContent from "./components/chat/ChatContent";
+import ChatPage from "./pages/ChatPage";
 
 function App() {
   return (
@@ -15,7 +15,7 @@ function App() {
         {/*  <Register />*/}
         {/*</Route>*/}
         <Route path={"/chat-content"}>
-          <ChatContent activeChannelId={1}/>
+          <ChatPage />
         </Route>
       </main>
     </div>
