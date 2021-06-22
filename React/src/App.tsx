@@ -5,6 +5,7 @@ import Login from "./components/users/Login";
 import MessageLandingPage from "./components/message/messagelandingpage"
 import Message from "./components/message/message";
 import './App.css';
+import ChatPage from './pages/ChatPage';
 
 function App() {
   return (
@@ -12,11 +13,11 @@ function App() {
         <BrowserRouter>
           <main>
 
-              <Route exact path={'/'} component={Login} />
+              {/*<Route exact path={'/'} component={Login} />*/}
 
-              <Route path={'/register'} component={Register}  />
+              {/*<Route path={'/register'} component={Register}  />*/}
 
-              {/*<Route path={'/profile'} component={Profile}  />*/}
+              {/*/!*<Route path={'/profile'} component={Profile}  />*!/*/}
 			  <Route path={'/messageLandingPage'} component={MessageLandingPage}  />
               <Route path={"/chat-content"}>
                   <ChatPage />
