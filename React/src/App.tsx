@@ -19,7 +19,7 @@ function App() {
 
               {/*/!*<Route path={'/profile'} component={Profile}  />*!/*/}
 			  <Route path={'/messageLandingPage'} component={MessageLandingPage}  />
-              <Route path={"/chat-content"}>
+              <Route path={"/channel-content"}>
                   <ChatPage />
               </Route>
           </main>

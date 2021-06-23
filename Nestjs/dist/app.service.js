@@ -10,7 +10,7 @@ exports.AppService = void 0;
 const common_1 = require("@nestjs/common");
 let AppService = class AppService {
     getHello() {
-        return 'Hello World!';
+        return 'Hee Bruur you have made contact with the back-end "CARTMAAAANBRAAH';
     }
 };
 AppService = __decorate([

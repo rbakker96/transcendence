@@ -1,5 +1,5 @@
 // import React from "react";
-// import "../src/components/chat/ChatContent.module.css";
+// import "../src/components/channel/ChatContent.module.css";
 // import "./ChatContent.js";
 //
 // function ChatContent(props: any) {

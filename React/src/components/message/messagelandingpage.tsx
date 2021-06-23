@@ -4,7 +4,8 @@ import './stylesheets/messagelandingpage.css';
 import {Link, Route} from "react-router-dom";
 import {useHistory} from 'react-router-dom';
 import Message from "./message";
-
+import { useState } from "react";
+import API from '../../API/API'
 
 const DummyData = [
     {
@@ -15,31 +16,31 @@ const DummyData = [
     },
     {
         channelID: 2,
-        Name: "Epic second chat",
+        Name: "Epic second channel",
         admin: "Gijs", // this is going to become a UserID in the future
         participants: ["Thimo", "Roy", "Gijs", "Qing"],
     },
     {
         channelID: 3,
-        Name: "Epic third chat",
+        Name: "Epic third channel",
         admin: "Gijs", // this is going to become a UserID in the future
         participants: ["Thimo", "Roy", "Gijs", "Qing"],
     },
     {
         channelID: 4,
-        Name: "Epic fourth chat",
+        Name: "Epic fourth channel",
         admin: "Gijs", // this is going to become a UserID in the future
         participants: ["Thimo", "Roy", "Gijs", "Qing"],
     },
     {
         channelID: 5,
-        Name: "Epic fifth chat",
+        Name: "Epic fifth channel",
         admin: "Gijs", // this is going to become a UserID in the future
         participants: ["Thimo", "Roy", "Gijs", "Qing"],
     },
     {
         channelID: 6,
-        Name: "Zieke chat ouwe",
+        Name: "Zieke channel ouwe",
         admin: "Gijs", // this is going to become a UserID in the future
         participants: ["Thimo", "Roy", "Gijs", "Qing"],
     }
@@ -54,31 +55,31 @@ const DummyDirectMessage = [
     },
     {
         channelID: 2,
-        Name: "Epic second chat",
+        Name: "Epic second channel",
         admin: "Gijs", // this is going to become a UserID in the future
         participants: ["Thimo", "Roy", "Gijs", "Qing"],
     },
     {
         channelID: 3,
-        Name: "Epic third chat",
+        Name: "Epic third channel",
         admin: "Gijs", // this is going to become a UserID in the future
         participants: ["Thimo", "Roy", "Gijs", "Qing"],
     },
     {
         channelID: 4,
-        Name: "Epic fourth chat",
+        Name: "Epic fourth channel",
         admin: "Gijs", // this is going to become a UserID in the future
         participants: ["Thimo", "Roy", "Gijs", "Qing"],
     },
     {
         channelID: 5,
-        Name: "Epic fifth chat",
+        Name: "Epic fifth channel",
         admin: "Gijs", // this is going to become a UserID in the future
         participants: ["Thimo", "Roy", "Gijs", "Qing"],
     },
     {
         channelID: 6,
-        Name: "Zieke chat ouwe",
+        Name: "Zieke channel ouwe",
         admin: "Gijs", // this is going to become a UserID in the future
         participants: ["Thimo", "Roy", "Gijs", "Qing"],
     }
@@ -86,31 +87,45 @@ const DummyDirectMessage = [
 
 function GoToMessage(ChannelNumber : number, event : any, props:any)
 {
-    props.setActiveID(ChannelNumber);
+    // props.setActiveID(ChannelNumber);
     console.log("hallo");
     console.log(ChannelNumber);
 
 }
 
 function renderChannels(props : any){
-        return (
-            <ul className="list-group lijst">
-                <li className="list-group-item d-flex justify-content-between align-items-center">
-                    {DummyData.map(item=>(
-                        <div onClick={(e) => GoToMessage(item.channelID, e, props)} className="list-group-item d-flex justify-content-between align-items-center">
-                        <ul>
-                            <li key={2}>{item.Name}</li>
-                            <span className="badge badge-primary badge-pill">2</span>
-                        </ul>
-                        </div>
-                    ))}
-                </li>
-            </ul>
-        );
+
+    function retrieveData()
+    {
+        API.Channels.show(props.channelID)
+            .then((allchannels) => {
+                const alldata = allchannels.Name;
+                console.log(alldata);
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+    }
+
+    retrieveData();
+    return (
+        <ul className="list-group lijst">
+            <li className="list-group-item d-flex justify-content-between align-items-center">
+                {DummyData.map(item=>(
+                    <div onClick={(e) => GoToMessage(item.channelID, e, props)} className="list-group-item d-flex justify-content-between align-items-center">
+                    <ul>
+                        <li key={2}>{item.Name}</li>
+                        <span className="badge badge-primary badge-pill">2</span>
+                    </ul>
+                    </div>
+                ))}
+            </li>
+        </ul>
+    );
     }
 
 function renderDirectMessage(props : any){
-        return (
+    return (
             <ul className="list-group lijst">
                 <li className="list-group-item d-flex justify-content-between align-items-center">
                     {DummyDirectMessage.map(item=>(
