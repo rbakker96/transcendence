@@ -2,12 +2,16 @@
 import RenderChatChannels from "./RenderChatChannels";
 import RenderDirectMessage from "./RenderDirectMessage";
 
-function ChatSidebar(props: any) {
+type ChatSidebarType ={
+  setActiveId: Function;
+}
+
+function ChatSidebar(props: ChatSidebarType) {
   return (
     <div>
       <h5>Message options</h5>
-      <RenderChatChannels />
-      <RenderDirectMessage />
+      <RenderChatChannels setActiveId={props.setActiveId}/>
+      <RenderDirectMessage setActiveId={props.setActiveId}/>
     </div>
   );
 }

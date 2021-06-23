@@ -1,5 +1,9 @@
 import { Divider } from "antd";
 
+type RenderChatChannelsType = {
+  setActiveId: Function;
+};
+
 const DummyData = [
   {
     channelID: 1,
@@ -39,10 +43,10 @@ const DummyData = [
   },
 ];
 
-function RenderChatChannels(props: any) {
-  function GoToMessage(ChannelNumber: number, event: any, props: any) {
-    // props.setActiveID(ChannelNumber);
-    console.log("Clicked channelID: " + ChannelNumber);
+function RenderChatChannels(props: RenderChatChannelsType) {
+  function setActiveChannelId(activeChannelId: number) {
+    props.setActiveId(activeChannelId);
+    console.log("Clicked channelID: " + activeChannelId);
   }
 
   return (
@@ -51,7 +55,7 @@ function RenderChatChannels(props: any) {
       {DummyData.map((item) => (
         <li
           key={item.channelID}
-          onClick={(e) => GoToMessage(item.channelID, e, props)}
+          onClick={() => setActiveChannelId(item.channelID)}
         >
           {item.Name}
         </li>

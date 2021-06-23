@@ -1,6 +1,8 @@
-// import styles from "./ChatSideBar.module.css";
-
 import { Divider } from "antd";
+
+type RenderDirectMessageType = {
+  setActiveId: Function;
+};
 
 const DummyDirectMessage = [
   {
@@ -41,10 +43,10 @@ const DummyDirectMessage = [
   },
 ];
 
-function RenderDirectMessage(props: any) {
-  function GoToMessage(ChannelNumber: number, event: any, props: any) {
-    // props.setActiveID(ChannelNumber);
-    console.log("Clicked channelID: " + ChannelNumber);
+function RenderDirectMessage(props: RenderDirectMessageType) {
+  function setActiveChannelId(activeChannelId: number) {
+    props.setActiveId(activeChannelId);
+    console.log("Clicked channelID: " + activeChannelId);
   }
 
   return (
@@ -53,7 +55,7 @@ function RenderDirectMessage(props: any) {
       {DummyDirectMessage.map((item) => (
         <ul
           key={item.channelID}
-          onClick={(e) => GoToMessage(item.channelID, e, props)}
+          onClick={() => setActiveChannelId(item.channelID)}
         >
           {item.participants.map((participant) => (
             <li key={participant}>{participant}</li>
