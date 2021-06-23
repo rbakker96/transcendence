@@ -8,15 +8,9 @@ function App() {
   return (
     <div>
       <main>
-        {/*<Route exact path={"/"}>*/}
-        {/*  <Login />*/}
-        {/*</Route>*/}
-        {/*<Route path={"/register"}>*/}
-        {/*  <Register />*/}
-        {/*</Route>*/}
-        <Route path={"/chat-content"}>
-          <ChatPage />
-        </Route>
+        {/*<Route exact path={"/"}><Login /></Route>*/}
+        {/*<Route path={"/register"}><Register /></Route>*/}
+        <Route exact path={"/chat"}><ChatPage /></Route>
       </main>
     </div>
   );
