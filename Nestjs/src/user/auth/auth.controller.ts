@@ -11,8 +11,7 @@ export class AuthController {
         private authService: AuthService
     ) {}
 
-    @UseGuards(AuthGuard('oauth'))
-    // @Post('auth/login')
+    @UseGuards(AuthGuard('intra'))
     @Get('auth/login')
     async login(@Request() req) {
         return 'succes';

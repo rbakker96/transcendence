@@ -1,5 +1,5 @@
 import { PassportStrategy } from '@nestjs/passport';
-import {HttpService, Injectable, UnauthorizedException} from '@nestjs/common';
+import { HttpService, Injectable } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Strategy } from 'passport-oauth2';
 import { stringify } from 'querystring';
@@ -12,7 +12,7 @@ const state = 'xqm5wXX'
 
 
 @Injectable()
-export class OAuthStrategy extends PassportStrategy(Strategy, 'oauth') {
+export class IntraStrategy extends PassportStrategy(Strategy, 'intra') {
     constructor(
         private authService: AuthService,
         private http: HttpService,

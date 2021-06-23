@@ -1,14 +1,11 @@
-
-body {
-    background: azure;
-    color: black;
-}
-
 /* Profile container */
 .profilepage {
+    background: azure;
+    color: black;
     flex-direction: column;
     text-align: center;
     display: flex;
+    background: lightgrey;
 }
 
 .profile {
@@ -21,7 +18,7 @@ body {
 .profile-sidebar {
     padding: 20px 0 30px 0;
 
-    background-image: url(../img/profile.jpg);
+    background-image: url(../img/background.jpeg);
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -42,18 +39,12 @@ body {
     margin-top: 20px;
 }
 
-.profile-usertitle-name {
-    color: #5a7391;
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 7px;
-}
-
 .profile-usertitle-job {
     text-transform: uppercase;
-    color: #5b9bd1;
+    color: white;
     font-size: 22px;
     font-weight: 600;
+    font-weight: bolder;
     margin-bottom: 15px;
 }
 
@@ -66,10 +57,10 @@ body {
 
 .profile-userbuttons .btn {
     text-transform: uppercase;
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 600;
     padding: 6px 15px;
-    margin-right: 5px;
+    margin-right: 10px;
     margin-top: 10px;
     border: none;
 }
@@ -82,8 +73,7 @@ body {
 .profile-content {
     height: 100%;
     padding: 20px;
-    background: #fff;
-    /*min-height: 460px;*/
+    background: lightgrey;
 }
 
 .stats {
@@ -96,24 +86,31 @@ body {
 
 .stat {
     margin: 15px;
+    background: white;
 }
 
 .value {
     padding-top: 20px;
     font-weight: bolder;
-    background-color: #00babc;
+    background-color: #496b53;
 }
 
 .desc {
     font-weight: bolder;
     font-size: 20px;
     padding-top: 15px;
-    border: 2px solid #00babc;
+    border: 2px solid #496b53;
     align-items: center;
     justify-content: flex-end;
 }
 
 .ranking {
+    margin-top: 12px;
     padding-top: 10px;
-    border: 2px solid #00babc;
+    border: 4px solid #496b53;
+    background: white;
+    max-height: 300px;
+    contain: content;
+    overflow: scroll;
+    overflow-scrolling: auto;
 }

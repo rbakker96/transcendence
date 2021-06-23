@@ -1,21 +1,23 @@
-html,
-body {
-    height: 100%;
-    align-items: center;
-    background-image: url(../img/background.jpeg);
-    background-size: auto;
-    background-repeat: no-repeat;
-    background-position: center;
+/*.Register_component {*/
+/*    height: 100%;*/
+/*    width: 100%;*/
+/*!*    align-items: center;*!*/
+/*    background-image: url(../img/background.jpeg);*/
+/*    background-size: auto;*/
+/*    background-repeat: no-repeat;*/
+/*    background-position: center;*/
+/*}*/
 
-}
-
-body {
+.Register_component {
     display: flex;
     align-items: center;
     justify-content: center;
     padding-top: 40px;
     padding-bottom: 40px;
-    background-color: #f5f5f5;
+}
+
+form {
+    text-align: center;
 }
 
 .form-signin {

@@ -56,15 +56,19 @@ class Profile extends Component {
                             <div className="col-md-2"></div>
                             <div className="col-md-4 ">
                                 <div className="row">
-                                    <div className="col-md-12 title"><h3>RANKING</h3></div>
+                                    <div className="col-md-12 title"><h3>MATCH HISTORY</h3></div>
                                 </div>
                                 <div className="row ranking">
-                                    <p>1. Player x</p>
-                                    <p>2. Player x</p>
-                                    <p>3. Player x</p>
-                                    <p>4. Player x</p>
-                                    <p>5. Player x</p>
-                                    <p>6. Player x</p>
+                                    <p>10 - player x vs player x - 8</p>
+                                    <p>10 - player x vs player x - 8</p>
+                                    <p>10 - player x vs player x - 8</p>
+                                    <p>10 - player x vs player x - 8</p>
+                                    <p>5 - player x vs player x - 10</p>
+                                    <p>5 - player x vs player x - 10</p>
+                                    <p>5 - player x vs player x - 10</p>
+                                    <p>3 - player x vs player x - 10</p>
+                                    <p>3 - player x vs player x - 10</p>
+                                    <p>3 - player x vs player x - 10</p>
                                 </div>
                             </div>
                             <div className="col-md-1"></div>

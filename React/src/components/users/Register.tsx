@@ -27,6 +27,7 @@ class Register extends Component {
 
     render() {
         return (
+            <main className="Register_component">
             <form onSubmit={this.submit}>
                 <img className="mb-4" src={logo} alt="logo" width="72" height="57"/>
                 <h1 className="h3 mb-3 fw-normal">Please register</h1>
@@ -57,6 +58,7 @@ class Register extends Component {
 
                 <button className="w-100 btn btn-lg btn-primary" type="submit">Submit</button>
             </form>
+            </main>
         )
     }
 }

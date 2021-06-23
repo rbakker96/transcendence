@@ -34,7 +34,7 @@ let AuthController = class AuthController {
     }
 };
 __decorate([
-    common_1.UseGuards(passport_1.AuthGuard('oauth')),
+    common_1.UseGuards(passport_1.AuthGuard('intra')),
     common_1.Get('auth/login'),
     __param(0, common_1.Request()),
     __metadata("design:type", Function),
