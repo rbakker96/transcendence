@@ -1,21 +1,44 @@
 import React, { Component } from "react";
-import egg from "./img/egg.jpeg";
-
+// import egg from "./img/egg.jpeg";
+import axios from "axios";
 import './stylesheets/Profile.css'
 
 class Profile extends Component {
+    avatar = '';
+    username = '';
+
+    getCAvatar = () => {
+        axios.get('http://localhost:8000/api/avatar', {withCredentials: true})
+            .then(response => {
+                this.avatar = response.data;
+            })
+            .catch(error => console.error(error));
+    }
+
+    getUsername = () => {
+        axios.get('http://localhost:8000/api/username', {withCredentials: true})
+            .then(response => {
+                this.username = response.data;
+            })
+            .catch(error => console.error(error));
+    }
+
+
+
+
     render() {
+        console.log('avatar: ',this.avatar);
         return (
             <div className="container profilepage">
                 <div className="row profile">
                     <div className="col-md-12">
                         <div className="profile-sidebar">
                             <div className="profile-userpic">
-                                <img src={egg} className="img-responsive" alt=""/>
+                                <img src={this.avatar} className="img-responsive" alt=""/>
                             </div>
 
                             <div className="profile-usertitle">
-                                <div className="profile-usertitle-job">-username-</div>
+                                <div className="profile-usertitle-job">{this.username}</div>
                             </div>
 
                             <div className="profile-userbuttons">

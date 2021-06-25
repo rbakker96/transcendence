@@ -20,28 +20,12 @@ const typeorm_2 = require("typeorm");
 let UserService = class UserService {
     constructor(userRepository) {
         this.userRepository = userRepository;
-        this.users = [
-            {
-                id: 1,
-                username: 'john',
-                email: 'test@test.com',
-                phonenumber: '0611111111',
-                authentication: false,
-            },
-            {
-                id: 2,
-                username: 'piet',
-                email: 'test2@test.com',
-                phonenumber: '0622222222',
-                authentication: true,
-            },
-        ];
-    }
-    async findOne(username) {
-        return this.users.find(user => user.username === username);
     }
     async all() {
         return this.userRepository.find();
+    }
+    async findOne(id) {
+        return this.userRepository.findOne(id);
     }
     async create(data) {
         return this.userRepository.save(data);

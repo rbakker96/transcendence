@@ -8,16 +8,38 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserController = void 0;
 const common_1 = require("@nestjs/common");
 const user_service_1 = require("./user.service");
+const jwt_1 = require("@nestjs/jwt");
 let UserController = class UserController {
-    constructor(userService) {
+    constructor(userService, jwtService) {
         this.userService = userService;
+        this.jwtService = jwtService;
     }
     async all() {
         return this.userService.all();
+    }
+    async getAvatar(req) {
+        const client = await this.jwtService.verifyAsync(req.user);
+        const clientID = client['id'];
+        const clientData = await this.userService.findOne({ clientID });
+        return clientData.avatar;
+    }
+    async getUsername(req) {
+        const client = await this.jwtService.verifyAsync(req.user);
+        const clientID = client['id'];
+        const clientData = await this.userService.findOne({ clientID });
+        return clientData.username;
+    }
+    async getClientData(req) {
+        const client = await this.jwtService.verifyAsync(req.user);
+        const clientID = client['id'];
+        return await this.userService.findOne({ clientID });
     }
 };
 __decorate([
@@ -26,9 +48,31 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "all", null);
+__decorate([
+    common_1.Get('/data/avatar'),
+    __param(0, common_1.Request()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getAvatar", null);
+__decorate([
+    common_1.Get('/data/username'),
+    __param(0, common_1.Request()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getUsername", null);
+__decorate([
+    common_1.Get('/data/username'),
+    __param(0, common_1.Request()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getClientData", null);
 UserController = __decorate([
     common_1.Controller('users'),
-    __metadata("design:paramtypes", [user_service_1.UserService])
+    __metadata("design:paramtypes", [user_service_1.UserService,
+        jwt_1.JwtService])
 ], UserController);
 exports.UserController = UserController;
 //# sourceMappingURL=user.controller.js.map

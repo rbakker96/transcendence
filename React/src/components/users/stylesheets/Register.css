@@ -1,13 +1,3 @@
-/*.Register_component {*/
-/*    height: 100%;*/
-/*    width: 100%;*/
-/*!*    align-items: center;*!*/
-/*    background-image: url(../img/background.jpeg);*/
-/*    background-size: auto;*/
-/*    background-repeat: no-repeat;*/
-/*    background-position: center;*/
-/*}*/
-
 .Register_component {
     display: flex;
     align-items: center;

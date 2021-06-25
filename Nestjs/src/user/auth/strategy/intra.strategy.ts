@@ -1,8 +1,9 @@
 import { PassportStrategy } from '@nestjs/passport';
-import { HttpService, Injectable } from '@nestjs/common';
-import { AuthService } from './auth.service';
+import {HttpService, Injectable, Res} from '@nestjs/common';
+import { AuthService } from '../auth.service';
 import { Strategy } from 'passport-oauth2';
 import { stringify } from 'querystring';
+import { JwtService } from "@nestjs/jwt";
 
 //APPLICATION DATA
 const uid = 'f1ef4d09a69740a304c69a96158863d032ce914630ed4dcaa0eb33e6da4ae71f';
@@ -16,6 +17,7 @@ export class IntraStrategy extends PassportStrategy(Strategy, 'intra') {
     constructor(
         private authService: AuthService,
         private http: HttpService,
+        private jwtService: JwtService
     ) {
         super({
             authorizationURL: `https://api.intra.42.fr/oauth/authorize?${ stringify({
@@ -33,13 +35,17 @@ export class IntraStrategy extends PassportStrategy(Strategy, 'intra') {
         });
     }
 
-    async validate(accessToken: string ): Promise<any> {
+    async validate(accessToken: string): Promise<any> {
         const data = await this.http.get('https://api.intra.42.fr/v2/me', {
             headers: { Authorization: `Bearer ${ accessToken }` },
         }).toPromise();
+
         console.log(data.data.id);
-        console.log(data.data.login);
-        return data;
+
+        const jwt = await this.jwtService.signAsync({id: data.data.id});
+        console.log(jwt);
+
+        return jwt;
     }
 
 }

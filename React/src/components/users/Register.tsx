@@ -9,7 +9,6 @@ class Register extends Component {
     username = '';
     email = '';
     phonenumber = '';
-    authentication = false;
 
     submit = async (e: SyntheticEvent) => {
         e.preventDefault();
@@ -18,11 +17,9 @@ class Register extends Component {
             username: this.username,
             email: this.email,
             phonenumber: this.phonenumber,
-            authentication: this.authentication,
-        }).then(res => {
+        }, {withCredentials: true}).then(res => {
             console.log(res);
         });
-
     }
 
     render() {
@@ -50,11 +47,11 @@ class Register extends Component {
                     <label htmlFor="floatingPassword">Phonenumber</label>
                 </div>
 
-                <div className="form-check">
-                    <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault"
-                           onChange={e => this.authentication = e.target.checked}/>
-                    <label className="form-check-label" htmlFor="flexCheckDefault"><b>Two-factor authentication</b></label>
-                </div>
+                {/*<div className="form-check">*/}
+                {/*    <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault"*/}
+                {/*           onChange={e => this.authentication = e.target.checked}/>*/}
+                {/*    <label className="form-check-label" htmlFor="flexCheckDefault"><b>Two-factor authentication</b></label>*/}
+                {/*</div>*/}
 
                 <button className="w-100 btn btn-lg btn-primary" type="submit">Submit</button>
             </form>

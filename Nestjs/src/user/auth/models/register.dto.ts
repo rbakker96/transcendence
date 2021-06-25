@@ -1,6 +1,10 @@
 import {IsEmail, IsNotEmpty, IsPhoneNumber} from "class-validator";
 
 export class RegisterDto {
+    id: number;
+
+    avatar: string;
+
     @IsNotEmpty()
     username: string;
 

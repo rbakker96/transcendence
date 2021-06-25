@@ -1,9 +1,15 @@
 //The most crucial concept to grasp when using TypeORM is the entity. It is a class that maps to a database table.
 
-import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, PrimaryColumn, PrimaryGeneratedColumn} from "typeorm";
 
 @Entity('users')
 export class User {
+
+    @PrimaryColumn({ unique: true })
+    id: number;
+
+    @Column()
+    avatar: string;
 
     @Column({ unique: true })
     username: string;
@@ -11,14 +17,10 @@ export class User {
     @Column( { unique: true })
     email: string;
 
-    @Column()
+    @Column({ unique: true })
     phonenumber: string;
 
     @Column()
     authentication: boolean;
-
-    @PrimaryGeneratedColumn()
-    id: number;
-
 
 }

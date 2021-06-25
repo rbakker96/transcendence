@@ -17,34 +17,55 @@ const common_1 = require("@nestjs/common");
 const user_service_1 = require("../user.service");
 const register_dto_1 = require("./models/register.dto");
 const passport_1 = require("@nestjs/passport");
+const jwt_1 = require("@nestjs/jwt");
 const auth_service_1 = require("./auth.service");
 let AuthController = class AuthController {
-    constructor(userService, authService) {
+    constructor(userService, jwtService, authService) {
         this.userService = userService;
+        this.jwtService = jwtService;
         this.authService = authService;
     }
-    async login(req) {
-        return 'succes';
+    async login(req, response) {
+        await response.cookie('clientID', req.user, { httpOnly: true });
+        const client = await this.jwtService.verifyAsync(req.user);
+        const clientID = client['id'];
+        console.log('client fd: ', clientID);
+        const clientData = await this.userService.findOne(clientID);
+        console.log('client data', clientData);
+        if (!clientData)
+            return response.redirect('http://localhost:8080/register');
+        if (clientData.authentication == true)
+            return response.redirect('http://localhost:8080/twoFactor');
+        else
+            return response.redirect('http://localhost:8080/profile');
     }
     getProfile(req) {
         return req.user;
     }
-    async register(data) {
-        return this.userService.create(data);
+    async register(data, request, response) {
+        const clientID = await this.authService.clientID(request);
+        console.log(clientID);
+        data.avatar = './img/egg.jpeg';
+        data.id = clientID;
+        data.authentication = false;
+        console.log(data);
+        await this.userService.create(data);
+        return response.redirect('http://localhost:8080/profile');
     }
 };
 __decorate([
     common_1.UseGuards(passport_1.AuthGuard('intra')),
     common_1.Get('auth/login'),
-    __param(0, common_1.Request()),
+    __param(0, common_1.Req()),
+    __param(1, common_1.Res({ passthrough: true })),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
 __decorate([
     common_1.UseGuards(passport_1.AuthGuard('jwt')),
     common_1.Get('profile'),
-    __param(0, common_1.Request()),
+    __param(0, common_1.Req()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
@@ -52,13 +73,16 @@ __decorate([
 __decorate([
     common_1.Post('register'),
     __param(0, common_1.Body()),
+    __param(1, common_1.Req()),
+    __param(2, common_1.Res({ passthrough: true })),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [register_dto_1.RegisterDto]),
+    __metadata("design:paramtypes", [register_dto_1.RegisterDto, Object, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "register", null);
 AuthController = __decorate([
     common_1.Controller(),
     __metadata("design:paramtypes", [user_service_1.UserService,
+        jwt_1.JwtService,
         auth_service_1.AuthService])
 ], AuthController);
 exports.AuthController = AuthController;
