@@ -6,7 +6,4 @@ export declare class UserController {
     private jwtService;
     constructor(userService: UserService, jwtService: JwtService);
     all(): Promise<User[]>;
-    getAvatar(req: any): Promise<string>;
-    getUsername(req: any): Promise<string>;
-    getClientData(req: any): Promise<User>;
 }

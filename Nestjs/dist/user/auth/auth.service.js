@@ -8,13 +8,19 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
+const register_dto_1 = require("./models/register.dto");
+const user_service_1 = require("../user.service");
 let AuthService = class AuthService {
-    constructor(jwtService) {
+    constructor(jwtService, userService) {
         this.jwtService = jwtService;
+        this.userService = userService;
     }
     async clientID(request) {
         const cookie = request.cookies['clientID'];
@@ -22,10 +28,24 @@ let AuthService = class AuthService {
         const data = await this.jwtService.verifyAsync(cookie);
         return data['id'];
     }
+    async newUser(data, clientID) {
+        data.avatar = './img/egg.jpeg';
+        data.id = clientID;
+        data.authentication = false;
+        console.log(data);
+        await this.userService.create(data);
+    }
 };
+__decorate([
+    __param(0, common_1.Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [register_dto_1.RegisterDto, Number]),
+    __metadata("design:returntype", Promise)
+], AuthService.prototype, "newUser", null);
 AuthService = __decorate([
     common_1.Injectable(),
-    __metadata("design:paramtypes", [jwt_1.JwtService])
+    __metadata("design:paramtypes", [jwt_1.JwtService,
+        user_service_1.UserService])
 ], AuthService);
 exports.AuthService = AuthService;
 //# sourceMappingURL=auth.service.js.map

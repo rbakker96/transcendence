@@ -10,5 +10,5 @@ export declare class AuthController {
     constructor(userService: UserService, jwtService: JwtService, authService: AuthService);
     login(req: any, response: Response): Promise<void>;
     getProfile(req: any): any;
-    register(data: RegisterDto, request: Request, response: Response): Promise<void>;
+    register(data: RegisterDto, request: Request): Promise<void>;
 }

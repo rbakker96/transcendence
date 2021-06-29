@@ -1,28 +1,37 @@
 import React, {Component, SyntheticEvent} from "react";
+import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 
 import './stylesheets/Register.css'
 import logo from "./img/42_logo.svg";
 
-
 class Register extends Component {
     username = '';
     email = '';
     phonenumber = '';
+    state = {
+        redirect: false,
+    }
 
     submit = async (e: SyntheticEvent) => {
         e.preventDefault();
 
-        axios.post('http://localhost:8000/api/register', {
+        await axios.post('http://localhost:8000/api/register', {
             username: this.username,
             email: this.email,
             phonenumber: this.phonenumber,
-        }, {withCredentials: true}).then(res => {
-            console.log(res);
-        });
+        }, {withCredentials: true})
+
+        this.setState({
+            redirect: true,
+        })
     }
 
     render() {
+
+        if (this.state.redirect)
+            return <Redirect to={'/profile'}/>;
+
         return (
             <main className="Register_component">
             <form onSubmit={this.submit}>
@@ -54,6 +63,7 @@ class Register extends Component {
                 {/*</div>*/}
 
                 <button className="w-100 btn btn-lg btn-primary" type="submit">Submit</button>
+
             </form>
             </main>
         )

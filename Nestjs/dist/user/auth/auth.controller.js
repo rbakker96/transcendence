@@ -28,10 +28,8 @@ let AuthController = class AuthController {
     async login(req, response) {
         await response.cookie('clientID', req.user, { httpOnly: true });
         const client = await this.jwtService.verifyAsync(req.user);
-        const clientID = client['id'];
-        console.log('client fd: ', clientID);
-        const clientData = await this.userService.findOne(clientID);
-        console.log('client data', clientData);
+        const clientData = await this.userService.findOne(client['id']);
+        console.log('clientData', clientData);
         if (!clientData)
             return response.redirect('http://localhost:8080/register');
         if (clientData.authentication == true)
@@ -42,15 +40,9 @@ let AuthController = class AuthController {
     getProfile(req) {
         return req.user;
     }
-    async register(data, request, response) {
+    async register(data, request) {
         const clientID = await this.authService.clientID(request);
-        console.log(clientID);
-        data.avatar = './img/egg.jpeg';
-        data.id = clientID;
-        data.authentication = false;
-        console.log(data);
-        await this.userService.create(data);
-        return response.redirect('http://localhost:8080/profile');
+        await this.authService.newUser(data, clientID);
     }
 };
 __decorate([
@@ -74,9 +66,8 @@ __decorate([
     common_1.Post('register'),
     __param(0, common_1.Body()),
     __param(1, common_1.Req()),
-    __param(2, common_1.Res({ passthrough: true })),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [register_dto_1.RegisterDto, Object, Object]),
+    __metadata("design:paramtypes", [register_dto_1.RegisterDto, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "register", null);
 AuthController = __decorate([

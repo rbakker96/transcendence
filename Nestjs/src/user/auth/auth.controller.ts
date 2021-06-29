@@ -19,13 +19,9 @@ export class AuthController {
     async login(@Req() req, @Res({passthrough: true}) response: Response) {
         await response.cookie('clientID', req.user, {httpOnly: true});
         const client = await this.jwtService.verifyAsync(req.user);
-        const clientID = client['id'];
 
-        console.log('client fd: ', clientID);
-
-        const clientData = await this.userService.findOne(clientID);
-
-        console.log('client data', clientData);
+        const clientData = await this.userService.findOne(client['id']);
+        console.log('clientData', clientData);
 
         if(!clientData)
             return response.redirect('http://localhost:8080/register')
@@ -42,21 +38,12 @@ export class AuthController {
     }
 
     @Post('register')
-    async register(@Body() data: RegisterDto, @Req() request: Request, @Res({passthrough: true}) response: Response) {
-
+    async register(@Body() data: RegisterDto, @Req() request: Request) {
         const clientID = await this.authService.clientID(request);
-        console.log(clientID);
+        await this.authService.newUser(data, clientID);
 
-
-        data.avatar = './img/egg.jpeg';
-        data.id = clientID;
-        data.authentication = false;
-
-        console.log(data);
-
-        await this.userService.create(data);
-
-        return response.redirect('http://localhost:8080/profile');
+        // return response.redirect('http://localhost:8080/profile');
+        // @Res({passthrough: true}) response: Response
     }
 
 }
