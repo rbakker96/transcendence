@@ -9,36 +9,29 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.User = void 0;
-const typeorm_1 = require("typeorm");
-let User = class User {
-};
+exports.ChatMessageDto = void 0;
+const class_validator_1 = require("class-validator");
+class ChatMessageDto {
+}
 __decorate([
-    typeorm_1.Column({ unique: true }),
-    __metadata("design:type", String)
-], User.prototype, "username", void 0);
-__decorate([
-    typeorm_1.Column({ unique: true }),
-    __metadata("design:type", String)
-], User.prototype, "email", void 0);
-__decorate([
-    typeorm_1.Column(),
-    __metadata("design:type", String)
-], User.prototype, "phonenumber", void 0);
-__decorate([
-    typeorm_1.Column(),
-    __metadata("design:type", Boolean)
-], User.prototype, "authentication", void 0);
-__decorate([
-    typeorm_1.Column(),
-    __metadata("design:type", String)
-], User.prototype, "avatar", void 0);
-__decorate([
-    typeorm_1.PrimaryGeneratedColumn(),
+    class_validator_1.IsNotEmpty(),
     __metadata("design:type", Number)
-], User.prototype, "id", void 0);
-User = __decorate([
-    typeorm_1.Entity('users')
-], User);
-exports.User = User;
-//# sourceMappingURL=user.entity.js.map
+], ChatMessageDto.prototype, "messageID", void 0);
+__decorate([
+    class_validator_1.IsNotEmpty(),
+    __metadata("design:type", Number)
+], ChatMessageDto.prototype, "channelID", void 0);
+__decorate([
+    class_validator_1.IsNotEmpty(),
+    __metadata("design:type", Number)
+], ChatMessageDto.prototype, "senderID", void 0);
+__decorate([
+    class_validator_1.IsNotEmpty(),
+    __metadata("design:type", String)
+], ChatMessageDto.prototype, "messageContent", void 0);
+__decorate([
+    class_validator_1.IsNotEmpty(),
+    __metadata("design:type", String)
+], ChatMessageDto.prototype, "messageTimestamp", void 0);
+exports.ChatMessageDto = ChatMessageDto;
+//# sourceMappingURL=chatMessage.dto.js.map

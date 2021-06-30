@@ -9,7 +9,6 @@ type ChatSidebarType ={
 function ChatSidebar(props: ChatSidebarType) {
   return (
     <div>
-      <h5>Message options</h5>
       <RenderChatChannels setActiveId={props.setActiveId}/>
       <RenderDirectMessage setActiveId={props.setActiveId}/>
     </div>

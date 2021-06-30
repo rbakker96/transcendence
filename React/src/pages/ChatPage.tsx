@@ -6,7 +6,7 @@ import {useState} from "react";
 
 function ChatPage() {
 
-  const [ActiveId, setActiveId] = useState(2);
+  const [ActiveId, setActiveId] = useState(0);
 
   return (
     <div>

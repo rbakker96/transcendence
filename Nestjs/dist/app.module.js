@@ -14,6 +14,7 @@ const user_module_1 = require("./user/user.module");
 const typeorm_1 = require("@nestjs/typeorm");
 const config_1 = require("@nestjs/config");
 const auth_module_1 = require("./user/auth/auth.module");
+const chatMessage_module_1 = require("./chat/message/chatMessage.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -21,13 +22,14 @@ AppModule = __decorate([
         imports: [
             config_1.ConfigModule.forRoot({ isGlobal: true }),
             typeorm_1.TypeOrmModule.forRoot({
-                type: 'postgres',
+                type: "postgres",
                 url: process.env.DATABASE_URL,
                 autoLoadEntities: true,
                 synchronize: true,
             }),
             user_module_1.UserModule,
-            auth_module_1.AuthModule
+            auth_module_1.AuthModule,
+            chatMessage_module_1.ChatMessageModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

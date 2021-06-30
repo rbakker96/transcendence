@@ -3,5 +3,6 @@ export declare class User {
     email: string;
     phonenumber: string;
     authentication: boolean;
+    avatar: string;
     id: number;
 }

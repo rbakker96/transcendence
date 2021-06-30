@@ -1,14 +1,14 @@
-import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
 
 @Entity()
 export class ChatMessage {
   @PrimaryGeneratedColumn()
   messageID: number;
 
-  @Column({unique: true})
+  @Column()
   channelID: number;
 
-  @Column({unique: true})
+  @Column()
   senderID: number;
 
   @Column()

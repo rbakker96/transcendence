@@ -12,30 +12,26 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserService = void 0;
+exports.ChatMessageService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
-const user_entity_1 = require("./models/user.entity");
+const chatMessage_entity_1 = require("./chatMessage.entity");
 const typeorm_2 = require("typeorm");
-let UserService = class UserService {
-    constructor(userRepository) {
-        this.userRepository = userRepository;
+let ChatMessageService = class ChatMessageService {
+    constructor(chatMessageRepository) {
+        this.chatMessageRepository = chatMessageRepository;
     }
-    async all() {
-        return await this.userRepository.find();
+    async findAllChatMessages() {
+        return await this.chatMessageRepository.find();
     }
-    async create(data) {
-        return await this.userRepository.save(data);
-    }
-    async findUserName(data) {
-        console.log(data.userID);
-        return await this.userRepository.findOne({ id: data.userID });
+    async createChatMessage(data) {
+        return await this.chatMessageRepository.save(data);
     }
 };
-UserService = __decorate([
+ChatMessageService = __decorate([
     common_1.Injectable(),
-    __param(0, typeorm_1.InjectRepository(user_entity_1.User)),
+    __param(0, typeorm_1.InjectRepository(chatMessage_entity_1.ChatMessage)),
     __metadata("design:paramtypes", [typeorm_2.Repository])
-], UserService);
-exports.UserService = UserService;
-//# sourceMappingURL=user.service.js.map
+], ChatMessageService);
+exports.ChatMessageService = ChatMessageService;
+//# sourceMappingURL=chatMessage.service.js.map

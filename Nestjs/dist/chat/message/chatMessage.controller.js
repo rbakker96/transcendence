@@ -12,22 +12,20 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserController = void 0;
+exports.ChatMessageController = void 0;
 const common_1 = require("@nestjs/common");
-const user_service_1 = require("./user.service");
-let UserController = class UserController {
-    constructor(userService) {
-        this.userService = userService;
+const chatMessage_service_1 = require("./chatMessage.service");
+const chatMessage_dto_1 = require("./dto/chatMessage.dto");
+let ChatMessageController = class ChatMessageController {
+    constructor(chatMessageService) {
+        this.chatMessageService = chatMessageService;
     }
-    async all() {
-        return await this.userService.all();
+    async getAllChatMessages() {
+        return await this.chatMessageService.findAllChatMessages();
     }
-    async create(data) {
-        return await this.userService.create(data);
-    }
-    async findUserName(query) {
-        console.log(query);
-        return await this.userService.findUserName(query);
+    async createChatMessage(message) {
+        console.log(message);
+        return await this.chatMessageService.createChatMessage(message);
     }
 };
 __decorate([
@@ -35,24 +33,17 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
-], UserController.prototype, "all", null);
+], ChatMessageController.prototype, "getAllChatMessages", null);
 __decorate([
-    common_1.Post(),
+    common_1.Post("newMessage"),
     __param(0, common_1.Body()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [chatMessage_dto_1.ChatMessageDto]),
     __metadata("design:returntype", Promise)
-], UserController.prototype, "create", null);
-__decorate([
-    common_1.Get("findName"),
-    __param(0, common_1.Query()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], UserController.prototype, "findUserName", null);
-UserController = __decorate([
-    common_1.Controller("users"),
-    __metadata("design:paramtypes", [user_service_1.UserService])
-], UserController);
-exports.UserController = UserController;
-//# sourceMappingURL=user.controller.js.map
+], ChatMessageController.prototype, "createChatMessage", null);
+ChatMessageController = __decorate([
+    common_1.Controller("chatMessage"),
+    __metadata("design:paramtypes", [chatMessage_service_1.ChatMessageService])
+], ChatMessageController);
+exports.ChatMessageController = ChatMessageController;
+//# sourceMappingURL=chatMessage.controller.js.map

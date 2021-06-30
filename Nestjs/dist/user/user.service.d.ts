@@ -5,4 +5,5 @@ export declare class UserService {
     constructor(userRepository: Repository<User>);
     all(): Promise<User[]>;
     create(data: any): Promise<User>;
+    findUserName(data: any): Promise<User>;
 }

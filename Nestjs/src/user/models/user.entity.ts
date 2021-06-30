@@ -17,8 +17,10 @@ export class User {
     @Column()
     authentication: boolean;
 
+    @Column()
+    avatar: string;
+
     @PrimaryGeneratedColumn()
     id: number;
-
 
 }
