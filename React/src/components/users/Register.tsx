@@ -16,11 +16,11 @@ class Register extends Component {
     submit = async (e: SyntheticEvent) => {
         e.preventDefault();
 
-        await axios.post('http://localhost:8000/api/register', {
+        await axios.post('register', {
             username: this.username,
             email: this.email,
             phonenumber: this.phonenumber,
-        }, {withCredentials: true})
+        })
 
         this.setState({
             redirect: true,

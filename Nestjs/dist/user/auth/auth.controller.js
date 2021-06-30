@@ -16,9 +16,11 @@ exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
 const user_service_1 = require("../user.service");
 const register_dto_1 = require("./models/register.dto");
+const update_dto_1 = require("./models/update.dto");
 const passport_1 = require("@nestjs/passport");
 const jwt_1 = require("@nestjs/jwt");
 const auth_service_1 = require("./auth.service");
+const auth_guard_1 = require("./strategy/auth.guard");
 let AuthController = class AuthController {
     constructor(userService, jwtService, authService) {
         this.userService = userService;
@@ -37,12 +39,22 @@ let AuthController = class AuthController {
         else
             return response.redirect('http://localhost:8080/profile');
     }
-    getProfile(req) {
-        return req.user;
-    }
     async register(data, request) {
         const clientID = await this.authService.clientID(request);
         await this.authService.newUser(data, clientID);
+    }
+    async update(data, request) {
+        await this.authService.updateUser(data);
+    }
+    async getUserData(request) {
+        const clientID = await this.authService.clientID(request);
+        return await this.userService.findOne(clientID);
+    }
+    async logout(response) {
+        response.clearCookie('clientID');
+        return {
+            message: 'Success'
+        };
     }
 };
 __decorate([
@@ -55,14 +67,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
 __decorate([
-    common_1.UseGuards(passport_1.AuthGuard('jwt')),
-    common_1.Get('profile'),
-    __param(0, common_1.Req()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
-], AuthController.prototype, "getProfile", null);
-__decorate([
+    common_1.UseGuards(auth_guard_1.verifyUser),
     common_1.Post('register'),
     __param(0, common_1.Body()),
     __param(1, common_1.Req()),
@@ -70,6 +75,31 @@ __decorate([
     __metadata("design:paramtypes", [register_dto_1.RegisterDto, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "register", null);
+__decorate([
+    common_1.UseGuards(auth_guard_1.verifyUser),
+    common_1.Put('update'),
+    __param(0, common_1.Body()),
+    __param(1, common_1.Req()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [update_dto_1.UpdateDto, Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "update", null);
+__decorate([
+    common_1.UseGuards(auth_guard_1.verifyUser),
+    common_1.Get('userData'),
+    __param(0, common_1.Req()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "getUserData", null);
+__decorate([
+    common_1.UseGuards(auth_guard_1.verifyUser),
+    common_1.Post('logout'),
+    __param(0, common_1.Res({ passthrough: true })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "logout", null);
 AuthController = __decorate([
     common_1.Controller(),
     __metadata("design:paramtypes", [user_service_1.UserService,

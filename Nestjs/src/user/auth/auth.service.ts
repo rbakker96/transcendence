@@ -1,8 +1,9 @@
 import {Body, Injectable} from '@nestjs/common';
 import { Request } from 'express';
 import { JwtService } from "@nestjs/jwt";
-import {RegisterDto} from "./models/register.dto";
-import {UserService} from "../user.service";
+import { RegisterDto } from "./models/register.dto";
+import { UserService} from "../user.service";
+import { UpdateDto } from "./models/update.dto";
 
 @Injectable()
 export class AuthService {
@@ -22,13 +23,19 @@ export class AuthService {
     }
 
     async newUser(@Body() data: RegisterDto, clientID: number) {
-        data.avatar = './img/egg.jpeg';
+        data.avatar = 'egg.jpeg';
         data.id = clientID;
         data.authentication = false;
 
         console.log(data);
 
         await this.userService.create(data);
+    }
+
+    async updateUser(@Body() data: UpdateDto) {
+        console.log(data);
+
+        await this.userService.update(data.id, data);
     }
 
 }

@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
 const register_dto_1 = require("./models/register.dto");
 const user_service_1 = require("../user.service");
+const update_dto_1 = require("./models/update.dto");
 let AuthService = class AuthService {
     constructor(jwtService, userService) {
         this.jwtService = jwtService;
@@ -29,11 +30,15 @@ let AuthService = class AuthService {
         return data['id'];
     }
     async newUser(data, clientID) {
-        data.avatar = './img/egg.jpeg';
+        data.avatar = 'egg.jpeg';
         data.id = clientID;
         data.authentication = false;
         console.log(data);
         await this.userService.create(data);
+    }
+    async updateUser(data) {
+        console.log(data);
+        await this.userService.update(data.id, data);
     }
 };
 __decorate([
@@ -42,6 +47,12 @@ __decorate([
     __metadata("design:paramtypes", [register_dto_1.RegisterDto, Number]),
     __metadata("design:returntype", Promise)
 ], AuthService.prototype, "newUser", null);
+__decorate([
+    __param(0, common_1.Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [update_dto_1.UpdateDto]),
+    __metadata("design:returntype", Promise)
+], AuthService.prototype, "updateUser", null);
 AuthService = __decorate([
     common_1.Injectable(),
     __metadata("design:paramtypes", [jwt_1.JwtService,

@@ -1,10 +1,12 @@
-import {Body, Controller, Get, Post, Redirect, Req, Res, UseGuards} from '@nestjs/common';
+import {Body, Controller, Get, Post, Put, Redirect, Req, Res, UseGuards} from '@nestjs/common';
 import { UserService } from "../user.service";
 import { RegisterDto } from "./models/register.dto";
+import { UpdateDto } from "./models/update.dto";
 import { AuthGuard } from "@nestjs/passport";
 import { Response, Request } from "express";
 import { JwtService } from "@nestjs/jwt";
 import { AuthService } from "./auth.service";
+import { verifyUser } from "./strategy/auth.guard";
 
 @Controller()
 export class AuthController {
@@ -31,19 +33,34 @@ export class AuthController {
             return response.redirect('http://localhost:8080/profile')
     }
 
-    @UseGuards(AuthGuard('jwt'))
-    @Get('profile')
-    getProfile(@Req() req) {
-        return req.user;
-    }
-
+    @UseGuards(verifyUser)
     @Post('register')
     async register(@Body() data: RegisterDto, @Req() request: Request) {
         const clientID = await this.authService.clientID(request);
         await this.authService.newUser(data, clientID);
+    }
 
-        // return response.redirect('http://localhost:8080/profile');
-        // @Res({passthrough: true}) response: Response
+    @UseGuards(verifyUser)
+    @Put('update')
+    async update(@Body() data: UpdateDto, @Req() request: Request) {
+        await this.authService.updateUser(data);
+    }
+
+    @UseGuards(verifyUser)
+    @Get('userData')
+    async getUserData(@Req() request: Request) {
+        const clientID = await this.authService.clientID(request);
+        return await this.userService.findOne(clientID);
+    }
+
+    @UseGuards(verifyUser)
+    @Post('logout')
+    async logout(@Res({passthrough: true}) response: Response) {
+        response.clearCookie('clientID');
+
+        return {
+            message: 'Success'
+        }
     }
 
 }

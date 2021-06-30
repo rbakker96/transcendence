@@ -15,7 +15,6 @@ const intra_strategy_1 = require("./strategy/intra.strategy");
 const jwt_1 = require("@nestjs/jwt");
 const passport_1 = require("@nestjs/passport");
 const constants_1 = require("./models/constants");
-const jwt_strategy_1 = require("./strategy/jwt.strategy");
 let AuthModule = class AuthModule {
 };
 AuthModule = __decorate([
@@ -26,11 +25,11 @@ AuthModule = __decorate([
             passport_1.PassportModule,
             jwt_1.JwtModule.register({
                 secret: constants_1.jwtConstants.secret,
-                signOptions: { expiresIn: '1d' },
+                signOptions: { expiresIn: '1h' },
             }),
         ],
         controllers: [auth_controller_1.AuthController],
-        providers: [auth_service_1.AuthService, intra_strategy_1.IntraStrategy, jwt_strategy_1.JwtStrategy],
+        providers: [auth_service_1.AuthService, intra_strategy_1.IntraStrategy],
         exports: [auth_service_1.AuthService],
     })
 ], AuthModule);

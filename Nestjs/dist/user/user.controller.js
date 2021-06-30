@@ -12,11 +12,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserController = void 0;
 const common_1 = require("@nestjs/common");
 const user_service_1 = require("./user.service");
-const jwt_1 = require("@nestjs/jwt");
 let UserController = class UserController {
-    constructor(userService, jwtService) {
+    constructor(userService) {
         this.userService = userService;
-        this.jwtService = jwtService;
     }
     async all() {
         return this.userService.all();
@@ -30,8 +28,7 @@ __decorate([
 ], UserController.prototype, "all", null);
 UserController = __decorate([
     common_1.Controller('users'),
-    __metadata("design:paramtypes", [user_service_1.UserService,
-        jwt_1.JwtService])
+    __metadata("design:paramtypes", [user_service_1.UserService])
 ], UserController);
 exports.UserController = UserController;
 //# sourceMappingURL=user.controller.js.map
