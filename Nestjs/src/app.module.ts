@@ -7,6 +7,7 @@ import { ConfigModule } from "@nestjs/config";
 import { AuthModule } from "./user/auth/auth.module";
 import { ChatMessageModule } from "./chat/message/chatMessage.module";
 import {ChannelModule} from "./chat/channel/channel.module";
+import {GameModule} from "./game/game.module";
 
 @Module({
   imports: [
@@ -20,7 +21,8 @@ import {ChannelModule} from "./chat/channel/channel.module";
     UserModule,
     AuthModule,
     ChatMessageModule,
-    ChannelModule
+    ChannelModule,
+    GameModule
   ],
   controllers: [AppController],
   providers: [AppService],
