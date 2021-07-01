@@ -3,6 +3,7 @@ import 'antd/dist/antd.css';
 import { Row, Col } from "antd";
 import ChatSidebar from "../components/chat/ChatSidebar";
 import {useState} from "react";
+import API from  "../API/API"
 
 function ChatPage() {
 
