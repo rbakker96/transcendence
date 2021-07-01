@@ -1,6 +1,6 @@
 import EachChatMessage from "./EachChatMessage";
 import {useEffect, useState} from "react";
-import axios from "axios";
+import API from "../../API/API";
 
 type ChatChannelMessagesProps = {
   activeChannelId: number;
@@ -31,9 +31,7 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
 
   useEffect(() => {
     (async () => {
-      const {data} = await axios.get(
-        "http://localhost:8000/api/chatMessage"
-      );
+      const {data} = await API.ChatMessage.getAllChatMessages();
       console.log(data);
       setAllChatMessages(data);
     })();

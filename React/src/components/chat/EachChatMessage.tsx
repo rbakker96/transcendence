@@ -1,6 +1,7 @@
 import { Comment } from "antd";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import API from "../../API/API";
 
 type ChatMessageType = {
   messageID: number;
@@ -25,12 +26,7 @@ function EachChatMessage(props: EachChatMessageProps) {
 
   useEffect(() => {
     const getUser = async () => {
-      const {data} = await axios.get('http://localhost:8000/api/users/findName',
-        {
-          params: {
-            userID: props.message.senderID,
-          },
-        })
+      const {data} = await API.User.findName(props.message.senderID);
       setUserName(data.username);
       setAvatar(data.avatar);
     }

@@ -3,7 +3,6 @@ import { BrowserRouter, Route } from "react-router-dom";
 import Register from "./components/users/Register";
 import Login from "./components/users/Login";
 import Profile from "./components/users/Profile";
-import './App.css';
 import TwoFactor from "./components/users/TwoFactor";
 import UpdateUser from "./components/users/Update";
 import ChatPage from "./pages/ChatPage";
