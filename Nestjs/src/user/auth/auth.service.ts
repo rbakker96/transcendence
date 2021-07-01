@@ -23,7 +23,7 @@ export class AuthService {
     }
 
     async newUser(@Body() data: RegisterDto, clientID: number) {
-        data.avatar = 'egg.jpeg';
+        data.avatar = 'http://localhost:8000/api/uploads/egg.jpeg';
         data.id = clientID;
         data.authentication = false;
 
