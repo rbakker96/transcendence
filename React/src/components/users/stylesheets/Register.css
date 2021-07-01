@@ -47,4 +47,6 @@ form {
 .btn-primary {
     margin-top: 10px;
     background-color: #00babc!important;
+    border: #00babc!important;
+    color: white !important;
 }

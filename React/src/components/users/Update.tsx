@@ -1,4 +1,5 @@
 import React, {SyntheticEvent, useEffect, useState} from "react";
+import UploadImg from "./UploadImg";
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 
@@ -6,6 +7,7 @@ import logo from "./img/42_logo.svg";
 import './stylesheets/Register.css'
 
 const UpdateUser = () => {
+
     const [id, setId] = useState(0);
     const [username, setUsername] = useState('');
     const [avatar, setAvatar] = useState('');
@@ -38,6 +40,7 @@ const UpdateUser = () => {
         setRedirect(true);
     }
 
+
     if (redirect)
         return <Redirect to={'/profile'}/>
 
@@ -66,6 +69,14 @@ const UpdateUser = () => {
                            defaultValue={phonenumber}
                            onChange={e => setPhonenumber(e.target.value)}/>
                     <label htmlFor="floatingPassword">Phonenumber</label>
+                </div>
+
+                <div className="form-floating">
+                    <input className="form-control" id="floatingPassword" placeholder="avatar"
+                           defaultValue={avatar}
+                           onChange={e => setAvatar(e.target.value)}/>
+                    <UploadImg uploaded={setAvatar}/>
+                    <label htmlFor="floatingPassword">Avatar</label>
                 </div>
 
                 <div className="form-check">
