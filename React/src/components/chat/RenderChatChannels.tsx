@@ -25,12 +25,12 @@ function RenderChatChannels(props: RenderChatChannelsType) {
   return (<div>
     <Divider orientation={"left"}>Chat channels</Divider>
     {channel.map((item : any) => (
-      <li
+      <ul
         key={item.Id}
         onClick={() => setActiveChannelId(item.Id)}
       >
         {item.ChannelName}
-      </li>
+      </ul>
     ))}
   </div>);
 }
