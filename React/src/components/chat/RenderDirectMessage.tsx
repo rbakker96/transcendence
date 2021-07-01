@@ -17,7 +17,6 @@ function RenderDirectMessage(props: RenderDirectMessageType) {
 
   useEffect(() => {
     const getPrivate = async () => {
-      // @ts-ignore
       const {data} = await API.Channels.index();
       let result = [];
       result = data.filter((newData : any) => {

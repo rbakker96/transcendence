@@ -16,7 +16,6 @@ function RenderChatChannels(props: RenderChatChannelsType) {
   }
   useEffect(() => {
     const getchannels = async () => {
-      // @ts-ignore
       const {data} = await API.Channels.index();
       setChannel(data);
     }
