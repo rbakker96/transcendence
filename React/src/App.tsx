@@ -7,6 +7,7 @@ import './App.css';
 import TwoFactor from "./components/users/TwoFactor";
 import UpdateUser from "./components/users/Update";
 import ChatPage from "./pages/ChatPage";
+import Game from "./components/game/Game";
 
 function App() {
   return (
@@ -24,6 +25,8 @@ function App() {
               <Route exact path={'/update'} component={UpdateUser}  />
 
               <Route exact path={"/chat"}><ChatPage /></Route>
+
+              <Route exact path={'/game'} component={Game}  />
 
           </main>
         </BrowserRouter>
