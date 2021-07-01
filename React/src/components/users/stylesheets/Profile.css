@@ -1,23 +1,34 @@
-body {
-    background: #F1F3FA;
+/* Profile container */
+.profilepage {
+    background: azure;
+    color: black;
+    flex-direction: column;
+    text-align: center;
+    display: flex;
+    background: lightgrey;
 }
 
-/* Profile container */
 .profile {
+    width: 100%;
+    height: 100%;
     margin: 20px 0;
 }
 
 /* Profile sidebar */
 .profile-sidebar {
-    padding: 20px 0 10px 0;
-    background: #fff;
+    padding: 20px 0 30px 0;
+
+    background-image: url(../img/background.jpeg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 .profile-userpic img {
     float: none;
     margin: 0 auto;
-    width: 50%;
-    height: 50%;
+    width: 8%;
+    height: 8%;
     -webkit-border-radius: 50% !important;
     -moz-border-radius: 50% !important;
     border-radius: 50% !important;
@@ -28,80 +39,78 @@ body {
     margin-top: 20px;
 }
 
-.profile-usertitle-name {
-    color: #5a7391;
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 7px;
-}
-
 .profile-usertitle-job {
     text-transform: uppercase;
-    color: #5b9bd1;
-    font-size: 12px;
+    color: white;
+    font-size: 22px;
     font-weight: 600;
+    font-weight: bolder;
     margin-bottom: 15px;
 }
 
 .profile-userbuttons {
     text-align: center;
     margin-top: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
 }
 
 .profile-userbuttons .btn {
     text-transform: uppercase;
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 600;
     padding: 6px 15px;
-    margin-right: 5px;
+    margin-right: 10px;
+    margin-top: 10px;
+    border: none;
 }
 
 .profile-userbuttons .btn:last-child {
     margin-right: 0px;
 }
 
-.profile-usermenu {
-    margin-top: 30px;
-}
-
-.profile-usermenu ul li {
-    border-bottom: 1px solid #f0f4f7;
-}
-
-.profile-usermenu ul li:last-child {
-    border-bottom: none;
-}
-
-.profile-usermenu ul li a {
-    color: #93a3b5;
-    font-size: 14px;
-    font-weight: 400;
-}
-
-.profile-usermenu ul li a i {
-    margin-right: 8px;
-    font-size: 14px;
-}
-
-.profile-usermenu ul li a:hover {
-    background-color: #fafcfd;
-    color: #5b9bd1;
-}
-
-.profile-usermenu ul li.active {
-    border-bottom: none;
-}
-
-.profile-usermenu ul li.active a {
-    color: #5b9bd1;
-    background-color: #f6f9fb;
-    border-left: 2px solid #5b9bd1;
-    margin-left: -2px;
-}
-
 /* Profile Content */
 .profile-content {
+    height: 100%;
     padding: 20px;
-    background: #fff;
-    min-height: 460px;
+    background: lightgrey;
+}
+
+.stats {
+    border: 2px solid black;
+    padding: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.stat {
+    margin: 15px;
+    background: white;
+}
+
+.value {
+    padding-top: 20px;
+    font-weight: bolder;
+    background-color: #496b53;
+}
+
+.desc {
+    font-weight: bolder;
+    font-size: 20px;
+    padding-top: 15px;
+    border: 2px solid #496b53;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.ranking {
+    margin-top: 12px;
+    padding-top: 10px;
+    border: 4px solid #496b53;
+    background: white;
+    max-height: 300px;
+    contain: content;
+    overflow: scroll;
+    overflow-scrolling: auto;
 }

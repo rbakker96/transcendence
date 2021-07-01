@@ -1,41 +1,40 @@
 import React, {Component, SyntheticEvent} from "react";
+import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 
 import './stylesheets/Register.css'
-import logo from "./img/42_logo.svg";
-
 
 class Register extends Component {
     username = '';
     email = '';
     phonenumber = '';
-    authentication = false;
+    state = {
+        redirect: false,
+    }
 
     submit = async (e: SyntheticEvent) => {
         e.preventDefault();
 
-        // console.log( {
-        //     username: this.username,
-        //     email: this.email,
-        //     phonenumber: this.phonenumber,
-        //     authentication: this.authentication
-        // });
-
-        axios.post('http://localhost:8000/api/register', {
+        await axios.post('register', {
             username: this.username,
             email: this.email,
             phonenumber: this.phonenumber,
-            authentication: this.authentication,
-        }).then(res => {
-            console.log(res);
-        });
+        })
 
+        this.setState({
+            redirect: true,
+        })
     }
 
     render() {
+
+        if (this.state.redirect)
+            return <Redirect to={'/profile'}/>;
+
         return (
+            <main className="Register_component">
             <form onSubmit={this.submit}>
-                <img className="mb-4" src={logo} alt="logo" width="72" height="57"/>
+                <img className="mb-4" src={"./img/42_logo.svg"} alt="./img/42_logo.svg" width="72" height="57"/>
                 <h1 className="h3 mb-3 fw-normal">Please register</h1>
 
                 <div className="form-floating">
@@ -56,14 +55,16 @@ class Register extends Component {
                     <label htmlFor="floatingPassword">Phonenumber</label>
                 </div>
 
-                <div className="form-check">
-                    <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault"
-                           onChange={e => this.authentication = e.target.checked}/>
-                    <label className="form-check-label" htmlFor="flexCheckDefault"><b>Two-factor authentication</b></label>
-                </div>
+                {/*<div className="form-check">*/}
+                {/*    <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault"*/}
+                {/*           onChange={e => this.authentication = e.target.checked}/>*/}
+                {/*    <label className="form-check-label" htmlFor="flexCheckDefault"><b>Two-factor authentication</b></label>*/}
+                {/*</div>*/}
 
                 <button className="w-100 btn btn-lg btn-primary" type="submit">Submit</button>
+
             </form>
+            </main>
         )
     }
 }
