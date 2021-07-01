@@ -1,1 +1,0 @@
-import {Controller, Get} from '@'
