@@ -6,6 +6,10 @@
     padding-bottom: 40px;
 }
 
+.register_title {
+    color: white;
+}
+
 form {
     text-align: center;
 }

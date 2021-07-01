@@ -48,7 +48,7 @@ const UpdateUser = () => {
         <main className="Register_component">
             <form onSubmit={submit}>
                 <img className="mb-4" src={logo} alt="logo" width="72" height="57"/>
-                <h1 className="h3 mb-3 fw-normal">Update your profile here</h1>
+                <h1 className="h3 mb-3 fw-normal register_title">Update your profile here</h1>
 
                 <div className="form-floating">
                     <input required className="form-control" id="floatingInput" placeholder="name@example.com"

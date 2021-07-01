@@ -1,7 +1,6 @@
 import { IsNotEmpty } from "class-validator";
 
 export class ChatMessageDto {
-  @IsNotEmpty()
   messageID: number;
 
   @IsNotEmpty()
