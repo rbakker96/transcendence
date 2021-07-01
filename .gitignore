@@ -3,3 +3,5 @@ React/node_modules
 .idea
 
 Nestjs/node_modules
+
+Nestjs/dist
