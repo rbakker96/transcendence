@@ -1,4 +1,4 @@
-import {Controller, Get, Request} from '@nestjs/common';
+import {Controller, Get} from '@nestjs/common';
 import {UserService} from "./user.service";
 import {User} from "./models/user.entity";
 
@@ -12,4 +12,10 @@ export class UserController {
         return this.userService.all();
     }
 
+  @Get("findName")
+  async findUserName(@Query() query): Promise<User> {
+    console.log(query);
+
+    return await this.userService.findUserName(query);
+  }
 }

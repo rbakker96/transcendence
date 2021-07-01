@@ -3,7 +3,6 @@ import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 
 import './stylesheets/Register.css'
-import logo from "./img/42_logo.svg";
 
 class Register extends Component {
     username = '';
@@ -35,7 +34,7 @@ class Register extends Component {
         return (
             <main className="Register_component">
             <form onSubmit={this.submit}>
-                <img className="mb-4" src={logo} alt="logo" width="72" height="57"/>
+                <img className="mb-4" src={"./img/42_logo.svg"} alt="./img/42_logo.svg" width="72" height="57"/>
                 <h1 className="h3 mb-3 fw-normal">Please register</h1>
 
                 <div className="form-floating">

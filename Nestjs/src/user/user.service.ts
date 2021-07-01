@@ -22,4 +22,9 @@ export class UserService {
     async update(id: number, data): Promise<any> {
         return this.userRepository.update(id, data);
     }
+
+    async findUserName(data: any): Promise<User> {
+        console.log(data.userID);
+        return await this.userRepository.findOne({ id: data.userID });
+    }
 }
