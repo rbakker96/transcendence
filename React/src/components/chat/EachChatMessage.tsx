@@ -16,7 +16,6 @@ type EachChatMessageProps = {
 };
 
 function EachChatMessage(props: EachChatMessageProps) {
-  console.log("Entered EachChatMessage");
 
   const content = props.message.messageContent;
   const datetime = props.message.messageTimestamp;
@@ -32,7 +31,7 @@ function EachChatMessage(props: EachChatMessageProps) {
     }
       getUser();
     }
-    , [props.message.senderID]);
+    , [props, setUserName, setAvatar]);
 
   return (
     <div>

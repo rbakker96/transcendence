@@ -4,16 +4,6 @@ import API from "../../API/API";
 
 type ChatChannelMessagesProps = {
   activeChannelId: number;
-  allChatMessages: {
-    messageId: number;
-    userId: number;
-    userName: string;
-    userAvatar: string;
-    messageTimeStamp: string;
-    messageContent: string;
-    channelId: number;
-    channelName: string;
-  }[];
 };
 
 type ChatMessageType = {
@@ -25,17 +15,17 @@ type ChatMessageType = {
 }
 
 function ChatChannelMessages(props: ChatChannelMessagesProps) {
-  console.log("Entered ChatChannelMessages");
 
   const [allChatMessages, setAllChatMessages] = useState([]);
 
   useEffect(() => {
-    (async () => {
+    const getChatMessages = async () => {
       const {data} = await API.ChatMessage.getAllChatMessages();
       console.log(data);
       setAllChatMessages(data);
-    })();
-  }, []);
+    }
+    getChatMessages();
+  }, [props, setAllChatMessages]);
 
   return (
     <div>
