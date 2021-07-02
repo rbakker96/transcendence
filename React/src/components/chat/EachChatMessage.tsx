@@ -16,7 +16,6 @@ type EachChatMessageProps = {
 };
 
 function EachChatMessage(props: EachChatMessageProps) {
-
   const content = props.message.messageContent;
   const datetime = props.message.messageTimestamp;
 
@@ -25,13 +24,12 @@ function EachChatMessage(props: EachChatMessageProps) {
 
   useEffect(() => {
     const getUser = async () => {
-      const {data} = await API.User.findName(props.message.senderID);
+      const { data } = await API.User.findName(props.message.senderID);
       setUserName(data.username);
       setAvatar(data.avatar);
-    }
-      getUser();
-    }
-    , [props, setUserName, setAvatar]);
+    };
+    getUser();
+  }, [props, setUserName, setAvatar]);
 
   return (
     <div>
