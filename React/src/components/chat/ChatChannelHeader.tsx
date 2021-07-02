@@ -20,7 +20,7 @@ function ChatChannelHeader(props: ChatChannelHeaderProps) {
   if (!props.activeChannelID)
     return (
       <div>
-        <Divider orientation={"center"}>
+        <Divider orientation={"center"} style={{ color: "#5B8FF9" }}>
           Select a channel on the left to view messages
         </Divider>
       </div>
@@ -28,7 +28,9 @@ function ChatChannelHeader(props: ChatChannelHeaderProps) {
   else
     return (
       <div>
-        <Divider orientation={"center"}>{ChannelName}</Divider>
+        <Divider orientation={"center"} style={{ color: "#5B8FF9" }}>
+          {ChannelName}
+        </Divider>
       </div>
     );
 }

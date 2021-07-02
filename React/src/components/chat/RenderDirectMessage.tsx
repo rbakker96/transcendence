@@ -28,7 +28,9 @@ function RenderDirectMessage(props: RenderDirectMessageType) {
 
   return (
     <div>
-      <Divider orientation={"left"}>Direct Messages</Divider>
+      <Divider orientation={"left"} style={{ color: "#5B8FF9" }}>
+        Direct Messages
+      </Divider>
       {DirectMessage.map((item: any) => (
         <ul key={item.Id} onClick={() => setActiveChannelId(item.Id)}>
           {item.ChannelName}
