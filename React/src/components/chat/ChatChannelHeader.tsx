@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import API from "../../API/API";
+import { Divider } from "antd";
 
 type ChatChannelHeaderProps = {
   activeChannelID: number;
@@ -17,9 +18,19 @@ function ChatChannelHeader(props: ChatChannelHeaderProps) {
   }, [props, setChannelName]);
 
   if (!props.activeChannelID)
-    return (<div>Select a channel on the left to view the conversations</div>);
+    return (
+      <div>
+        <Divider orientation={"center"}>
+          Select a channel on the left to view messages
+        </Divider>
+      </div>
+    );
   else
-    return <div>Current channel: {ChannelName}</div>;
+    return (
+      <div>
+        <Divider orientation={"center"}>{ChannelName}</Divider>
+      </div>
+    );
 }
 
 export default ChatChannelHeader;
