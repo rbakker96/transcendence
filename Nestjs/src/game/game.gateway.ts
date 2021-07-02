@@ -13,12 +13,14 @@ import { Server } from 'ws';
 // NEED TO KEEP TRACK OF THE GAME STATE ON THE BACKEND AS WELL TO MAKE SURE THAT NEW VIEWERS WILL SEE THE LIVE VERSION
 
 type gameState = {
-	leftPlayerPosition: number,
-	rightPlayerPosition: number,
-	ballX: number,
-	ballY: number,
-	velocityX: number,
+	leftPlayerPosition: number
+	rightPlayerPosition: number
+	ballX: number
+	ballY: number
+	velocityX: number
 	velocityY: number
+	leftPlayerScore: number
+	rightPlayerScore: number
 }
 
 @WebSocketGateway()
@@ -31,7 +33,9 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		ballX: 400,
 		ballY: 300,
 		velocityX: 4,
-		velocityY: 4
+		velocityY: 4,
+		leftPlayerScore: 0,
+		rightPlayerScore: 0
 	}
 
 	handleConnection(client: any, ...args: any[]): any {
@@ -48,7 +52,9 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 				ballX: 400,
 				ballY: 300,
 				velocityX: 4,
-				velocityY: 4
+				velocityY: 4,
+				leftPlayerScore: 0,
+				rightPlayerScore: 0
 			}
 		}
 		console.log('client disconnected');
@@ -88,7 +94,9 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 																				this.gameState.ballX,
 																				this.gameState.ballY,
 																				this.gameState.velocityX,
-																				this.gameState.velocityY] });
+																				this.gameState.velocityY,
+																				this.gameState.leftPlayerScore,
+																				this.gameState.rightPlayerScore] });
 		this.server.clients.forEach(c => {
 			c.send(response);
 		});
@@ -101,6 +109,24 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		this.gameState.velocityX = data[2];
 		this.gameState.velocityY = data[3];
 		const response = JSON.stringify({ event: 'updateBall', data: data });
+		this.server.clients.forEach(c => {
+			c.send(response);
+		});
+	}
+
+	@SubscribeMessage("leftPlayerScored")
+	leftPlayerScored(client: any, data: any): void {
+		this.gameState.leftPlayerScore = data;
+		const response = JSON.stringify({ event: 'leftPlayerScored', data: data });
+		this.server.clients.forEach(c => {
+			c.send(response);
+		});
+	}
+
+	@SubscribeMessage("rightPlayerScored")
+	rightPlayerScored(client: any, data: any): void {
+		this.gameState.rightPlayerScore = data;
+		const response = JSON.stringify({ event: 'rightPlayerScored', data: data });
 		this.server.clients.forEach(c => {
 			c.send(response);
 		});
