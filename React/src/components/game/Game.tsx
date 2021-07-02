@@ -106,7 +106,13 @@ class Game extends Component<GameState> {
 			this.setState({rightPlayerPosition: position});
 		}
 
-		const activateBall = () => {
+		const activateBall = (data: any) => {
+			this.setState({leftPlayerPosition: data[0]});
+			this.setState({rightPlayerPosition: data[1]});
+			this.setState({ballX: data[2]});
+			this.setState({ballY: data[3]});
+			this.setState({velocityX: data[4]});
+			this.setState({velocityY: data[5]});
 			setInterval(this.ballMovement, 20);
 		}
 
@@ -140,7 +146,7 @@ class Game extends Component<GameState> {
 			} else if (object.event === 'updateRightPlayer') {
 				updateRightPlayer(object.data);
 			} else if (object.event === 'activateBall') {
-				activateBall();
+				activateBall(object.data);
 			} else if (object.event === 'updateBall') {
 				updateBall(object.data);
 			}

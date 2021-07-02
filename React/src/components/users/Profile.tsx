@@ -28,7 +28,7 @@ const Profile = () => {
                 <div className="col-md-12">
                     <div className="profile-sidebar">
                         <div className="profile-userpic">
-                            <img src={`uploads/${user?.avatar}`} className="img-responsive" alt=""/>
+                            <img src={`${user?.avatar}`} className="img-responsive" alt=""/>
                         </div>
 
                         <div className="profile-usertitle">

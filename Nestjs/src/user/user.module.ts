@@ -5,6 +5,7 @@ import {User} from "./user.entity";
 import { UserService } from './user.service';
 import {JwtModule} from "@nestjs/jwt";
 import {jwtConstants} from "./auth/models/constants";
+import { UploadController } from './upload/upload.controller';
 
 @Module({
     imports: [
@@ -13,7 +14,7 @@ import {jwtConstants} from "./auth/models/constants";
             secret: jwtConstants.secret,
             signOptions: { expiresIn: '1d' },
         }),],
-    controllers: [UserController],
+    controllers: [UserController, UploadController],
     providers: [UserService],
     exports: [UserService],
 })
