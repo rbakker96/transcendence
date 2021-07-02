@@ -41,6 +41,16 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 	handleDisconnect(client: any): any {
 		this.numberOfPlayers--;
+		if (this.numberOfPlayers === 2) {
+			this.gameState = {
+				leftPlayerPosition: 42,
+				rightPlayerPosition: 42,
+				ballX: 400,
+				ballY: 300,
+				velocityX: 4,
+				velocityY: 4
+			}
+		}
 		console.log('client disconnected');
 	}
 

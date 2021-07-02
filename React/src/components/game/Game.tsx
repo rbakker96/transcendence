@@ -6,11 +6,23 @@ import './stylesheets/game.css';
 
 const GAME_WIDTH = 800;
 const GAME_HEIGHT = 600;
-const BALL_RADIUS = 5;
+const PLAYER_WIDTH = 10;
+const PLAYER_HEIGHT = 100;
+const BALL_WIDTH = 10;
+const BALL_HEIGHT = 10;
+
+type coordinates = {
+	top: number
+	bottom: number
+	left: number
+	right: number
+}
 
 type GameState = {
-	leftPlayerPosition: number
-	rightPlayerPosition: number
+	leftPlayerX: number
+	leftPlayerY: number
+	rightPlayerX: number
+	rightPlayerY: number
 	ballX: number
 	ballY: number
 	velocityX: number
@@ -24,8 +36,10 @@ type GameState = {
 class Game extends Component<GameState> {
 	//VARIABLES NEED TO BE INITIALIZED WITH THE CURRENT VALUE OF THE GAME, NOT ALWAYS THE DEFAULT
 	state: GameState = {
-		leftPlayerPosition: 42,
-		rightPlayerPosition: 42,
+		leftPlayerX: 10,
+		leftPlayerY: GAME_HEIGHT / 2 - (PLAYER_HEIGHT / 2),
+		rightPlayerX: GAME_WIDTH - 20,
+		rightPlayerY: GAME_HEIGHT / 2 - (PLAYER_HEIGHT / 2),
 		ballX: GAME_WIDTH / 2,
 		ballY: GAME_HEIGHT / 2,
 		velocityX: 4,
@@ -43,20 +57,18 @@ class Game extends Component<GameState> {
 		this.ballMovement = this.ballMovement.bind(this);
 	}
 
-	sendLeftPlayerPositionToServer(position: number) {
-		this.state.websocket.send(JSON.stringify({event: 'updateLeftPlayer', data: position}));
+	sendLeftPlayerPositionToServer(playerY: number) {
+		this.state.websocket.send(JSON.stringify({event: 'updateLeftPlayer', data: playerY}));
 	}
 
 	onLeftPlayerButtonPress(event: any) {
-		const upperBoundary = 0
-		const lowerBoundary = 84
 		const wKeyCode = 87
 		const sKeyCode = 83
 
-		if (event.keyCode === wKeyCode && this.state.leftPlayerPosition > upperBoundary) {
-			this.sendLeftPlayerPositionToServer(this.state.leftPlayerPosition - 2);
-		} else if (event.keyCode === sKeyCode && this.state.leftPlayerPosition < lowerBoundary) {
-			this.sendLeftPlayerPositionToServer(this.state.leftPlayerPosition + 2);
+		if (event.keyCode === wKeyCode && this.state.leftPlayerY > 0) {
+			this.sendLeftPlayerPositionToServer(this.state.leftPlayerY - 10);
+		} else if (event.keyCode === sKeyCode && this.state.leftPlayerY + PLAYER_HEIGHT < GAME_HEIGHT) {
+			this.sendLeftPlayerPositionToServer(this.state.leftPlayerY + 10);
 		}
 	}
 
@@ -65,15 +77,13 @@ class Game extends Component<GameState> {
 	}
 
 	onRightPlayerButtonPress(event: any) {
-		const upperBoundary = 0
-		const lowerBoundary = 84
 		const wKeyCode = 87
 		const sKeyCode = 83
 
-		if (event.keyCode === wKeyCode && this.state.rightPlayerPosition > upperBoundary) {
-			this.sendRightPlayerPositionToServer(this.state.rightPlayerPosition - 2);
-		} else if (event.keyCode === sKeyCode && this.state.rightPlayerPosition < lowerBoundary) {
-			this.sendRightPlayerPositionToServer(this.state.rightPlayerPosition + 2);
+		if (event.keyCode === wKeyCode && this.state.rightPlayerY > 0) {
+			this.sendRightPlayerPositionToServer(this.state.rightPlayerY - 10);
+		} else if (event.keyCode === sKeyCode && this.state.rightPlayerY + PLAYER_HEIGHT < GAME_HEIGHT) {
+			this.sendRightPlayerPositionToServer(this.state.rightPlayerY + 10);
 		}
 	}
 
@@ -99,11 +109,11 @@ class Game extends Component<GameState> {
 		// implement error
 
 		const updateLeftPlayer = (position: number) => {
-			this.setState({leftPlayerPosition: position});
+			this.setState({leftPlayerY: position});
 		}
 
 		const updateRightPlayer = (position: number) => {
-			this.setState({rightPlayerPosition: position});
+			this.setState({rightPlayerY: position});
 		}
 
 		const activateBall = (data: any) => {
@@ -154,25 +164,74 @@ class Game extends Component<GameState> {
 	}
 
 	detectYBorderCollision(): boolean {
-		return ((this.state.ballY + BALL_RADIUS > GAME_HEIGHT) || (this.state.ballY - BALL_RADIUS < 0));
-
+		// returns true if it bounces against to top or bottom of the playing field
+		return ((this.state.ballY + BALL_HEIGHT > GAME_HEIGHT) || (this.state.ballY < 0));
 	}
 
-	// NEEDS TO CHECK IF THE BALL HAS TOUCHED A PADDLE
-	detectPlayerCollision(): boolean {
-		return ((this.state.ballX + BALL_RADIUS > GAME_WIDTH) || (this.state.ballX - BALL_RADIUS < 0));
+	calcLeftPlayer(): coordinates {
+		let newPlayer: coordinates = {
+			top: this.state.leftPlayerY,
+			bottom: this.state.leftPlayerY + PLAYER_HEIGHT,
+			left: this.state.leftPlayerX,
+			right: this.state.leftPlayerX + PLAYER_WIDTH
+		}
+		return (newPlayer);
 	}
 
-	// NOW PASSING VELOCITY X & Y (DIRECTION) BACK TO SERVER, SO IT CAN BE UPDATED IN ALL CLIENTS
+	calcRightPLayer(): coordinates {
+
+		let newPlayer: coordinates = {
+			top: this.state.rightPlayerY,
+			bottom: this.state.rightPlayerY + PLAYER_HEIGHT,
+			left: this.state.rightPlayerX,
+			right: this.state.rightPlayerX + PLAYER_WIDTH
+		}
+		return (newPlayer);
+	}
+
+	calcBall(): coordinates {
+		let newBall: coordinates = {
+			top: this.state.ballY,
+			bottom: this.state.ballY + BALL_HEIGHT,
+			left: this.state.ballX,
+			right: this.state.ballX + BALL_WIDTH
+		}
+		return (newBall);
+	}
+
+	detectLeftPlayerCollision(): boolean {
+		const player: coordinates = this.calcLeftPlayer();
+		const ball: coordinates = this.calcBall();
+
+		return (ball.right > player.left && ball.top < player.bottom && ball.left < player.right && ball.bottom > player.top);
+	}
+
+	detectRightPlayerCollision(): boolean {
+		const player: coordinates = this.calcRightPLayer();
+		const ball: coordinates = this.calcBall();
+
+		return (ball.right > player.left && ball.top < player.bottom && ball.left < player.right && ball.bottom > player.top);
+	}
+
+	// NEEDS TO RESET THE BALL AND UPDATE THE SCORE
+	detectScore(): boolean {
+		// returns true if it bounces against the backboard
+		return ((this.state.ballX + BALL_WIDTH > GAME_WIDTH) || (this.state.ballX < 0));
+	}
+
 	ballMovement(): void {
-		let speed = 5;
 		let velocityX = this.state.velocityX;
 		let velocityY = this.state.velocityY;
 
 		if (this.detectYBorderCollision()) {
-			velocityY =-velocityY;
+			velocityY = -velocityY;
 		}
-		if (this.detectPlayerCollision()) {
+		if (this.detectLeftPlayerCollision()) {
+			velocityX = -velocityX;
+		} else if (this.detectRightPlayerCollision()) {
+			velocityX = -velocityX;
+		}
+		if (this.detectScore()) {
 			velocityX = -velocityX;
 		}
 		const newBallX = this.state.ballX + velocityX;
@@ -184,18 +243,26 @@ class Game extends Component<GameState> {
 		return (
 			<div className="game">
 				<LeftPlayer
-					playerPos = { this.state.leftPlayerPosition }
+					playerX = { this.state.leftPlayerX }
+					playerY = { this.state.leftPlayerY }
+					playerWidth = { PLAYER_WIDTH }
+					playerHeight = { PLAYER_HEIGHT }
 					gameWidth = { this.state.gameWidth }
 					gameHeight = { this.state.gameHeight }
 				/>
 				<RightPlayer
-					playerPos = { this.state.rightPlayerPosition }
+					playerX = { this.state.rightPlayerX }
+					playerY = { this.state.rightPlayerY }
+					playerWidth = { PLAYER_WIDTH }
+					playerHeight = { PLAYER_HEIGHT }
 					gameWidth = { this.state.gameWidth }
 					gameHeight = { this.state.gameHeight }
 				/>
 				<Ball
 					xPosition = { this.state.ballX }
-					yPosition= { this.state.ballY }
+					yPosition = { this.state.ballY }
+					width = { BALL_WIDTH }
+					height = { BALL_HEIGHT }
 				/>
 			</div>
 		);
