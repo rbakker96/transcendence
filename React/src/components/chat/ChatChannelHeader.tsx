@@ -6,7 +6,7 @@ type ChatChannelHeaderProps = {
 };
 
 function ChatChannelHeader(props: ChatChannelHeaderProps) {
-  const [ChannelName, setChannelName] = useState("default");
+  const [ChannelName, setChannelName] = useState("");
 
   useEffect(() => {
     const getChannelName = async () => {
@@ -15,7 +15,11 @@ function ChatChannelHeader(props: ChatChannelHeaderProps) {
     };
     getChannelName();
   }, [props, setChannelName]);
-  return <div>Current channel: {ChannelName}</div>;
+
+  if (!props.activeChannelID)
+    return (<div>Select a channel on the left to view the conversations</div>);
+  else
+    return <div>Current channel: {ChannelName}</div>;
 }
 
 export default ChatChannelHeader;
