@@ -26,12 +26,12 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	@WebSocketServer() server: Server;
 	numberOfPlayers: number = 0;
 	gameState: gameState = {
-		leftPlayerPosition: 0,
-		rightPlayerPosition: 0,
-		ballX: 0,
-		ballY: 0,
-		velocityX: 0,
-		velocityY: 0
+		leftPlayerPosition: 42,
+		rightPlayerPosition: 42,
+		ballX: 400,
+		ballY: 300,
+		velocityX: 4,
+		velocityY: 4
 	}
 
 	handleConnection(client: any, ...args: any[]): any {
@@ -56,7 +56,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	@SubscribeMessage("updateLeftPlayer")
 	updateLeftPlayer(client: any, data: any): void {
 		this.gameState.leftPlayerPosition = data;
-		console.log(this.gameState.leftPlayerPosition);
 		const response = JSON.stringify({ event: 'updateLeftPlayer', data: data });
 		this.server.clients.forEach(c => {
 			c.send(response);
@@ -66,7 +65,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	@SubscribeMessage("updateRightPlayer")
 	updateRightPlayer(client: any, data: any): void {
 		this.gameState.rightPlayerPosition = data;
-		console.log(this.gameState.rightPlayerPosition);
 		const response = JSON.stringify({ event: 'updateRightPlayer', data: data });
 		this.server.clients.forEach(c => {
 			c.send(response);
@@ -75,7 +73,12 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 	@SubscribeMessage("activateBall")
 	activateBall(client: any, data: any): void {
-		const response = JSON.stringify({ event: 'activateBall', data: data });
+		const response = JSON.stringify({ event: 'activateBall', data: [this.gameState.leftPlayerPosition,
+																				this.gameState.rightPlayerPosition,
+																				this.gameState.ballX,
+																				this.gameState.ballY,
+																				this.gameState.velocityX,
+																				this.gameState.velocityY] });
 		this.server.clients.forEach(c => {
 			c.send(response);
 		});
@@ -83,6 +86,10 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 	@SubscribeMessage("updateBall")
 	updateBall(client: any, data: any): void {
+		this.gameState.ballX = data[0];
+		this.gameState.ballY = data[1];
+		this.gameState.velocityX = data[2];
+		this.gameState.velocityY = data[3];
 		const response = JSON.stringify({ event: 'updateBall', data: data });
 		this.server.clients.forEach(c => {
 			c.send(response);
