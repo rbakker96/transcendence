@@ -10,8 +10,8 @@ function ChatContent(props: ChatContentProps) {
 
   return (
     <div>
-      <ChatChannelHeader channelId={active_channel_id} />
-      <ChatChannelMessages activeChannelId={active_channel_id} />
+      <ChatChannelHeader activeChannelID={active_channel_id} />
+      <ChatChannelMessages activeChannelID={active_channel_id} />
     </div>
   );
 }

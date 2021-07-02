@@ -1,6 +1,5 @@
 import { Comment } from "antd";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import API from "../../API/API";
 
 type ChatMessageType = {

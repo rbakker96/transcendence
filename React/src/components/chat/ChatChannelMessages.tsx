@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import API from "../../API/API";
 
 type ChatChannelMessagesProps = {
-  activeChannelId: number;
+  activeChannelID: number;
 };
 
 type ChatMessageType = {
@@ -31,7 +31,7 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
       {allChatMessages
         .filter(
           (message: ChatMessageType) =>
-            message.channelID === props.activeChannelId
+            message.channelID === props.activeChannelID
         )
         .map((message: ChatMessageType) => (
           <EachChatMessage key={message.messageID} message={message} />
