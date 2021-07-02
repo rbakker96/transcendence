@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import LeftPlayer from "./LeftPlayer";
 import RightPlayer from "./RightPlayer";
 import Ball from "./Ball";
+import Scoreboard from "./Scoreboard";
 import './stylesheets/game.css';
 
 const GAME_WIDTH = 800;
@@ -10,6 +11,8 @@ const PLAYER_WIDTH = 10;
 const PLAYER_HEIGHT = 100;
 const BALL_WIDTH = 10;
 const BALL_HEIGHT = 10;
+const LEFT_PLAYER_SCORED = 1;
+const RIGHT_PLAYER_SCORED = 2;
 
 type coordinates = {
 	top: number
@@ -28,8 +31,8 @@ type GameState = {
 	velocityX: number
 	velocityY: number
 	role: string
-	gameWidth: number
-	gameHeight: number
+	leftPlayerScore: number
+	rightPlayerScore: number
 	websocket: WebSocket
 }
 
@@ -45,8 +48,8 @@ class Game extends Component<GameState> {
 		velocityX: 4,
 		velocityY: 4,
 		role: "viewer",
-		gameWidth: GAME_WIDTH,
-		gameHeight: GAME_HEIGHT,
+		leftPlayerScore: 0,
+		rightPlayerScore: 0,
 		websocket: new WebSocket('ws://localhost:8000')
 	}
 
@@ -123,6 +126,8 @@ class Game extends Component<GameState> {
 			this.setState({ballY: data[3]});
 			this.setState({velocityX: data[4]});
 			this.setState({velocityY: data[5]});
+			this.setState({leftPlayerScore: data[6]});
+			this.setState({rightPlayerScore: data[7]})
 			setInterval(this.ballMovement, 20);
 		}
 
@@ -146,6 +151,14 @@ class Game extends Component<GameState> {
 			}
 		}
 
+		const updateLeftPlayerScore = (score: number) => {
+			this.setState({leftPlayerScore: score});
+		}
+
+		const updateRightPlayerScore = (score: number) => {
+			this.setState({rightPlayerScore: score});
+		}
+
 		this.state.websocket.addEventListener('message', function (event) {
 			// console.log('Message from server ', event.data);
 			const object = JSON.parse(event.data);
@@ -159,11 +172,15 @@ class Game extends Component<GameState> {
 				activateBall(object.data);
 			} else if (object.event === 'updateBall') {
 				updateBall(object.data);
+			} else if (object.event === 'leftPlayerScored') {
+				updateLeftPlayerScore(object.data);
+			} else if (object.event === 'rightPlayerScored') {
+				updateRightPlayerScore(object.data);
 			}
 		});
 	}
 
-	detectYBorderCollision(): boolean {
+	bouncedAgainstTopOrBottom(): boolean {
 		// returns true if it bounces against to top or bottom of the playing field
 		return ((this.state.ballY + BALL_HEIGHT > GAME_HEIGHT) || (this.state.ballY < 0));
 	}
@@ -199,14 +216,14 @@ class Game extends Component<GameState> {
 		return (newBall);
 	}
 
-	detectLeftPlayerCollision(): boolean {
+	bouncedAgainstLeftPlayer(): boolean {
 		const player: coordinates = this.calcLeftPlayer();
 		const ball: coordinates = this.calcBall();
 
 		return (ball.right > player.left && ball.top < player.bottom && ball.left < player.right && ball.bottom > player.top);
 	}
 
-	detectRightPlayerCollision(): boolean {
+	bouncedAgainstRightPlayer(): boolean {
 		const player: coordinates = this.calcRightPLayer();
 		const ball: coordinates = this.calcBall();
 
@@ -214,25 +231,50 @@ class Game extends Component<GameState> {
 	}
 
 	// NEEDS TO RESET THE BALL AND UPDATE THE SCORE
-	detectScore(): boolean {
-		// returns true if it bounces against the backboard
-		return ((this.state.ballX + BALL_WIDTH > GAME_WIDTH) || (this.state.ballX < 0));
+	hasScored(): number {
+		if (this.state.ballX + BALL_WIDTH > GAME_WIDTH) {
+			return (LEFT_PLAYER_SCORED);
+		} else if (this.state.ballX < 0) {
+			return (RIGHT_PLAYER_SCORED);
+		}
+		return (0);
+	}
+
+	resetBall(playerThatScored: number): void {
+		let velocityX: number = 0;
+		let velocityY: number = 0;
+
+		if (playerThatScored === LEFT_PLAYER_SCORED) {
+			velocityX = 4;
+			velocityY = 4;
+		} else if (playerThatScored === RIGHT_PLAYER_SCORED) {
+			velocityX = -4;
+			velocityY = -4;
+		}
+		this.state.websocket.send(JSON.stringify({ event: 'updateBall', data: [GAME_WIDTH / 2, GAME_HEIGHT / 2, velocityX, velocityY] }));
 	}
 
 	ballMovement(): void {
 		let velocityX = this.state.velocityX;
 		let velocityY = this.state.velocityY;
 
-		if (this.detectYBorderCollision()) {
+		if (this.bouncedAgainstTopOrBottom()) {
 			velocityY = -velocityY;
 		}
-		if (this.detectLeftPlayerCollision()) {
+		if (this.bouncedAgainstLeftPlayer()) {
 			velocityX = -velocityX;
-		} else if (this.detectRightPlayerCollision()) {
+		} else if (this.bouncedAgainstRightPlayer()) {
 			velocityX = -velocityX;
 		}
-		if (this.detectScore()) {
-			velocityX = -velocityX;
+		if (this.hasScored() === LEFT_PLAYER_SCORED) {
+			console.log("LEFT PLAYER SCORED");
+			this.state.websocket.send(JSON.stringify({ event: 'leftPlayerScored', data: this.state.leftPlayerScore + 1 }));
+			this.resetBall(LEFT_PLAYER_SCORED);
+			return
+		} else if (this.hasScored() === RIGHT_PLAYER_SCORED) {
+			this.state.websocket.send(JSON.stringify({ event: 'rightPlayerScored', data: this.state.rightPlayerScore + 1 }))
+			this.resetBall(RIGHT_PLAYER_SCORED);
+			return
 		}
 		const newBallX = this.state.ballX + velocityX;
 		const newBallY = this.state.ballY + velocityY;
@@ -247,22 +289,26 @@ class Game extends Component<GameState> {
 					playerY = { this.state.leftPlayerY }
 					playerWidth = { PLAYER_WIDTH }
 					playerHeight = { PLAYER_HEIGHT }
-					gameWidth = { this.state.gameWidth }
-					gameHeight = { this.state.gameHeight }
+					gameWidth = { GAME_WIDTH }
+					gameHeight = { GAME_HEIGHT }
 				/>
 				<RightPlayer
 					playerX = { this.state.rightPlayerX }
 					playerY = { this.state.rightPlayerY }
 					playerWidth = { PLAYER_WIDTH }
 					playerHeight = { PLAYER_HEIGHT }
-					gameWidth = { this.state.gameWidth }
-					gameHeight = { this.state.gameHeight }
+					gameWidth = { GAME_WIDTH }
+					gameHeight = { GAME_HEIGHT }
 				/>
 				<Ball
 					xPosition = { this.state.ballX }
 					yPosition = { this.state.ballY }
 					width = { BALL_WIDTH }
 					height = { BALL_HEIGHT }
+				/>
+				<Scoreboard
+					leftPlayerScore = { this.state.leftPlayerScore }
+					rightPlayerScore = { this.state.rightPlayerScore }
 				/>
 			</div>
 		);
