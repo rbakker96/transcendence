@@ -7,6 +7,8 @@ import { ConfigModule } from "@nestjs/config";
 import { AuthModule } from "./user/auth/auth.module";
 import { ChatMessageModule } from "./chat/message/chatMessage.module";
 import {ChannelModule} from "./chat/channel/channel.module";
+import {ChannelUsers} from "./chat/channelUsers/channelUsers.entity";
+import {ChannelUsersModule} from "./chat/channelUsers/channelUsers.module";
 
 @Module({
   imports: [
@@ -20,7 +22,8 @@ import {ChannelModule} from "./chat/channel/channel.module";
     UserModule,
     AuthModule,
     ChatMessageModule,
-    ChannelModule
+    ChannelModule,
+    ChannelUsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,4 +1,5 @@
-import {Column, Entity, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {ChannelUsers} from "../channelUsers/channelUsers.entity";
 
 @Entity('channels')
 
@@ -9,8 +10,8 @@ export class Channel {
   @Column()
   Admin: string; // becomes channel admin
 
-  @Column({default: "doei"})
-  Users: string; // becomes connection to channelusers
+  @OneToMany(() => ChannelUsers, channelUsers => channelUsers.channel)
+  channelUsers: ChannelUsers[];
 
   @Column({default: false})
   IsPrivate: boolean;

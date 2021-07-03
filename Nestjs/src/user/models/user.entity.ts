@@ -1,6 +1,7 @@
 //The most crucial concept to grasp when using TypeORM is the entity. It is a class that maps to a database table.
 
-import {Column, Entity, PrimaryColumn} from "typeorm";
+import {Column, Entity, ManyToOne, PrimaryColumn} from "typeorm";
+import {ChannelUsers} from "../../chat/channelUsers/channelUsers.entity";
 
 @Entity('users')
 export class User {
@@ -22,5 +23,9 @@ export class User {
 
     @Column()
     authentication: boolean;
+
+    @ManyToOne(() => ChannelUsers, channelUsers => channelUsers.user)
+    ChannelUsers : ChannelUsers[];
+
 
 }
