@@ -1,6 +1,6 @@
 import React, {SyntheticEvent, useEffect, useState} from "react";
 import UploadImg from "./UploadImg";
-import { Redirect } from 'react-router-dom';
+import {Link, Redirect} from 'react-router-dom';
 import axios from 'axios';
 
 import logo from "./img/42_logo.svg";
@@ -79,13 +79,14 @@ const UpdateUser = () => {
                     <label htmlFor="floatingPassword">Avatar</label>
                 </div>
 
-                <div className="form-check">
-                    <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault"
-                           defaultChecked={authentication}
-                           onChange={e => setAuthentication(e.target.checked)}/>
-                    <label className="form-check-label" htmlFor="flexCheckDefault"><b>Two-factor authentication</b></label>
-                </div>
+                {/*<div className="form-check">*/}
+                {/*    <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault"*/}
+                {/*           defaultChecked={authentication}*/}
+                {/*           onChange={e => setAuthentication(e.target.checked)}/>*/}
+                {/*    <label className="form-check-label" htmlFor="flexCheckDefault"><b>Two-factor authentication</b></label>*/}
+                {/*</div>*/}
 
+                <Link to="/enableTwoFactor" type="button" className="btn btn btn-primary">Enable Two Factor Authentication</Link>
                 <button className="w-100 btn btn-lg btn-primary" type="submit">Update</button>
 
             </form>

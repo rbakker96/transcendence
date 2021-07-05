@@ -25,6 +25,14 @@ export class UserService {
     return this.userRepository.update(id, data);
   }
 
+  async saveTwoFactorSecret(secret: string, clientID: number): Promise<any> {
+    return this.userRepository.update(clientID, {twoFactorSecret: secret});
+  }
+
+  async enableTwoFactor(clientID: number): Promise<any> {
+    return this.userRepository.update(clientID, {authentication: true});
+  }
+
   async findUserName(data: any): Promise<User> {
     return await this.userRepository.findOne({ id: data.userID });
   }

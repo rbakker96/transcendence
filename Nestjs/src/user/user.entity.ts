@@ -23,4 +23,6 @@ export class User {
     @Column()
     authentication: boolean;
 
+    @Column({ nullable: true })
+    twoFactorSecret?: string;
 }
