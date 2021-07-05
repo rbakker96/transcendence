@@ -32,7 +32,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		rightPlayerPosition: 42,
 		ballX: 400,
 		ballY: 300,
-		velocityX: 4,
+		velocityX: 8,
 		velocityY: 4,
 		leftPlayerScore: 0,
 		rightPlayerScore: 0
@@ -51,7 +51,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 				rightPlayerPosition: 42,
 				ballX: 400,
 				ballY: 300,
-				velocityX: 4,
+				velocityX: 8,
 				velocityY: 4,
 				leftPlayerScore: 0,
 				rightPlayerScore: 0

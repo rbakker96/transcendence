@@ -8,7 +8,7 @@ import './stylesheets/game.css';
 const GAME_WIDTH = 800;
 const GAME_HEIGHT = 600;
 const PLAYER_WIDTH = 10;
-const PLAYER_HEIGHT = 100;
+const PLAYER_HEIGHT = 75;
 const BALL_WIDTH = 10;
 const BALL_HEIGHT = 10;
 const LEFT_PLAYER_SCORED = 1;
@@ -45,7 +45,7 @@ class Game extends Component<GameState> {
 		rightPlayerY: GAME_HEIGHT / 2 - (PLAYER_HEIGHT / 2),
 		ballX: GAME_WIDTH / 2,
 		ballY: GAME_HEIGHT / 2,
-		velocityX: 4,
+		velocityX: 8,
 		velocityY: 4,
 		role: "viewer",
 		leftPlayerScore: 0,
@@ -69,9 +69,9 @@ class Game extends Component<GameState> {
 		const sKeyCode = 83
 
 		if (event.keyCode === wKeyCode && this.state.leftPlayerY > 0) {
-			this.sendLeftPlayerPositionToServer(this.state.leftPlayerY - 10);
-		} else if (event.keyCode === sKeyCode && this.state.leftPlayerY + PLAYER_HEIGHT < GAME_HEIGHT) {
-			this.sendLeftPlayerPositionToServer(this.state.leftPlayerY + 10);
+			this.sendLeftPlayerPositionToServer(this.state.leftPlayerY - 8);
+		} else if (event.keyCode === sKeyCode && this.state.leftPlayerY + PLAYER_HEIGHT + 8 < GAME_HEIGHT) {
+			this.sendLeftPlayerPositionToServer(this.state.leftPlayerY + 8);
 		}
 	}
 
@@ -84,9 +84,9 @@ class Game extends Component<GameState> {
 		const sKeyCode = 83
 
 		if (event.keyCode === wKeyCode && this.state.rightPlayerY > 0) {
-			this.sendRightPlayerPositionToServer(this.state.rightPlayerY - 10);
-		} else if (event.keyCode === sKeyCode && this.state.rightPlayerY + PLAYER_HEIGHT < GAME_HEIGHT) {
-			this.sendRightPlayerPositionToServer(this.state.rightPlayerY + 10);
+			this.sendRightPlayerPositionToServer(this.state.rightPlayerY - 8);
+		} else if (event.keyCode === sKeyCode && this.state.rightPlayerY + PLAYER_HEIGHT + 8 < GAME_HEIGHT) {
+			this.sendRightPlayerPositionToServer(this.state.rightPlayerY + 8);
 		}
 	}
 
@@ -160,7 +160,6 @@ class Game extends Component<GameState> {
 		}
 
 		this.state.websocket.addEventListener('message', function (event) {
-			// console.log('Message from server ', event.data);
 			const object = JSON.parse(event.data);
 			if (object.event === 'newConnection') {
 				updateRoleStateVariable(object.data);
@@ -230,14 +229,20 @@ class Game extends Component<GameState> {
 		return (ball.right > player.left && ball.top < player.bottom && ball.left < player.right && ball.bottom > player.top);
 	}
 
-	// NEEDS TO RESET THE BALL AND UPDATE THE SCORE
 	hasScored(): number {
-		if (this.state.ballX + BALL_WIDTH > GAME_WIDTH) {
+		if (this.state.ballX + BALL_WIDTH >= GAME_WIDTH) {
 			return (LEFT_PLAYER_SCORED);
-		} else if (this.state.ballX < 0) {
+		} else if (this.state.ballX <= 0) {
 			return (RIGHT_PLAYER_SCORED);
 		}
 		return (0);
+	}
+
+	changeVelocityY(playerY: number) {
+		const collidePoint = (this.state.ballY - (playerY + PLAYER_HEIGHT / 2));
+		const normalizeCollidePoint = collidePoint / (PLAYER_HEIGHT / 2);
+		const angle = normalizeCollidePoint * Math.PI / 4;
+		return (8 * Math.sin(angle));
 	}
 
 	resetBall(playerThatScored: number): void {
@@ -262,19 +267,29 @@ class Game extends Component<GameState> {
 			velocityY = -velocityY;
 		}
 		if (this.bouncedAgainstLeftPlayer()) {
+			// increase speed after first bounce
+			console.log(velocityX);
+			if (velocityX == 4 || velocityX == -4) {
+				velocityX *= 2;
+			}
 			velocityX = -velocityX;
+			velocityY = this.changeVelocityY(this.state.leftPlayerY);
 		} else if (this.bouncedAgainstRightPlayer()) {
+			// increase speed after first bounce
+			if (velocityX == 4 || velocityX == -4) {
+				velocityX *= 2;
+			}
 			velocityX = -velocityX;
+			velocityY = this.changeVelocityY(this.state.rightPlayerY);
 		}
 		if (this.hasScored() === LEFT_PLAYER_SCORED) {
-			console.log("LEFT PLAYER SCORED");
 			this.state.websocket.send(JSON.stringify({ event: 'leftPlayerScored', data: this.state.leftPlayerScore + 1 }));
 			this.resetBall(LEFT_PLAYER_SCORED);
-			return
+			return ;
 		} else if (this.hasScored() === RIGHT_PLAYER_SCORED) {
 			this.state.websocket.send(JSON.stringify({ event: 'rightPlayerScored', data: this.state.rightPlayerScore + 1 }))
 			this.resetBall(RIGHT_PLAYER_SCORED);
-			return
+			return ;
 		}
 		const newBallX = this.state.ballX + velocityX;
 		const newBallY = this.state.ballY + velocityY;
