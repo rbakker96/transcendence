@@ -1,17 +1,19 @@
 import ChatChannelHeader from "./ChatChannelHeader";
 import ChatChannelMessages from "./ChatChannelMessages";
+import ChatInputBar from "./ChatInputBar";
 
 type ChatContentProps = {
-  activeChannelId: number;
+  activeChannelID: number;
 };
 
 function ChatContent(props: ChatContentProps) {
-  const active_channel_id = props.activeChannelId;
+  const active_channel_ID = props.activeChannelID;
 
   return (
     <div>
-      <ChatChannelHeader activeChannelID={active_channel_id} />
-      <ChatChannelMessages activeChannelID={active_channel_id} />
+      <ChatChannelHeader activeChannelID={active_channel_ID} />
+      <ChatChannelMessages activeChannelID={active_channel_ID} />
+      <ChatInputBar activeChannelID={active_channel_ID} />
     </div>
   );
 }
