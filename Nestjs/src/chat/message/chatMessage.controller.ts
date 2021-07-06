@@ -14,7 +14,6 @@ export class ChatMessageController {
 
   @Post("newMessage")
   async createChatMessage(@Body() message: ChatMessageDto) {
-    console.log(message);
     return await this.chatMessageService.createChatMessage(message);
   }
 }

@@ -2,7 +2,6 @@ import EachChatMessage from "./EachChatMessage";
 import { useEffect, useRef, useState } from "react";
 import API from "../../API/API";
 import ChatInputBar from "./ChatInputBar";
-import { message } from "antd";
 
 type ChatChannelMessagesProps = {
   activeChannelID: number;
@@ -39,7 +38,7 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
       setHistoricChatMessages(data);
     };
     getChatMessages();
-  }, []);
+  }, [props.activeChannelID]);
 
   useEffect(() => {
     ws.current = new WebSocket(URL);
@@ -58,7 +57,7 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
     return () => {
       ws.current.close();
     };
-  }, []);
+  }, [props.activeChannelID]);
 
   return (
     <div>
@@ -71,7 +70,7 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
           <EachChatMessage key={message.messageID} message={message} />
         ))}
       <ChatInputBar activeChannelID={props.activeChannelID} />
-      <p>hello {messages.join(" ")}</p>
+      <p>{messages.join(" ")}</p>
     </div>
   );
 }
