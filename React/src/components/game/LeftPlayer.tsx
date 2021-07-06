@@ -12,12 +12,12 @@ type PlayerProps = {
 class LeftPlayer extends Component<PlayerProps> {
 	styleLeftPlayer(): any {
 		return {
-			width: `${this.props.playerWidth}` + "px",
-			height: `${this.props.playerHeight}` + "px",
+			width: `${this.props.playerWidth}px`,
+			height: `${this.props.playerHeight}px`,
 			backgroundColor: "white",
-			marginLeft: `${this.props.playerX}` + "px",
+			marginLeft: `${this.props.playerX}px`,
 			position: "absolute",
-			top: `${this.props.playerY}` + "px",
+			top: `${this.props.playerY}px`,
 			content: ""
 		};
 	}

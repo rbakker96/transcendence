@@ -10,11 +10,11 @@ type BallProps = {
 class Ball extends Component<BallProps> {
 	styleBall(): any {
 		return {
-			width: `${this.props.width}` + "px",
-			height: `${this.props.height}` + "px",
+			width: `${this.props.width}px`,
+			height: `${this.props.height}px`,
 			backgroundColor: "white",
-			marginLeft: `${this.props.xPosition}` + "px",
-			top: `${this.props.yPosition}` + "px",
+			marginLeft: `${this.props.xPosition}px`,
+			top: `${this.props.yPosition}px`,
 			borderRadius: "50%",
 			position: "absolute",
 			content: "",

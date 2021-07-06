@@ -10,8 +10,6 @@ import {
 
 import { Server } from 'ws';
 
-// NEED TO KEEP TRACK OF THE GAME STATE ON THE BACKEND AS WELL TO MAKE SURE THAT NEW VIEWERS WILL SEE THE LIVE VERSION
-
 type gameState = {
 	leftPlayerPosition: number
 	rightPlayerPosition: number
@@ -24,6 +22,8 @@ type gameState = {
 	gameFinished: boolean
 }
 
+//ADD POWERUPS TO BACKEND
+
 @WebSocketGateway()
 export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 	@WebSocketServer() server: Server;
@@ -33,7 +33,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		rightPlayerPosition: 42,
 		ballX: 400,
 		ballY: 300,
-		velocityX: 8,
+		velocityX: 4,
 		velocityY: 4,
 		leftPlayerScore: 0,
 		rightPlayerScore: 0,
@@ -53,7 +53,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 				rightPlayerPosition: 42,
 				ballX: 400,
 				ballY: 300,
-				velocityX: 8,
+				velocityX: 4,
 				velocityY: 4,
 				leftPlayerScore: 0,
 				rightPlayerScore: 0,
@@ -92,7 +92,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 	@SubscribeMessage("activateBall")
 	activateBall(client: any, data: any): void {
-		const response = JSON.stringify({ event: 'activateBall', data: [this.gameState.leftPlayerPosition,
+		const response = JSON.stringify({ event: 'activateBall', data: [  this.gameState.leftPlayerPosition,
 																				this.gameState.rightPlayerPosition,
 																				this.gameState.ballX,
 																				this.gameState.ballY,
@@ -143,4 +143,21 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			c.send(response);
 		})
 	}
+
+	@SubscribeMessage("leftPlayerSpeedPowerUp")
+	leftPlayerSpeedPowerUp(client: any, data: any): void {
+		const response = JSON.stringify({event: 'leftPlayerSpeedPowerUp', data: data})
+		this.server.clients.forEach(c => {
+			c.send(response);
+		})
+	}
+
+	@SubscribeMessage("rightPlayerSpeedPowerUp")
+	rightPlayerSpeedPowerUp(client: any, data: any): void {
+		const response = JSON.stringify({event: 'rightPlayerSpeedPowerUp', data: data})
+		this.server.clients.forEach(c => {
+			c.send(response);
+		})
+	}
+
 }
