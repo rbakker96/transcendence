@@ -11,10 +11,10 @@ function ChatPage() {
     <div>
       <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
         <Col className="gutter-row" span={4}>
-            <ChatSidebar setActiveId={setActiveId} />
+          <ChatSidebar setActiveId={setActiveId} />
         </Col>
         <Col className="gutter-row" span={20}>
-            <ChatContent activeChannelId={ActiveId} />
+          <ChatContent activeChannelID={ActiveId} />
         </Col>
       </Row>
     </div>

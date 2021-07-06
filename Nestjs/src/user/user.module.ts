@@ -6,6 +6,7 @@ import { UserService } from './user.service';
 import {JwtModule} from "@nestjs/jwt";
 import {jwtConstants} from "./auth/models/constants";
 import { UploadController } from './upload/upload.controller';
+import {AuthService} from "./auth/auth.service";
 
 @Module({
     imports: [
@@ -15,7 +16,7 @@ import { UploadController } from './upload/upload.controller';
             signOptions: { expiresIn: '1d' },
         }),],
     controllers: [UserController, UploadController],
-    providers: [UserService],
+    providers: [UserService, AuthService],
     exports: [UserService],
 })
 export class UserModule {}
