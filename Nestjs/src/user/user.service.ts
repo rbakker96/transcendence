@@ -33,6 +33,10 @@ export class UserService {
     return this.userRepository.update(clientID, {authentication: true});
   }
 
+  async disableTwoFactor(clientID: number): Promise<any> {
+    return this.userRepository.update(clientID, {authentication: false});
+  }
+
   async findUserName(data: any): Promise<User> {
     return await this.userRepository.findOne({ id: data.userID });
   }

@@ -3,7 +3,7 @@ import axios from 'axios';
 
 import './stylesheets/EnableTwoFactor.css'
 import logo from "./img/42_logo.svg";
-import {Redirect} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 
 
 const EnableTwoFactor = () => {
@@ -19,7 +19,7 @@ const EnableTwoFactor = () => {
         getQRcode();
     }, []);
 
-    const submit = async (e: SyntheticEvent) => {
+    const enable = async (e: SyntheticEvent) => {
         e.preventDefault();
 
         const ret = await axios.post('2fa/verify', {
@@ -30,27 +30,35 @@ const EnableTwoFactor = () => {
             setRedirect(true); //check if successfull first
     }
 
+    const disable = async (e: SyntheticEvent) => {
+        e.preventDefault();
+
+        const ret = await axios.post('2fa/disable', {});
+
+        if (ret)
+            setRedirect(true); //check if successfull first
+    }
+
     if (redirect)
         return <Redirect to={'/update'}/>
 
     return (
         <main className="EnableTwoFactor_component">
-            <form onSubmit={submit}>
+            <form>
                 <img className="mb-4" src={logo} alt="logo" width="72" height="57"/>
                 <h1 className="h3 mb-3 fw-normal enableTitle">Enable Two Factor authentication</h1>
                 <p className="enableSubTitle">Scan this QR-code with the Google Authenticator app</p>
 
                 <div><img className="qrImg" src={QRCode}/></div>
 
-                <p className="enableSubTitle">Enter the access code generated in the app</p>
-
                 <div className="form-floating">
                     <input required className="form-control" id="floatingInput" placeholder="12345"
                            onChange={e => setCode(e.target.value)}/>
-                    <label htmlFor="floatingInput">authentication code</label>
+                    <label htmlFor="floatingInput">Enter authentication code to enable this service</label>
                 </div>
 
-                <button className="w-100 btn btn-lg btn-primary" type="submit">Enable</button>
+                <button onClick={enable} className="w-100 btn btn-lg btn-primary" type="button">Enable</button>
+                <button onClick={disable} className="w-100 btn btn-lg btn-primary" type="button">Disable</button>
             </form>
         </main>
     )
