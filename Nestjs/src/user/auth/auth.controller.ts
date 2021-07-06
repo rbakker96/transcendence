@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Post, Put, Redirect, Req, Res, UseGuards} from '@nestjs/common';
+import {Body, Controller, Get, Post, Put, Redirect, Req, Res, UnauthorizedException, UseGuards} from '@nestjs/common';
 import { UserService } from "../user.service";
 import { RegisterDto } from "./models/register.dto";
 import { UpdateDto } from "./models/update.dto";
@@ -34,6 +34,43 @@ export class AuthController {
     }
 
     @UseGuards(verifyUser)
+    @Post('2fa/generate')
+    async activate2fa(@Req() request: Request, @Res() response: Response) {
+        const clientID = await this.authService.clientID(request);
+        const OtpAuthUrl = await this.authService.twoFactorAuthSecret(clientID);
+        console.log(OtpAuthUrl);
+
+
+        return this.authService.createQRcode(response, OtpAuthUrl);
+    }
+
+    @UseGuards(verifyUser)
+    @Post('2fa/verify')
+    async verify2fa (@Req() request: Request, @Body() code) {
+        const clientID = await this.authService.clientID(request);
+        const validated = this.authService.twoFactorAuthVerify(code, clientID);
+
+        if (!validated)
+            throw new UnauthorizedException('Wrong authentication code');
+        else
+            await  this.userService.enableTwoFactor(clientID);
+
+        return true;
+    }
+
+    @UseGuards(verifyUser)
+    @Post('2fa/login')
+    async login2fa (@Req() request: Request, @Body() code, @Res({passthrough: true}) response: Response) {
+        const clientID = await this.authService.clientID(request);
+        const validated = this.authService.twoFactorAuthVerify(code, clientID);
+
+        if (!validated)
+            throw new UnauthorizedException('Wrong authentication code');
+        else
+            return response.redirect('http://localhost:8080/profile');
+    }
+
+    @UseGuards(verifyUser)
     @Post('register')
     async register(@Body() data: RegisterDto, @Req() request: Request) {
         const clientID = await this.authService.clientID(request);
@@ -57,6 +94,7 @@ export class AuthController {
     @Post('logout')
     async logout(@Res({passthrough: true}) response: Response) {
         response.clearCookie('clientID');
+        // "https://signin.intra.42.fr/users/sign_out"
 
         return {
             message: 'Success'

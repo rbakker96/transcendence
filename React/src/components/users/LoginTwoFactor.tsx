@@ -5,7 +5,7 @@ import './stylesheets/TwoFactor.css'
 import logo from "./img/42_logo.svg";
 
 
-class TwoFactor extends Component {
+class LoginTwoFactor extends Component {
     code = '';
 
     submit = async (e: SyntheticEvent) => {
@@ -39,4 +39,4 @@ class TwoFactor extends Component {
     }
 }
 
-export default TwoFactor
+export default LoginTwoFactor

@@ -3,10 +3,11 @@ import { BrowserRouter, Route } from "react-router-dom";
 import Register from "./components/users/Register";
 import Login from "./components/users/Login";
 import Profile from "./components/users/Profile";
-import TwoFactor from "./components/users/TwoFactor";
+import LoginTwoFactor from "./components/users/LoginTwoFactor";
 import UpdateUser from "./components/users/Update";
 import ChatPage from "./pages/ChatPage";
 import Game from "./components/game/Game";
+import enableTwoFactor from "./components/users/EnableTwoFactor";
 
 function App() {
   return (
@@ -15,7 +16,9 @@ function App() {
 
               <Route exact path={'/'} component={Login} />
 
-              <Route exact path={'/twoFactor'} component={TwoFactor}  />
+              <Route exact path={'/enableTwoFactor'} component={enableTwoFactor}  />
+
+              <Route exact path={'/twoFactor'} component={LoginTwoFactor}  />
 
               <Route exact path={'/register'} component={Register}  />
 

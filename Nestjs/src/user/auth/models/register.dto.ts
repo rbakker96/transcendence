@@ -17,4 +17,6 @@ export class RegisterDto {
     phonenumber: string;
 
     authentication: boolean;
+
+    twoFactorSecret?: string;
 }
