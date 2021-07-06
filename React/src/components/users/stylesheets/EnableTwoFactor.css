@@ -1,0 +1,64 @@
+.EnableTwoFactor_component {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
+form {
+    text-align: center;
+}
+
+.enableTitle {
+    color: white;
+}
+
+.enableSubTitle {
+    color: white;
+    font-size: 15px !important;
+}
+
+.qrImg {
+    margin-top: 10px;
+    margin-bottom: 25px;
+}
+
+.form-signin {
+    width: 100%;
+    max-width: 330px;
+    padding: 20px;
+    margin: auto;
+}
+
+.form-signin .checkbox {
+    font-weight: 400;
+}
+
+.form-signin .form-floating:focus-within {
+    z-index: 2;
+}
+
+.form-floating {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.form-floating label {
+    color: black;
+}
+
+.form-check-input {
+    margin-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.form-check-label, h1 {
+    color: white;
+}
+
+.btn-primary {
+    margin-top: 10px;
+    background-color: #00babc!important;
+}
