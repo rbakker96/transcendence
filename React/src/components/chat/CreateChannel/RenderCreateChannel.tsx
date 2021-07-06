@@ -1,88 +1,118 @@
-import React, {Component, SyntheticEvent} from "react";
-import { Redirect } from 'react-router-dom';
+import React, { SyntheticEvent, useEffect, useState} from "react";
 import axios from 'axios';
 import '../stylesheets/Register.css'
 import {User} from "../../../Models/User.model";
+import {Multiselect} from "multiselect-react-dropdown";
 
-class RenderCreateChannel extends Component {
 
-    ChannelName = '';
-    Admin = '';
-    ChannelType = true;
 
-    res = 0;
+const USER_DUMMY = [
+    {
+        "id" : 1,
+        "username": "thimo",
+    },
+    {
+        "id" : 2,
+        "username": "bert",
+    },
+    {
+        "id" : 3,
+        "username": "henk",
+    },
+    {
+        "id" : 4,
+        "username": "piet",
+    }
+];
+
+
+function RenderCreateChannel() {
+
+    let ChannelName = '';
+    let Admin = '';
+    let ChannelType = true;
+
+    let res = 0;
     // adding the entire channel
-    submit = async (e: SyntheticEvent) => {
+
+    const [users, setUsers] = useState<Array<User>>([]);
+
+    useEffect(() => {
+        const getUser = async () => {
+            const {data} = await axios.get('users')
+            setUsers(data);
+        }
+        getUser();
+    }, []);
+
+    const submit = async (e: SyntheticEvent) => {
         e.preventDefault();
-        console.log("Kanker ding")
-        this.res = await axios.post('localhost:8000/api/channels', {
-            Name: this.ChannelName,
-            Admin: this.Admin,
-            IsPrivate: this.ChannelType
+            res = await axios.post('localhost:8000/api/channels', {
+            Name: ChannelName,
+            Admin: Admin,
+            IsPrivate: ChannelType
         })
 
     }
+
     // adding the channel user to the channel users class
-    addChannelUser = async (e: SyntheticEvent) => {
+    const addChannelUser = async (e: SyntheticEvent) => {
         e.preventDefault();
 
         await axios.post('channelusers', {
-            ChannelId: this.res,
-            user: this
+            ChannelId: res,
+            user: res
         })
 
     }
 
-    renderChannelName() {
+    function renderChannelName() {
         return (
             <div className="form-floating">
                 <input required className="form-control" id="floatingInput" placeholder="name@example.com"
-                       onChange={e => this.ChannelName = e.target.value}/>
+                       onChange={e => ChannelName = e.target.value}/>
                 <label htmlFor="floatingInput">ChannelName</label>
             </div>
         )
     }
-    renderChooseUsers() {
+
+
+    function renderChooseUsers() {
         return (
             <div>
-                <form onSubmit={this.addChannelUser} >
-                    <select className="form-select form-select-sm" aria-label=".form-select-sm example">
-                        <option selected>Choose Admins</option>
-                        <option value="1">Harry</option> // dit moeten alle users die bestaan worden
-                        <option value="2">Bert</option>
-                        <option value="3">Piet</option>
-                    </select>
-                </form>
-                <button className="w-100 btn btn-lg btn-primary" type="submit">Add user</button>
+                <Multiselect
+                    options={USER_DUMMY}
+                    displayValue="username" // Property name to display in the dropdown options
+                    placeholder="Choose Users"
+                />
             </div>
         )
     }
 
-    renderChooseAdmin() {
+    function renderChooseAdmin() {
         return (
             <div>
-                <select className="form-select form-select-sm" aria-label=".form-select-sm example">
-                    <option selected>Choose participants</option>
-                    <option value="1">Harry</option>
-                    <option value="2">Bert</option>
-                    <option value="3">Piet</option>
-                </select>
+                <Multiselect
+                    options={USER_DUMMY}
+                    displayValue="username" // Property name to display in the dropdown options
+                    placeholder="Choose Admins"
+                />
             </div>
         )
     }
 
-    renderIsPrivate() {
+    function renderIsPrivate() {
         return (
             <div className="form-check">
                 <input className="form-check-input" type="checkbox" value="" id="defaultCheck1"
-                       onChange={e => this.ChannelType = false}
+                       onChange={e => ChannelType = false}
                 />
                 <label className="form-check-label" htmlFor="defaultCheck1">
                     Private
                 </label>
 
                 <input className="form-check-input" type="checkbox" value="" id="defaultCheck1"
-                       onChange={e => this.ChannelType = false}
+                       onChange={e => ChannelType = false}
                 />
                 <label className="form-check-label" htmlFor="defaultCheck1">
                     Public
@@ -91,31 +121,29 @@ class RenderCreateChannel extends Component {
         )
     }
 
-    renderChannelCreation() {
+    function renderChannelCreation() {
         return (
             <div>
-                {this.renderChannelName()}
-                {this.renderChooseAdmin()}
-                {this.renderChooseUsers()}
-                {this.renderIsPrivate()}
+                {renderChannelName()}
+                {renderChooseAdmin()}
+                {renderChooseUsers()}
+                {renderIsPrivate()}
             </div>
         )
     }
 
-    render() {
-        return (
-            <main className="Register_component">
-                <form onSubmit={this.submit}>
-                    <img className="mb-4" src={"./img/42_logo.svg"} alt="./img/42_logo.svg" width="72" height="57"/>
-                    <h1 className="h3 mb-3 fw-normal">Create new Channel</h1>
+    return (
+        <main className="Register_component">
+            <form onSubmit={submit}>
+                <img className="mb-4" src={"./img/42_logo.svg"} alt="./img/42_logo.svg" width="72" height="57"/>
+                <h1 className="h3 mb-3 fw-normal">Create new Channel</h1>
 
-                    {this.renderChannelCreation()}
-                    <button className="w-100 btn btn-lg btn-primary" type="submit">Submit</button>
+                {renderChannelCreation()}
+                <button className="w-100 btn btn-lg btn-primary" type="submit">Submit</button>
 
-                </form>
-            </main>
-        )
-    }
+            </form>
+        </main>
+    )
 }
 
 export default RenderCreateChannel
