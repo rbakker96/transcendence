@@ -3,12 +3,13 @@ import LeftPlayer from "./LeftPlayer";
 import RightPlayer from "./RightPlayer";
 import Ball from "./Ball";
 import Scoreboard from "./Scoreboard";
+import Stats from "./Stats";
 import './stylesheets/game.css';
 
 const GAME_WIDTH = 800;
 const GAME_HEIGHT = 600;
 const PLAYER_WIDTH = 10;
-const PLAYER_HEIGHT = 100;
+const PLAYER_HEIGHT = 75;
 const BALL_WIDTH = 10;
 const BALL_HEIGHT = 10;
 const LEFT_PLAYER_SCORED = 1;
@@ -33,6 +34,8 @@ type GameState = {
 	role: string
 	leftPlayerScore: number
 	rightPlayerScore: number
+	gameFinished: boolean
+	intervalID: any
 	websocket: WebSocket
 }
 
@@ -45,11 +48,13 @@ class Game extends Component<GameState> {
 		rightPlayerY: GAME_HEIGHT / 2 - (PLAYER_HEIGHT / 2),
 		ballX: GAME_WIDTH / 2,
 		ballY: GAME_HEIGHT / 2,
-		velocityX: 4,
+		velocityX: 8,
 		velocityY: 4,
 		role: "viewer",
 		leftPlayerScore: 0,
 		rightPlayerScore: 0,
+		gameFinished: false,
+		intervalID: 0,
 		websocket: new WebSocket('ws://localhost:8000')
 	}
 
@@ -69,9 +74,9 @@ class Game extends Component<GameState> {
 		const sKeyCode = 83
 
 		if (event.keyCode === wKeyCode && this.state.leftPlayerY > 0) {
-			this.sendLeftPlayerPositionToServer(this.state.leftPlayerY - 10);
-		} else if (event.keyCode === sKeyCode && this.state.leftPlayerY + PLAYER_HEIGHT < GAME_HEIGHT) {
-			this.sendLeftPlayerPositionToServer(this.state.leftPlayerY + 10);
+			this.sendLeftPlayerPositionToServer(this.state.leftPlayerY - 8);
+		} else if (event.keyCode === sKeyCode && this.state.leftPlayerY + PLAYER_HEIGHT + 8 < GAME_HEIGHT) {
+			this.sendLeftPlayerPositionToServer(this.state.leftPlayerY + 8);
 		}
 	}
 
@@ -84,9 +89,9 @@ class Game extends Component<GameState> {
 		const sKeyCode = 83
 
 		if (event.keyCode === wKeyCode && this.state.rightPlayerY > 0) {
-			this.sendRightPlayerPositionToServer(this.state.rightPlayerY - 10);
-		} else if (event.keyCode === sKeyCode && this.state.rightPlayerY + PLAYER_HEIGHT < GAME_HEIGHT) {
-			this.sendRightPlayerPositionToServer(this.state.rightPlayerY + 10);
+			this.sendRightPlayerPositionToServer(this.state.rightPlayerY - 8);
+		} else if (event.keyCode === sKeyCode && this.state.rightPlayerY + PLAYER_HEIGHT + 8 < GAME_HEIGHT) {
+			this.sendRightPlayerPositionToServer(this.state.rightPlayerY + 8);
 		}
 	}
 
@@ -128,7 +133,7 @@ class Game extends Component<GameState> {
 			this.setState({velocityY: data[5]});
 			this.setState({leftPlayerScore: data[6]});
 			this.setState({rightPlayerScore: data[7]})
-			setInterval(this.ballMovement, 20);
+			this.setState({intervalID: setInterval(this.ballMovement, 20)});
 		}
 
 		const updateBall = (data: any) => {
@@ -159,8 +164,11 @@ class Game extends Component<GameState> {
 			this.setState({rightPlayerScore: score});
 		}
 
+		const finishGame = (data: boolean) => {
+			this.setState({gameFinished: data});
+		}
+
 		this.state.websocket.addEventListener('message', function (event) {
-			// console.log('Message from server ', event.data);
 			const object = JSON.parse(event.data);
 			if (object.event === 'newConnection') {
 				updateRoleStateVariable(object.data);
@@ -176,6 +184,8 @@ class Game extends Component<GameState> {
 				updateLeftPlayerScore(object.data);
 			} else if (object.event === 'rightPlayerScored') {
 				updateRightPlayerScore(object.data);
+			} else if (object.event === 'gameFinished') {
+				finishGame(object.data);
 			}
 		});
 	}
@@ -230,14 +240,20 @@ class Game extends Component<GameState> {
 		return (ball.right > player.left && ball.top < player.bottom && ball.left < player.right && ball.bottom > player.top);
 	}
 
-	// NEEDS TO RESET THE BALL AND UPDATE THE SCORE
 	hasScored(): number {
-		if (this.state.ballX + BALL_WIDTH > GAME_WIDTH) {
+		if (this.state.ballX + BALL_WIDTH >= GAME_WIDTH) {
 			return (LEFT_PLAYER_SCORED);
-		} else if (this.state.ballX < 0) {
+		} else if (this.state.ballX <= 0) {
 			return (RIGHT_PLAYER_SCORED);
 		}
 		return (0);
+	}
+
+	changeVelocityY(playerY: number) {
+		const collidePoint = (this.state.ballY - (playerY + PLAYER_HEIGHT / 2));
+		const normalizeCollidePoint = collidePoint / (PLAYER_HEIGHT / 2);
+		const angle = normalizeCollidePoint * Math.PI / 4;
+		return (8 * Math.sin(angle));
 	}
 
 	resetBall(playerThatScored: number): void {
@@ -258,23 +274,37 @@ class Game extends Component<GameState> {
 		let velocityX = this.state.velocityX;
 		let velocityY = this.state.velocityY;
 
+		if (this.state.leftPlayerScore === 10 || this.state.rightPlayerScore === 10) {
+			clearInterval(this.state.intervalID);
+			this.state.websocket.send(JSON.stringify({ event: 'gameFinished', data: [true] }));
+			return ;
+		}
 		if (this.bouncedAgainstTopOrBottom()) {
 			velocityY = -velocityY;
 		}
 		if (this.bouncedAgainstLeftPlayer()) {
+			// increase speed after first bounce
+			if (velocityX === 4 || velocityX === -4) {
+				velocityX *= 2;
+			}
 			velocityX = -velocityX;
+			velocityY = this.changeVelocityY(this.state.leftPlayerY);
 		} else if (this.bouncedAgainstRightPlayer()) {
+			// increase speed after first bounce
+			if (velocityX === 4 || velocityX === -4) {
+				velocityX *= 2;
+			}
 			velocityX = -velocityX;
+			velocityY = this.changeVelocityY(this.state.rightPlayerY);
 		}
 		if (this.hasScored() === LEFT_PLAYER_SCORED) {
-			console.log("LEFT PLAYER SCORED");
 			this.state.websocket.send(JSON.stringify({ event: 'leftPlayerScored', data: this.state.leftPlayerScore + 1 }));
 			this.resetBall(LEFT_PLAYER_SCORED);
-			return
+			return ;
 		} else if (this.hasScored() === RIGHT_PLAYER_SCORED) {
 			this.state.websocket.send(JSON.stringify({ event: 'rightPlayerScored', data: this.state.rightPlayerScore + 1 }))
 			this.resetBall(RIGHT_PLAYER_SCORED);
-			return
+			return ;
 		}
 		const newBallX = this.state.ballX + velocityX;
 		const newBallY = this.state.ballY + velocityY;
@@ -282,36 +312,48 @@ class Game extends Component<GameState> {
 	}
 
 	render() {
-		return (
-			<div className="game">
-				<LeftPlayer
-					playerX = { this.state.leftPlayerX }
-					playerY = { this.state.leftPlayerY }
-					playerWidth = { PLAYER_WIDTH }
-					playerHeight = { PLAYER_HEIGHT }
-					gameWidth = { GAME_WIDTH }
-					gameHeight = { GAME_HEIGHT }
+		if (this.state.gameFinished) {
+			return (
+				<Stats
+				leftPlayerName = { "LEFT_PLAYER_NAME" }
+				leftPlayerScore = { this.state.leftPlayerScore }
+				rightPlayerName = { "RIGHT_PLAYER_NAME" }
+				rightPlayerScore = { this.state.rightPlayerScore }
+				winner = { "WINNER" }
 				/>
-				<RightPlayer
-					playerX = { this.state.rightPlayerX }
-					playerY = { this.state.rightPlayerY }
-					playerWidth = { PLAYER_WIDTH }
-					playerHeight = { PLAYER_HEIGHT }
-					gameWidth = { GAME_WIDTH }
-					gameHeight = { GAME_HEIGHT }
-				/>
-				<Ball
-					xPosition = { this.state.ballX }
-					yPosition = { this.state.ballY }
-					width = { BALL_WIDTH }
-					height = { BALL_HEIGHT }
-				/>
-				<Scoreboard
-					leftPlayerScore = { this.state.leftPlayerScore }
-					rightPlayerScore = { this.state.rightPlayerScore }
-				/>
-			</div>
-		);
+			);
+		} else {
+			return (
+				<div className="game">
+					<LeftPlayer
+						playerX = { this.state.leftPlayerX }
+						playerY = { this.state.leftPlayerY }
+						playerWidth = { PLAYER_WIDTH }
+						playerHeight = { PLAYER_HEIGHT }
+						gameWidth = { GAME_WIDTH }
+						gameHeight = { GAME_HEIGHT }
+					/>
+					<RightPlayer
+						playerX = { this.state.rightPlayerX }
+						playerY = { this.state.rightPlayerY }
+						playerWidth = { PLAYER_WIDTH }
+						playerHeight = { PLAYER_HEIGHT }
+						gameWidth = { GAME_WIDTH }
+						gameHeight = { GAME_HEIGHT }
+					/>
+					<Ball
+						xPosition = { this.state.ballX }
+						yPosition = { this.state.ballY }
+						width = { BALL_WIDTH }
+						height = { BALL_HEIGHT }
+					/>
+					<Scoreboard
+						leftPlayerScore = { this.state.leftPlayerScore }
+						rightPlayerScore = { this.state.rightPlayerScore }
+					/>
+				</div>
+			);
+		}
 	}
 }
 

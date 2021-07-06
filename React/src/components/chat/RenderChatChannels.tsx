@@ -2,7 +2,6 @@ import { Divider } from "antd";
 import API from "../../API/API";
 import React, { useEffect, useState } from "react";
 import { Channel } from "../../Models/Channel.model";
-import styles from "./stylesheets/RenderChatChannels.module.css";
 
 type RenderChatChannelsType = {
   setActiveId: Function;

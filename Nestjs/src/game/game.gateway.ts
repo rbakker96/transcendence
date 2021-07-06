@@ -21,6 +21,7 @@ type gameState = {
 	velocityY: number
 	leftPlayerScore: number
 	rightPlayerScore: number
+	gameFinished: boolean
 }
 
 @WebSocketGateway()
@@ -32,10 +33,11 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		rightPlayerPosition: 42,
 		ballX: 400,
 		ballY: 300,
-		velocityX: 4,
+		velocityX: 8,
 		velocityY: 4,
 		leftPlayerScore: 0,
-		rightPlayerScore: 0
+		rightPlayerScore: 0,
+		gameFinished: false
 	}
 
 	handleConnection(client: any, ...args: any[]): any {
@@ -51,10 +53,11 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 				rightPlayerPosition: 42,
 				ballX: 400,
 				ballY: 300,
-				velocityX: 4,
+				velocityX: 8,
 				velocityY: 4,
 				leftPlayerScore: 0,
-				rightPlayerScore: 0
+				rightPlayerScore: 0,
+				gameFinished: false
 			}
 		}
 		console.log('client disconnected');
@@ -130,5 +133,14 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		this.server.clients.forEach(c => {
 			c.send(response);
 		});
+	}
+
+	@SubscribeMessage("gameFinished")
+	gameFinished(client: any, data: any): void {
+		this.gameState.gameFinished = data;
+		const response = JSON.stringify({event: 'gameFinished', data: data});
+		this.server.clients.forEach(c => {
+			c.send(response);
+		})
 	}
 }
