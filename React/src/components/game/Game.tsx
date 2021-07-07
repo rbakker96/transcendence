@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import LeftPlayer from "./LeftPlayer";
-import RightPlayer from "./RightPlayer";
+import Player from "./Player";
 import Ball from "./Ball";
 import Scoreboard from "./Scoreboard";
 import Stats from "./Stats";
@@ -480,7 +479,7 @@ class Game extends Component<GameProps> {
 		} else {
 			return (
 				<div className={this.props.mapStyle}>
-					<LeftPlayer
+					<Player
 						color = { this.props.color }
 						playerX = { this.state.leftPlayerX }
 						playerY = { this.state.leftPlayerY }
@@ -489,7 +488,7 @@ class Game extends Component<GameProps> {
 						gameWidth = { GAME_WIDTH }
 						gameHeight = { GAME_HEIGHT }
 					/>
-					<RightPlayer
+					<Player
 						color = { this.props.color }
 						playerX = { this.state.rightPlayerX }
 						playerY = { this.state.rightPlayerY }

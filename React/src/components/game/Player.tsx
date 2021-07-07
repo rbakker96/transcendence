@@ -10,8 +10,8 @@ type PlayerProps = {
 	gameHeight: number
 }
 
-class LeftPlayer extends Component<PlayerProps> {
-	styleLeftPlayer(): any {
+class Player extends Component<PlayerProps> {
+	stylePlayer(): any {
 		return {
 			width: `${this.props.playerWidth}px`,
 			height: `${this.props.playerHeight}px`,
@@ -24,7 +24,7 @@ class LeftPlayer extends Component<PlayerProps> {
 	}
 
 	render() {
-		const style = this.styleLeftPlayer();
+		const style = this.stylePlayer();
 		return (
 			<div style = {style} >
 			</div>
@@ -32,4 +32,4 @@ class LeftPlayer extends Component<PlayerProps> {
 	}
 }
 
-export default LeftPlayer;
+export default Player;
