@@ -7,7 +7,7 @@ type ChatChannelMessagesProps = {
   activeChannelID: number;
 };
 
-type ChatMessageType = {
+type DatabaseMessageType = {
   messageID: number;
   channelID: number;
   senderID: number;
@@ -15,7 +15,7 @@ type ChatMessageType = {
   messageTimestamp: string;
 };
 
-type newMessageType = {
+type SocketMessageType = {
   channelID: number;
   senderID: number;
   messageContent: string;
@@ -26,7 +26,7 @@ const URL = "ws://localhost:8000";
 
 function ChatChannelMessages(props: ChatChannelMessagesProps) {
   const [historicChatMessages, setHistoricChatMessages] = useState([]);
-  const [newMessages, setNewMessages] = useState<newMessageType[]>([]);
+  const [newMessages, setNewMessages] = useState<SocketMessageType[]>([]);
 
   const websocket: any = useRef<WebSocket>(null);
 
@@ -72,17 +72,19 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
     <div>
       {historicChatMessages
         .filter(
-          (message: ChatMessageType) =>
+          (message: DatabaseMessageType) =>
             message.channelID === props.activeChannelID
         )
-        .map((message: ChatMessageType) => (
+        .map((message: DatabaseMessageType) => (
           <EachChatMessage key={message.messageID} message={message} />
         ))}
+      {newMessages.map((message: SocketMessageType) => (
+        <EachChatMessage message={message} />
+      ))}
       <ChatInputBar
         websocket={websocket.current}
         activeChannelID={props.activeChannelID}
       />
-      <p>{newMessages.map((message) => message.messageContent)}</p>
     </div>
   );
 }
