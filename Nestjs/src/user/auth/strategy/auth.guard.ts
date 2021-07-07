@@ -11,7 +11,7 @@ export class verifyUser implements CanActivate {
             const jwt = request.cookies['clientID'];
             return this.jwtService.verify(jwt);
         } catch (e) {
-            throw new UnauthorizedException();
+            throw new UnauthorizedException('unauthorized');
         }
     }
 }

@@ -63,8 +63,6 @@ export class AuthController {
 
         if (!validated)
             throw new UnauthorizedException('Wrong authentication code');
-
-        return true;
     }
 
     @UseGuards(verifyUser)

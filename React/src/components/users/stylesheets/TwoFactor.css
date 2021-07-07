@@ -17,6 +17,12 @@ form {
     margin: auto;
 }
 
+.faSubTitle {
+    font-weight: bold;
+    color: red;
+    font-size: 15px;
+  }
+
 .form-signin .checkbox {
     font-weight: 400;
 }

@@ -15,6 +15,21 @@ const UpdateUser = () => {
     const [phonenumber, setPhonenumber] = useState('');
     const [authentication, setAuthentication] = useState(false);
     const [redirect, setRedirect] = useState(false);
+    const [unauthorized, setUnauthorized] = useState(false);
+
+    useEffect(() => {
+        let mounted = true;
+
+        const authorization = async () => {
+            try { await axios.get('userData'); }
+            catch(err){
+                if(mounted)
+                    setUnauthorized(true);
+            }
+        }
+        authorization();
+        return () => {mounted = false;}
+    }, []);
 
     useEffect(() => {
         const setDefaults = async () => {
@@ -40,6 +55,8 @@ const UpdateUser = () => {
         setRedirect(true);
     }
 
+    if (unauthorized)
+        return <Redirect to={'/'}/>;
 
     if (redirect)
         return <Redirect to={'/profile'}/>

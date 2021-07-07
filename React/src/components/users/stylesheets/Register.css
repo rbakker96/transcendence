@@ -10,6 +10,12 @@
     color: white;
 }
 
+.registerSubTitle {
+    font-weight: bold;
+    color: red;
+    font-size: 15px;
+}
+
 form {
     text-align: center;
 }

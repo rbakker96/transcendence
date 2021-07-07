@@ -1,9 +1,9 @@
 import React, {SyntheticEvent, useEffect, useState} from "react";
+import { Redirect } from "react-router-dom";
 import axios from 'axios';
 
 import './stylesheets/EnableTwoFactor.css'
 import logo from "./img/42_logo.svg";
-import {Link, Redirect} from "react-router-dom";
 
 
 const EnableTwoFactor = () => {

@@ -1,14 +1,28 @@
 import React, {useEffect, useState} from "react";
-import { Link } from "react-router-dom"
+import {Link, Redirect} from "react-router-dom"
 import './stylesheets/Profile.css'
 import axios from "axios";
 
 const Profile = () => {
+    const [unauthorized, setUnauthorized] = useState(false);
     const [user, setUser] = useState({
-        id: 0,
         username: '',
         avatar: '',
     });
+
+    useEffect(() => {
+        let mounted = true;
+
+        const authorization = async () => {
+            try { await axios.get('userData'); }
+            catch(err){
+                if(mounted)
+                    setUnauthorized(true);
+            }
+        }
+        authorization();
+        return () => {mounted = false;}
+    }, []);
 
     useEffect(() => {
        const getUser = async () => {
@@ -21,6 +35,9 @@ const Profile = () => {
     const logout = async () => {
         await axios.post('logout', {});
     }
+
+    if (unauthorized)
+        return <Redirect to={'/'}/>;
 
     return (
         <div className="container profilepage">
