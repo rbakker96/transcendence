@@ -4,6 +4,7 @@ import '../stylesheets/Register.css'
 import {User} from "../../../Models/User.model";
 import {Multiselect} from "multiselect-react-dropdown";
 import {ChannelUser} from "../../../Models/ChannelUser.model";
+import API from "../../../API/API";
 
 
 function RenderCreateChannel() {
@@ -36,9 +37,7 @@ function RenderCreateChannel() {
             Users: channelUsers,
             Admins: channelAdmins
         });
-
     }
-
 
     function renderChannelName() {
         return (
@@ -56,9 +55,6 @@ function RenderCreateChannel() {
         function OnSelectUser(selectedList: any) {
             setChannelUsers(selectedList);
         }
-
-
-
         return (
             <div>
                 <Multiselect
