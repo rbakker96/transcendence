@@ -1,0 +1,14 @@
+.textBar {
+    display: flex;
+    align-items: stretch;
+}
+
+.textBarInput {
+    flex-grow: 1;
+    box-sizing: border-box;
+}
+
+.textBarSend {
+    border-radius: 0;
+    border: none;
+}

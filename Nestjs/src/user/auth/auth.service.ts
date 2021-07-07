@@ -1,4 +1,5 @@
-import {Body, Injectable} from '@nestjs/common';
+import { Body, Injectable } from '@nestjs/common';
+import { authenticator } from "otplib";
 import { Request } from 'express';
 import { JwtService } from "@nestjs/jwt";
 import { RegisterDto } from "./models/register.dto";
@@ -12,11 +13,29 @@ export class AuthService {
         private userService: UserService,
     ) {}
 
+    async twoFactorAuthSecret(clientID: number) {
+        const client = await this.userService.findOne(clientID);
+        const secret = authenticator.generateSecret();
+        await this.userService.saveTwoFactorSecret(secret, clientID);
+
+        return  authenticator.keyuri(client.email, 'ft_transcendence', secret); //OtpAuthUrl
+    }
+
+    async createQRcode(otpauthUrl: string) {
+        var QRCode = require('qrcode');
+        await QRCode.toFile('./uploads/qrcode.png', otpauthUrl);
+
+        return {url: 'http://localhost:8000/api/uploads/qrcode.png'};
+    }
+
+    async twoFactorAuthVerify(code: string, clientID: number) {
+        const client = await this.userService.findOne(clientID);
+
+        return authenticator.verify({token: code, secret: client.twoFactorSecret});
+    }
+
     async clientID(request: Request): Promise<number> {
         const cookie = request.cookies['clientID'];
-
-        console.log('cookie: ', cookie);
-
         const data = await this.jwtService.verifyAsync(cookie);
 
         return data['id'];
@@ -27,14 +46,10 @@ export class AuthService {
         data.id = clientID;
         data.authentication = false;
 
-        console.log(data);
-
         await this.userService.create(data);
     }
 
     async updateUser(@Body() data: UpdateDto) {
-        console.log(data);
-
         await this.userService.update(data.id, data);
     }
 

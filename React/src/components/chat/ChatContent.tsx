@@ -2,18 +2,26 @@ import ChatChannelHeader from "./ChatChannelHeader";
 import ChatChannelMessages from "./ChatChannelMessages";
 
 type ChatContentProps = {
-  activeChannelId: number;
+  activeChannelID: number;
 };
 
 function ChatContent(props: ChatContentProps) {
-  const active_channel_id = props.activeChannelId;
+  const active_channel_ID = props.activeChannelID;
 
-  return (
-    <div>
-      <ChatChannelHeader activeChannelID={active_channel_id} />
-      <ChatChannelMessages activeChannelID={active_channel_id} />
-    </div>
-  );
+  if (!active_channel_ID) {
+    return (
+      <div>
+        <ChatChannelHeader activeChannelID={active_channel_ID} />
+      </div>
+    );
+  } else {
+    return (
+      <div>
+        <ChatChannelHeader activeChannelID={active_channel_ID} />
+        <ChatChannelMessages activeChannelID={active_channel_ID} />
+      </div>
+    );
+  }
 }
 
 export default ChatContent;

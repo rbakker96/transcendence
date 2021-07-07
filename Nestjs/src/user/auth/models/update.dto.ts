@@ -14,4 +14,6 @@ export class UpdateDto {
     phonenumber?: string;
 
     authentication?: boolean;
+
+    twoFactorSecret?: string;
 }
