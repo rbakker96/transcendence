@@ -15,11 +15,9 @@ export class ChannelController {
   @Post()
   async addOneChannel(
     @Body('Name') ChannelName:string,
-    @Body("Admin") ChannelAdmin:string,
     @Body("IsPrivate") Private:boolean){
     const channel = new Channel();
     channel.ChannelName = ChannelName;
-    channel.Admin = ChannelAdmin;
     channel.IsPrivate = Private;
 
     const generatedID = await this.channelService.create(channel);

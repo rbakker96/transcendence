@@ -13,8 +13,8 @@ export class ChannelUsersService {
         return this.channelUsersRepository.find(); // volgens mij moet hier het ID ook worden gespecificeerd
     }
 
-    async create(channelUser : ChannelUsers) : Promise<ChannelUsers> {
-        return this.channelUsersRepository.save(channelUser);
-    }
+    async create(ChannelUser : ChannelUsers) : Promise<ChannelUsers> {
 
+        return this.channelUsersRepository.save(ChannelUser);
+    }
 }

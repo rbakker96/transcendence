@@ -3,7 +3,7 @@ import axios from 'axios';
 import '../stylesheets/Register.css'
 import {User} from "../../../Models/User.model";
 import {Multiselect} from "multiselect-react-dropdown";
-
+import {ChannelUser} from "../../../Models/ChannelUser.model";
 
 
 const USER_DUMMY = [
@@ -28,14 +28,16 @@ const USER_DUMMY = [
 
 function RenderCreateChannel() {
 
-    let ChannelName = '';
-    let Admin = '';
-    let ChannelType = true;
+    // states for data types
 
-    let res = 0;
-    // adding the entire channel
+    const [channelName, setChannelName] = useState('');
+    const [isPrivate, setIsPrivate] = useState(false);
 
+    // states for data transfer
     const [users, setUsers] = useState<Array<User>>([]);
+    const [createdChannel, setCreatedChannel] = useState([]);
+    const [channelUsers, setChannelUsers] = useState<Array<ChannelUser>>([]);
+
 
     useEffect(() => {
         const getUser = async () => {
@@ -45,24 +47,31 @@ function RenderCreateChannel() {
         getUser();
     }, []);
 
-    const submit = async (e: SyntheticEvent) => {
-        e.preventDefault();
-            res = await axios.post('localhost:8000/api/channels', {
-            Name: ChannelName,
-            Admin: Admin,
-            IsPrivate: ChannelType
-        })
 
+// dit werkt volgens mij
+    let submit = async (e: SyntheticEvent) => {
+        e.preventDefault();
+        const {data} = await axios.post('channels', {
+            Name: channelName,
+            IsPrivate: isPrivate,
+        });
+        setCreatedChannel(data.id);
+        console.log(data.id);
+        addChannelUser(e);
     }
+
+
 
     // adding the channel user to the channel users class
     const addChannelUser = async (e: SyntheticEvent) => {
         e.preventDefault();
-
-        await axios.post('channelusers', {
-            ChannelId: res,
-            user: res
-        })
+        channelUsers.map(async (item: any) =>
+            (
+            await axios.post('channelUsers', {
+                ChannelId: createdChannel,
+                UserId: channelUsers,
+            })
+        ))
 
     }
 
@@ -70,7 +79,7 @@ function RenderCreateChannel() {
         return (
             <div className="form-floating">
                 <input required className="form-control" id="floatingInput" placeholder="name@example.com"
-                       onChange={e => ChannelName = e.target.value}/>
+                       onChange={e => setChannelName( e.target.value)}/>
                 <label htmlFor="floatingInput">ChannelName</label>
             </div>
         )
@@ -78,12 +87,19 @@ function RenderCreateChannel() {
 
 
     function renderChooseUsers() {
+
+        function OnSelect(selectedList: any, SelectedItem: any) {
+            setChannelUsers(selectedList);
+        }
+
         return (
             <div>
                 <Multiselect
-                    options={USER_DUMMY}
+                    options={users}
                     displayValue="username" // Property name to display in the dropdown options
                     placeholder="Choose Users"
+                    onSelect={OnSelect}
+
                 />
             </div>
         )
@@ -105,14 +121,14 @@ function RenderCreateChannel() {
         return (
             <div className="form-check">
                 <input className="form-check-input" type="checkbox" value="" id="defaultCheck1"
-                       onChange={e => ChannelType = false}
+                       onChange={e => setIsPrivate(true)}
                 />
                 <label className="form-check-label" htmlFor="defaultCheck1">
                     Private
                 </label>
 
                 <input className="form-check-input" type="checkbox" value="" id="defaultCheck1"
-                       onChange={e => ChannelType = false}
+                       onChange={e => setIsPrivate(false)}
                 />
                 <label className="form-check-label" htmlFor="defaultCheck1">
                     Public

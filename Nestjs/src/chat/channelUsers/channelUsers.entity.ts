@@ -2,7 +2,7 @@ import {Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {Channel} from "../channel/channel.entity";
 import {User} from "../../user/models/user.entity";
 
-@Entity('channelUsers')
+@Entity(' ChannelUsers')
 
 export class ChannelUsers {
     @PrimaryGeneratedColumn()
@@ -11,6 +11,6 @@ export class ChannelUsers {
     @ManyToOne(() => Channel, channel => channel.channelUsers)
     channel: Channel;
 
-    @OneToMany(() => User, Users => Users.ChannelUsers)
+    @ManyToOne(() => User, Users => Users.channelusers)
     user: User;
 }

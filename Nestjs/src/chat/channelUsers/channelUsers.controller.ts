@@ -8,19 +8,22 @@ import {User} from "../../user/models/user.entity";
 export class ChannelUsersController {
     constructor(private channelUserService: ChannelUsersService) {}
 
-    @Get(':id')
+    @Get()
     async all() : Promise<ChannelUsers[]> {
         return this.channelUserService.all();
     }
 
-    @Post(':id') // the channel id should be retrieved from the url
+
+    @Post() // the channel id should be retrieved from the url
     async addOneUser(
         @Body('ChannelId') ChannelId:Channel,
         @Body('UserId') UserId:User) {
+
+
         const channelUser = new ChannelUsers();
         channelUser.channel = ChannelId;
         channelUser.user = UserId;
-
+        console.log(" Dit is volgens mij die print" ,channelUser.user);
         const generatedID = await this.channelUserService.create(channelUser);
         return {id: generatedID}
     }

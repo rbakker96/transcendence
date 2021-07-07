@@ -7,10 +7,7 @@ export class Channel {
   @Column({unique:true})
   ChannelName: string;
 
-  @Column()
-  Admin: string; // becomes channel admin
-
-  @OneToMany(() => ChannelUsers, channelUsers => channelUsers.channel)
+  @OneToMany(() => ChannelUsers, ChannelUsers => ChannelUsers.channel)
   channelUsers: ChannelUsers[];
 
   @Column({default: false})
