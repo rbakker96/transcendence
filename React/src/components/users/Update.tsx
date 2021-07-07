@@ -16,6 +16,7 @@ const UpdateUser = () => {
     const [authentication, setAuthentication] = useState(false);
     const [redirect, setRedirect] = useState(false);
     const [unauthorized, setUnauthorized] = useState(false);
+    const [invalid, setInvalid] = useState(false);
 
     useEffect(() => {
         let mounted = true;
@@ -48,11 +49,13 @@ const UpdateUser = () => {
     const submit = async (e: SyntheticEvent) => {
         e.preventDefault();
 
-        await axios.put('update', {
-            id, avatar, username, email, phonenumber, authentication
-        });
-
-        setRedirect(true);
+        try {
+            await axios.put('update', {
+                id, avatar, username, email, phonenumber, authentication
+            });
+            setRedirect(true);
+        }
+        catch(err) { setInvalid(true); }
     }
 
     if (unauthorized)
@@ -66,6 +69,11 @@ const UpdateUser = () => {
             <form onSubmit={submit}>
                 <img className="mb-4" src={logo} alt="logo" width="72" height="57"/>
                 <h1 className="h3 mb-3 fw-normal register_title">Update your profile here</h1>
+
+                {   invalid?
+                    <p className="registerSubTitle">Wrong input values, please try again</p>
+                    :
+                    <p/>  }
 
                 <div className="form-floating">
                     <input required className="form-control" id="floatingInput" placeholder="name@example.com"

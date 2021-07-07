@@ -10,6 +10,22 @@ const EnableTwoFactor = () => {
     const [QRCode, setQRCode] = useState(' ');
     const [code, setCode] = useState(' ');
     const [redirect, setRedirect] = useState(false);
+    const [invalid, setInvalid] = useState(false);
+    const [unauthorized, setUnauthorized] = useState(false);
+
+    useEffect(() => {
+        let mounted = true;
+
+        const authorization = async () => {
+            try { await axios.get('userData'); }
+            catch(err){
+                if(mounted)
+                    setUnauthorized(true);
+            }
+        }
+        authorization();
+        return () => {mounted = false;}
+    }, []);
 
     useEffect(() => {
         const getQRcode = async () => {
@@ -22,22 +38,22 @@ const EnableTwoFactor = () => {
     const enable = async (e: SyntheticEvent) => {
         e.preventDefault();
 
-        const ret = await axios.post('2fa/verify', {
-            code: code,
-        });
-
-        if (ret)
-            setRedirect(true); //check if successfull first
+        try {
+            await axios.post('2fa/verify', { code: code,} );
+            setRedirect(true);
+        }
+        catch (err) { setInvalid(true); }
     }
 
     const disable = async (e: SyntheticEvent) => {
         e.preventDefault();
 
-        const ret = await axios.post('2fa/disable', {});
-
-        if (ret)
-            setRedirect(true); //check if successfull first
+        await axios.post('2fa/disable', {});
+        setRedirect(true);
     }
+
+    if (unauthorized)
+        return <Redirect to={'/'}/>;
 
     if (redirect)
         return <Redirect to={'/update'}/>
@@ -51,11 +67,21 @@ const EnableTwoFactor = () => {
 
                 <div><img className="qrImg" src={QRCode}/></div>
 
+                {   invalid?
+                    <p className="faSubTitle">Wrong validation code, please try again</p>
+                    :
+                    <p/>  }
+
                 <div className="form-floating">
                     <input required className="form-control" id="floatingInput" placeholder="12345"
                            onChange={e => setCode(e.target.value)}/>
-                    <label htmlFor="floatingInput">Enter authentication code to enable this service</label>
+                    <label htmlFor="floatingInput">Enter authentication code</label>
                 </div>
+
+                <p className="enableText">User policy - Be aware that you need to scan this QR-code if you</p>
+                <p className="enableText">want to use this service OR continue using this service. Previously saved</p>
+                <p className="enableText">settings in the Google Authenticator app are expired and no longer valid.</p>
+
 
                 <button onClick={enable} className="w-100 btn btn-lg btn-primary" type="button">Enable</button>
                 <button onClick={disable} className="w-100 btn btn-lg btn-primary" type="button">Disable</button>

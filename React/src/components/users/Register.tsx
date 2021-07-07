@@ -39,9 +39,7 @@ const Register = () => {
             setRedirect(true);
             setInvalid(false);
         }
-        catch (err) {
-            setInvalid(true);
-        }
+        catch (err) { setInvalid(true); }
     }
 
     if (unauthorized)
