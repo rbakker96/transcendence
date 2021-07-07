@@ -3,6 +3,7 @@ import { SyntheticEvent, useEffect, useState } from "react";
 import API from "../../API/API";
 
 type TextBarType = {
+  websocket: WebSocket;
   activeChannelID: number;
 };
 
@@ -30,6 +31,7 @@ function ChatInputBar(props: TextBarType) {
 
   async function submitHandler(e: SyntheticEvent) {
     e.preventDefault();
+    // setup new message
     setMessageTimeStamp(new Date().toLocaleString());
     const new_message: newMessageType = {
       channelID: props.activeChannelID,
@@ -37,15 +39,24 @@ function ChatInputBar(props: TextBarType) {
       messageContent: message,
       messageTimestamp: messageTimestamp,
     };
+
+    // send new message to database
     await API.ChatMessage.createChatMessage(new_message);
+
+    // send new message to socket
+    props.websocket.send(
+      JSON.stringify({ event: "newMessage", data: new_message })
+    );
+
+    // reset input box to nothing
     setMessage("");
   }
 
   return (
     <div className={styles.textBar}>
       <input
-        value={message}
         className={styles.textBarInput}
+        value={message}
         type="text"
         placeholder={"Enter message..."}
         onChange={(e) => setMessage(e.target.value)}
