@@ -8,20 +8,15 @@ type ChatContentProps = {
 function ChatContent(props: ChatContentProps) {
   const active_channel_ID = props.activeChannelID;
 
-  if (!active_channel_ID) {
-    return (
-      <div>
-        <ChatChannelHeader activeChannelID={active_channel_ID} />
-      </div>
-    );
-  } else {
-    return (
-      <div>
-        <ChatChannelHeader activeChannelID={active_channel_ID} />
-        <ChatChannelMessages activeChannelID={active_channel_ID} />
-      </div>
-    );
-  }
+  return (
+    <div>
+      <ChatChannelHeader activeChannelID={active_channel_ID} />
+      {active_channel_ID
+        ? <ChatChannelMessages activeChannelID={active_channel_ID} />
+        : <div />
+      }
+    </div>
+  );
 }
 
 export default ChatContent;

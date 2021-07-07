@@ -45,7 +45,7 @@ function ChatInputBar(props: TextBarType) {
 
     // send new message to socket
     props.websocket.send(
-      JSON.stringify({ event: `newMessage`, data: new_message })
+      JSON.stringify({ event: "newMessage", data: new_message })
     );
 
     // reset input box to nothing

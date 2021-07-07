@@ -16,6 +16,10 @@ export class ChatGateway
 {
   @WebSocketServer() server: Server;
 
+  afterInit(server: any): any {
+    console.log("ChatGateway: init");
+  }
+
   handleConnection(client: any, ...args: any[]): any {
     console.log("ChatGateway: new client connected");
   }
@@ -24,12 +28,8 @@ export class ChatGateway
     console.log("ChatGateway: client disconnected");
   }
 
-  afterInit(server: any): any {
-    console.log("ChatGateway: init");
-  }
-
   @SubscribeMessage("newMessage")
-  newMessageHandler(client: any, data: any) {
+  newMessageHandler(client: any, data: any): any {
     console.log("ChatGateway: newMessageHandler");
     const response = JSON.stringify({ event: "newMessage", data: data });
     this.server.clients.forEach((c) => {
