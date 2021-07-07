@@ -16,6 +16,10 @@ const BALL_WIDTH = 10;
 const BALL_HEIGHT = 10;
 const LEFT_PLAYER_SCORED = 1;
 const RIGHT_PLAYER_SCORED = 2;
+const W_KEYCODE = 87;
+const S_KEYCODE = 83;
+const J_KEYCODE = 74;
+const K_KEYCODE = 75;
 
 type coordinates = {
 	top: number
@@ -83,10 +87,16 @@ class Game extends Component<GameProps> {
 		websocket: new WebSocket("ws://localhost:8000/game")
 	}
 
+	wKeyPressed: boolean = false;
+	sKeyPressed: boolean = false;
+	jKeyPressed: boolean = false;
+	kKeyPressed: boolean = false;
+
 	constructor(props: any) {
 		super(props);
 
 		this.keyDown = this.keyDown.bind(this);
+		this.keyUp = this.keyUp.bind(this);
 		this.ballMovement = this.ballMovement.bind(this);
 	}
 
@@ -98,51 +108,33 @@ class Game extends Component<GameProps> {
 		this.state.websocket.send(JSON.stringify({event: eventName, data: [newMoveSpeed, newMoveSpeedUsesLeft, color]}));
 	}
 
-	onLeftPlayerButtonPress(event: any) {
-		const wKeyCode = 87;
-		const sKeyCode = 83;
-		const jKeyCode = 74;
-
-		if (event.keyCode === wKeyCode && this.state.leftPlayerY > 0) {
-			this.sendPlayerPositionToServer("updateLeftPlayer", this.state.leftPlayerY - this.state.leftPlayerMoveSpeed);
-		}
-		if (event.keyCode === sKeyCode && this.state.leftPlayerY + PLAYER_HEIGHT + this.state.leftPlayerMoveSpeed < GAME_HEIGHT) {
-			this.sendPlayerPositionToServer("updateLeftPlayer",this.state.leftPlayerY + this.state.leftPlayerMoveSpeed);
-		}
-		if (event.keyCode === jKeyCode && this.state.leftMoveSpeedUsesLeft > 0 && this.state.leftPlayerMoveSpeed < 15) {
-			this.sendPlayerMoveSpeedToServer("leftPlayerSpeedPowerUp",
-				this.state.leftPlayerMoveSpeed + 7.5, this.state.leftMoveSpeedUsesLeft - 1, "green");
-		}
-	}
-
-	onRightPlayerButtonPress(event: any) {
-		const wKeyCode = 87;
-		const sKeyCode = 83;
-		const jKeyCode = 74;
-
-		if (event.keyCode === wKeyCode && this.state.rightPlayerY > 0) {
-			this.sendPlayerPositionToServer("updateRightPlayer", this.state.rightPlayerY - this.state.rightPlayerMoveSpeed);
-		}
-		if (event.keyCode === sKeyCode && this.state.rightPlayerY + PLAYER_HEIGHT + this.state.rightPlayerMoveSpeed < GAME_HEIGHT) {
-			this.sendPlayerPositionToServer("updateRightPlayer", this.state.rightPlayerY + this.state.rightPlayerMoveSpeed);
-		}
-		if (event.keyCode === jKeyCode && this.state.rightMoveSpeedUsesLeft > 0 && this.state.rightPlayerMoveSpeed < 15) {
-			this.sendPlayerMoveSpeedToServer("rightPlayerSpeedPowerUp",
-				this.state.rightPlayerMoveSpeed + 7.5, this.state.rightMoveSpeedUsesLeft - 1, "green");
-		}
-	}
-
-	// NEED TO CHECK HOW TO SUPPORT MULTIPLE KEYDOWNS AT THE SAME TIME
 	keyDown(event: any) {
-		if (this.state.role === "leftPlayer") {
-			this.onLeftPlayerButtonPress(event);
-		} else if (this.state.role === "rightPlayer") {
-			this.onRightPlayerButtonPress(event);
+		if (event.keyCode === W_KEYCODE) {
+			this.wKeyPressed = true;
+		} else if (event.keyCode === S_KEYCODE) {
+			this.sKeyPressed = true;
+		} else if (event.keyCode === J_KEYCODE) {
+			this.jKeyPressed = true;
+		} else if (event.keyCode === K_KEYCODE) {
+			this.kKeyPressed = true;
+		}
+	}
+
+	keyUp(event: any) {
+		if (event.keyCode === W_KEYCODE) {
+			this.wKeyPressed = false;
+		} else if (event.keyCode === S_KEYCODE) {
+			this.sKeyPressed = false;
+		} else if (event.keyCode === J_KEYCODE) {
+			this.jKeyPressed = false;
+		} else if (event.keyCode === K_KEYCODE) {
+			this.kKeyPressed = false;
 		}
 	}
 
 	componentDidMount() {
 		document.addEventListener("keydown", this.keyDown, false);
+		document.addEventListener("keyup", this.keyUp, false);
 
 		this.state.websocket.addEventListener("open", () => {
 			this.state.websocket.send(JSON.stringify({event: 'newConnection'}));
@@ -346,10 +338,39 @@ class Game extends Component<GameProps> {
 		return (velocityX);
 	}
 
+	handleLeftPlayerMovement(): void {
+		if (this.wKeyPressed && this.state.leftPlayerY > 0) {
+			this.sendPlayerPositionToServer("updateLeftPlayer", this.state.leftPlayerY - this.state.leftPlayerMoveSpeed);
+		} else if (this.sKeyPressed && this.state.leftPlayerY + PLAYER_HEIGHT + this.state.leftPlayerMoveSpeed < GAME_HEIGHT) {
+			this.sendPlayerPositionToServer("updateLeftPlayer",this.state.leftPlayerY + this.state.leftPlayerMoveSpeed);
+		}
+		if (this.jKeyPressed && this.state.leftMoveSpeedUsesLeft > 0 && this.state.leftPlayerMoveSpeed < 15) {
+			this.sendPlayerMoveSpeedToServer("leftPlayerSpeedPowerUp",
+				this.state.leftPlayerMoveSpeed + 7.5, this.state.leftMoveSpeedUsesLeft - 1, "green");
+		}
+	}
+
+	handleRightPlayerMovement(): void {
+		if (this.wKeyPressed && this.state.rightPlayerY > 0) {
+			this.sendPlayerPositionToServer("updateRightPlayer", this.state.rightPlayerY - this.state.rightPlayerMoveSpeed);
+		} else if (this.sKeyPressed && this.state.rightPlayerY + PLAYER_HEIGHT + this.state.rightPlayerMoveSpeed < GAME_HEIGHT) {
+			this.sendPlayerPositionToServer("updateRightPlayer",this.state.rightPlayerY + this.state.rightPlayerMoveSpeed);
+		}
+		if (this.jKeyPressed && this.state.rightMoveSpeedUsesLeft > 0 && this.state.rightPlayerMoveSpeed < 15) {
+			this.sendPlayerMoveSpeedToServer("rightPlayerSpeedPowerUp",
+				this.state.rightPlayerMoveSpeed + 7.5, this.state.rightMoveSpeedUsesLeft - 1, "green");
+		}
+	}
+
 	ballMovement(): void {
 		let velocityX = this.state.velocityX;
 		let velocityY = this.state.velocityY;
 
+		if (this.state.role === "leftPlayer") {
+			this.handleLeftPlayerMovement();
+		} else if (this.state.role === "rightPlayer") {
+			this.handleRightPlayerMovement();
+		}
 		if (this.state.leftPlayerScore === 10 || this.state.rightPlayerScore === 10) {
 			clearInterval(this.state.intervalID);
 			this.state.websocket.send(JSON.stringify({ event: 'gameFinished', data: [true] }));
