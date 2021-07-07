@@ -6,7 +6,8 @@ import Profile from "./components/users/Profile";
 import LoginTwoFactor from "./components/users/LoginTwoFactor";
 import UpdateUser from "./components/users/Update";
 import ChatPage from "./pages/ChatPage";
-import Game from "./components/game/Game";
+import GamePage from "./components/game/GamePage";
+import SpecialGame from "./components/game/SpecialGame";
 import enableTwoFactor from "./components/users/EnableTwoFactor";
 
 function App() {
@@ -28,7 +29,9 @@ function App() {
 
               <Route exact path={"/chat"}><ChatPage /></Route>
 
-              <Route exact path={'/game'} component={Game}  />
+              <Route exact path={'/game'} component={GamePage}  />
+
+              <Route exact path={'/specialGame'} component={SpecialGame}  />
 
           </main>
         </BrowserRouter>

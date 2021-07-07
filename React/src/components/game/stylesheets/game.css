@@ -48,3 +48,21 @@
     pointer-events: none;
     user-select: none;
 }
+
+.powerUp
+{
+    width: 120px;
+    height: 60px;
+    background-color: white;
+    margin-top: 10px;
+    display: inline-block;
+    margin-left: 40px;
+    margin-right: 40px;
+    pointer-events: none;
+    user-select: none;
+}
+
+.powerUpsBar
+{
+    margin-top: 550px;
+}
