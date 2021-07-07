@@ -100,14 +100,6 @@ class Game extends Component<GameProps> {
 		this.ballMovement = this.ballMovement.bind(this);
 	}
 
-	sendPlayerPositionToServer(eventName: string, playerY: number) {
-		this.state.websocket.send(JSON.stringify({event: eventName, data: playerY}));
-	}
-
-	sendPlayerMoveSpeedToServer(eventName: string, newMoveSpeed: number, newMoveSpeedUsesLeft: number, color: string) {
-		this.state.websocket.send(JSON.stringify({event: eventName, data: [newMoveSpeed, newMoveSpeedUsesLeft, color]}));
-	}
-
 	keyDown(event: any) {
 		if (event.keyCode === W_KEYCODE) {
 			this.wKeyPressed = true;
@@ -215,10 +207,28 @@ class Game extends Component<GameProps> {
 			this.setState({leftMoveSpeedColor: data[2]});
 		}
 
+		const updateLeftPlayerShotPowerUp = (data: any) => {
+			this.setState({leftShotSpeedUsesLeft: data[0]});
+			this.setState({leftShotSpeedColor: data[1]});
+		}
+
+		const resetLeftPlayerShotPowerUp = (data: any) => {
+			this.setState({leftShotSpeedColor: data});
+		}
+
 		const updateRightPlayerMoveSpeed = (data: any) => {
 			this.setState({rightPlayerMoveSpeed: data[0]});
 			this.setState({rightMoveSpeedUsesLeft: data[1]});
 			this.setState({rightMoveSpeedColor: data[2]});
+		}
+
+		const updateRightPlayerShotPowerUp = (data: any) => {
+			this.setState({rightShotSpeedUsesLeft: data[0]});
+			this.setState({rightShotSpeedColor: data[1]});
+		}
+
+		const resetRightPlayerShotPowerUp = (data: any) => {
+			this.setState({rightShotSpeedColor: data});
 		}
 
 		const finishGame = (data: boolean) => {
@@ -243,8 +253,16 @@ class Game extends Component<GameProps> {
 				updateRightPlayerScore(object.data);
 			} else if (object.event === 'leftPlayerSpeedPowerUp') {
 				updateLeftPlayerMoveSpeed(object.data);
+			} else if (object.event === 'leftPlayerShotPowerUp') {
+				updateLeftPlayerShotPowerUp(object.data);
+			} else if (object.event === 'resetLeftPlayerShotPowerUp') {
+				resetLeftPlayerShotPowerUp(object.data);
 			} else if (object.event === 'rightPlayerSpeedPowerUp') {
 				updateRightPlayerMoveSpeed(object.data);
+			} else if (object.event === 'rightPlayerShotPowerUp') {
+				updateRightPlayerShotPowerUp(object.data);
+			} else if (object.event === 'resetRightPlayerShotPowerUp') {
+				resetRightPlayerShotPowerUp(object.data);
 			} else if (object.event === 'gameFinished') {
 				finishGame(object.data);
 			}
@@ -308,6 +326,20 @@ class Game extends Component<GameProps> {
 		return (0);
 	}
 
+	changeVelocityX(velocityX: number): number {
+		// increase speed after first bounce
+		if (velocityX === 4 || velocityX === -4) {
+			velocityX *= 2;
+		}
+		// Remove speed increase from powerUp
+		if (velocityX === 16 || velocityX === -16) {
+			velocityX /= 2;
+		}
+		velocityX = -velocityX;
+		return (velocityX);
+	}
+
+
 	changeVelocityY(playerY: number) {
 		const collidePoint = (this.state.ballY - (playerY + PLAYER_HEIGHT / 2));
 		const normalizeCollidePoint = collidePoint / (PLAYER_HEIGHT / 2);
@@ -329,13 +361,16 @@ class Game extends Component<GameProps> {
 		this.state.websocket.send(JSON.stringify({ event: 'updateBall', data: [GAME_WIDTH / 2, GAME_HEIGHT / 2, velocityX, velocityY] }));
 	}
 
-	changeVelocityX(velocityX: number): number {
-		// increase speed after first bounce
-		if (velocityX === 4 || velocityX === -4) {
-			velocityX = velocityX * 2;
-		}
-		velocityX = -velocityX;
-		return (velocityX);
+	sendPlayerPositionToServer(eventName: string, playerY: number): void {
+		this.state.websocket.send(JSON.stringify({event: eventName, data: playerY}));
+	}
+
+	sendPlayerMoveSpeedToServer(eventName: string, newMoveSpeed: number, newMoveSpeedUsesLeft: number, color: string): void {
+		this.state.websocket.send(JSON.stringify({event: eventName, data: [newMoveSpeed, newMoveSpeedUsesLeft, color]}));
+	}
+
+	sendShotPowerUpToServer(eventName: string, newShotPowerUpUsesLeft: number, color: string): void {
+		this.state.websocket.send(JSON.stringify({event: eventName, data: [newShotPowerUpUsesLeft, color]}));
 	}
 
 	handleLeftPlayerMovement(): void {
@@ -344,9 +379,12 @@ class Game extends Component<GameProps> {
 		} else if (this.sKeyPressed && this.state.leftPlayerY + PLAYER_HEIGHT + this.state.leftPlayerMoveSpeed < GAME_HEIGHT) {
 			this.sendPlayerPositionToServer("updateLeftPlayer",this.state.leftPlayerY + this.state.leftPlayerMoveSpeed);
 		}
-		if (this.jKeyPressed && this.state.leftMoveSpeedUsesLeft > 0 && this.state.leftPlayerMoveSpeed < 15) {
+		if (this.jKeyPressed && this.state.leftMoveSpeedUsesLeft > 0 && this.state.leftMoveSpeedColor !== "green") {
 			this.sendPlayerMoveSpeedToServer("leftPlayerSpeedPowerUp",
 				this.state.leftPlayerMoveSpeed + 7.5, this.state.leftMoveSpeedUsesLeft - 1, "green");
+		}
+		if (this.kKeyPressed && this.state.leftShotSpeedUsesLeft > 0 && this.state.leftShotSpeedColor !== "green") {
+			this.sendShotPowerUpToServer("leftPlayerShotPowerUp", this.state.leftShotSpeedUsesLeft - 1, "green");
 		}
 	}
 
@@ -356,10 +394,29 @@ class Game extends Component<GameProps> {
 		} else if (this.sKeyPressed && this.state.rightPlayerY + PLAYER_HEIGHT + this.state.rightPlayerMoveSpeed < GAME_HEIGHT) {
 			this.sendPlayerPositionToServer("updateRightPlayer",this.state.rightPlayerY + this.state.rightPlayerMoveSpeed);
 		}
-		if (this.jKeyPressed && this.state.rightMoveSpeedUsesLeft > 0 && this.state.rightPlayerMoveSpeed < 15) {
+		if (this.jKeyPressed && this.state.rightMoveSpeedUsesLeft > 0 && this.state.rightMoveSpeedColor !== "green") {
 			this.sendPlayerMoveSpeedToServer("rightPlayerSpeedPowerUp",
 				this.state.rightPlayerMoveSpeed + 7.5, this.state.rightMoveSpeedUsesLeft - 1, "green");
 		}
+		if (this.kKeyPressed && this.state.rightShotSpeedUsesLeft > 0 && this.state.rightShotSpeedColor !== "green") {
+			this.sendShotPowerUpToServer("rightPlayerShotPowerUp", this.state.rightShotSpeedUsesLeft - 1, "green");
+		}
+	}
+
+	applyShotPowerUp(velocityX: number, player: string): number {
+		let newVelocityX: number;
+
+		if (velocityX < 0) {
+			newVelocityX = 16;
+		} else {
+			newVelocityX = -16;
+		}
+		if (player === "left") {
+			this.state.websocket.send(JSON.stringify({event: 'resetLeftPlayerShotPowerUp', data: "red"}));
+		} else if (player === "right") {
+			this.state.websocket.send(JSON.stringify({event: 'resetRightPlayerShotPowerUp', data: "blue"}));
+		}
+		return (newVelocityX)
 	}
 
 	ballMovement(): void {
@@ -380,10 +437,20 @@ class Game extends Component<GameProps> {
 			velocityY = -velocityY;
 		}
 		if (this.bouncedAgainstLeftPlayer()) {
-			velocityX = this.changeVelocityX(velocityX);
+			if (this.state.leftShotSpeedColor === "green") {
+				velocityX = this.applyShotPowerUp(velocityX, "left");
+			} else {
+				velocityX = this.changeVelocityX(velocityX);
+			}
+			console.log("velocityX: ", velocityX);
 			velocityY = this.changeVelocityY(this.state.leftPlayerY);
 		} else if (this.bouncedAgainstRightPlayer()) {
-			velocityX = this.changeVelocityX(velocityX);
+			if (this.state.rightShotSpeedColor === "green") {
+				velocityX = this.applyShotPowerUp(velocityX, "right");
+			} else {
+				velocityX = this.changeVelocityX(velocityX);
+			}
+			console.log("velocityX: ", velocityX);
 			velocityY = this.changeVelocityY(this.state.rightPlayerY);
 		}
 		if (this.hasScored() === LEFT_PLAYER_SCORED) {

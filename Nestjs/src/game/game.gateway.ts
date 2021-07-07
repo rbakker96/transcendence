@@ -15,10 +15,14 @@ type gameState = {
 	leftPlayerMoveSpeed: number
 	leftMoveSpeedUsesLeft: number
 	leftMoveSpeedColor: string
+	leftShotSpeedUsesLeft: number
+	leftShotSpeedColor: string
 	rightPlayerY: number
 	rightPlayerMoveSpeed: number
 	rightMoveSpeedUsesLeft: number
 	rightMoveSpeedColor: string
+	rightShotSpeedUsesLeft: number
+	rightShotSpeedColor: string
 	ballX: number
 	ballY: number
 	velocityX: number
@@ -39,10 +43,14 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		leftPlayerMoveSpeed: 7.5,
 		leftMoveSpeedUsesLeft: 3,
 		leftMoveSpeedColor: "red",
+		leftShotSpeedUsesLeft: 3,
+		leftShotSpeedColor: "red",
 		rightPlayerY: 262.5,
 		rightPlayerMoveSpeed: 7.5,
 		rightMoveSpeedUsesLeft: 3,
 		rightMoveSpeedColor: "blue",
+		rightShotSpeedUsesLeft: 3,
+		rightShotSpeedColor: "blue",
 		ballX: 400,
 		ballY: 300,
 		velocityX: 4,
@@ -65,10 +73,14 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 				leftPlayerMoveSpeed: 7.5,
 				leftMoveSpeedUsesLeft: 3,
 				leftMoveSpeedColor: "red",
+				leftShotSpeedUsesLeft: 3,
+				leftShotSpeedColor: "red",
 				rightPlayerY: 262.5,
 				rightPlayerMoveSpeed: 7.5,
 				rightMoveSpeedUsesLeft: 3,
 				rightMoveSpeedColor: "blue",
+				rightShotSpeedUsesLeft: 3,
+				rightShotSpeedColor: "blue",
 				ballX: 400,
 				ballY: 300,
 				velocityX: 4,
@@ -159,7 +171,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		const response = JSON.stringify({event: 'gameFinished', data: data});
 		this.server.clients.forEach(c => {
 			c.send(response);
-		})
+		});
 	}
 
 	@SubscribeMessage("leftPlayerSpeedPowerUp")
@@ -181,7 +193,44 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		const response = JSON.stringify({event: 'rightPlayerSpeedPowerUp', data: data})
 		this.server.clients.forEach(c => {
 			c.send(response);
-		})
+		});
 	}
 
+	@SubscribeMessage("leftPlayerShotPowerUp")
+	leftPlayerShotPowerUp(client: any, data: any): void {
+		this.gameState.leftShotSpeedUsesLeft = data[0];
+		this.gameState.leftShotSpeedColor = data[1];
+		const response = JSON.stringify({event: 'leftPlayerShotPowerUp', data: data})
+		this.server.clients.forEach(c => {
+			c.send(response);
+		});
+	}
+
+	@SubscribeMessage("rightPlayerShotPowerUp")
+	rightPlayerShotPowerUp(client: any, data: any): void {
+		this.gameState.rightShotSpeedUsesLeft = data[0];
+		this.gameState.rightShotSpeedColor = data[1];
+		const response = JSON.stringify({event: 'rightPlayerShotPowerUp', data: data})
+		this.server.clients.forEach(c => {
+			c.send(response);
+		});
+	}
+
+	@SubscribeMessage("resetLeftPlayerShotPowerUp")
+	resetLeftPlayerShotPowerUp(client: any, data: any): void {
+		this.gameState.leftShotSpeedColor = data[0];
+		const response = JSON.stringify({event: 'resetLeftPlayerShotPowerUp', data: data})
+		this.server.clients.forEach(c => {
+			c.send(response);
+		});
+	}
+
+	@SubscribeMessage("resetRightPlayerShotPowerUp")
+	resetRightPlayerShotPowerUp(client: any, data: any): void {
+		this.gameState.rightShotSpeedColor = data[0];
+		const response = JSON.stringify({event: 'resetRightPlayerShotPowerUp', data: data})
+		this.server.clients.forEach(c => {
+			c.send(response);
+		});
+	}
 }
