@@ -194,21 +194,22 @@ class Game extends Component<GameProps> {
 			}
 		}
 
-		const updateLeftPlayerScore = (score: number) => {
-			this.setState({leftPlayerScore: score});
+		const resetPowerUps = () => {
 			this.setState({leftPlayerMoveSpeed: 7.5});
 			this.setState({leftMoveSpeedColor: "red"});
 			this.setState({rightPlayerMoveSpeed: 7.5});
 			this.setState({rightMoveSpeedColor: "blue"});
 		}
 
+		const updateLeftPlayerScore = (score: number) => {
+			this.setState({leftPlayerScore: score});
+			resetPowerUps();
+
+		}
+
 		const updateRightPlayerScore = (score: number) => {
 			this.setState({rightPlayerScore: score});
-			this.setState({leftPlayerMoveSpeed: 7.5});
-			this.setState({leftMoveSpeedColor: "red"});
-			this.setState({rightPlayerMoveSpeed: 7.5});
-			this.setState({rightMoveSpeedColor: "blue"});
-
+			resetPowerUps();
 		}
 
 		const updateLeftPlayerMoveSpeed = (data: any) => {
@@ -332,6 +333,15 @@ class Game extends Component<GameProps> {
 		this.state.websocket.send(JSON.stringify({ event: 'updateBall', data: [GAME_WIDTH / 2, GAME_HEIGHT / 2, velocityX, velocityY] }));
 	}
 
+	changeVelocityX(velocityX: number): number {
+		// increase speed after first bounce
+		if (velocityX === 4 || velocityX === -4) {
+			velocityX = velocityX * 2;
+		}
+		velocityX = -velocityX;
+		return (velocityX);
+	}
+
 	ballMovement(): void {
 		let velocityX = this.state.velocityX;
 		let velocityY = this.state.velocityY;
@@ -345,18 +355,10 @@ class Game extends Component<GameProps> {
 			velocityY = -velocityY;
 		}
 		if (this.bouncedAgainstLeftPlayer()) {
-			// increase speed after first bounce
-			if (velocityX === 4 || velocityX === -4) {
-				velocityX *= 2;
-			}
-			velocityX = -velocityX;
+			velocityX = this.changeVelocityX(velocityX);
 			velocityY = this.changeVelocityY(this.state.leftPlayerY);
 		} else if (this.bouncedAgainstRightPlayer()) {
-			// increase speed after first bounce
-			if (velocityX === 4 || velocityX === -4) {
-				velocityX *= 2;
-			}
-			velocityX = -velocityX;
+			velocityX = this.changeVelocityX(velocityX);
 			velocityY = this.changeVelocityY(this.state.rightPlayerY);
 		}
 		if (this.hasScored() === LEFT_PLAYER_SCORED) {
