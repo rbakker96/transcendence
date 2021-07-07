@@ -297,7 +297,7 @@ class Game extends Component<GameProps> {
 		let newBall: coordinates = {
 			top: this.state.ballY,
 			bottom: this.state.ballY + BALL_HEIGHT,
-			left: this.state.ballX,
+			left: this.state.ballX + this.state.velocityX,
 			right: this.state.ballX + BALL_WIDTH
 		}
 		return (newBall);
@@ -329,16 +329,15 @@ class Game extends Component<GameProps> {
 	changeVelocityX(velocityX: number): number {
 		// increase speed after first bounce
 		if (velocityX === 4 || velocityX === -4) {
-			velocityX *= 2;
+			velocityX = velocityX * 2;
 		}
 		// Remove speed increase from powerUp
 		if (velocityX === 16 || velocityX === -16) {
-			velocityX /= 2;
+			velocityX = velocityX / 2;
 		}
 		velocityX = -velocityX;
 		return (velocityX);
 	}
-
 
 	changeVelocityY(playerY: number) {
 		const collidePoint = (this.state.ballY - (playerY + PLAYER_HEIGHT / 2));
@@ -442,7 +441,6 @@ class Game extends Component<GameProps> {
 			} else {
 				velocityX = this.changeVelocityX(velocityX);
 			}
-			console.log("velocityX: ", velocityX);
 			velocityY = this.changeVelocityY(this.state.leftPlayerY);
 		} else if (this.bouncedAgainstRightPlayer()) {
 			if (this.state.rightShotSpeedColor === "green") {
@@ -450,7 +448,6 @@ class Game extends Component<GameProps> {
 			} else {
 				velocityX = this.changeVelocityX(velocityX);
 			}
-			console.log("velocityX: ", velocityX);
 			velocityY = this.changeVelocityY(this.state.rightPlayerY);
 		}
 		if (this.hasScored() === LEFT_PLAYER_SCORED) {
