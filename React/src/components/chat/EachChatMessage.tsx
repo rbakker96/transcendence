@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import API from "../../API/API";
 
 type ChatMessageType = {
-  messageID: number;
+  // messageID: number;
   channelID: number;
   senderID: number;
   messageContent: string;
