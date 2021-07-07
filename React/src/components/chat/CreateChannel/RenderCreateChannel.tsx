@@ -54,26 +54,12 @@ function RenderCreateChannel() {
         const {data} = await axios.post('channels', {
             Name: channelName,
             IsPrivate: isPrivate,
+            Users: channelUsers
         });
         setCreatedChannel(data.id);
         console.log(data.id);
-        addChannelUser(e);
     }
 
-
-
-    // adding the channel user to the channel users class
-    const addChannelUser = async (e: SyntheticEvent) => {
-        e.preventDefault();
-        channelUsers.map(async (item: any) =>
-            (
-            await axios.post('channelUsers', {
-                ChannelId: createdChannel,
-                UserId: channelUsers,
-            })
-        ))
-
-    }
 
     function renderChannelName() {
         return (

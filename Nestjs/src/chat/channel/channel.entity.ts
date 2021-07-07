@@ -1,5 +1,6 @@
-import {Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
-import {ChannelUsers} from "../channelUsers/channelUsers.entity";
+import {Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn} from "typeorm";
+import {User} from "../../user/models/user.entity";
+
 
 @Entity('channels')
 
@@ -7,8 +8,9 @@ export class Channel {
   @Column({unique:true})
   ChannelName: string;
 
-  @OneToMany(() => ChannelUsers, ChannelUsers => ChannelUsers.channel)
-  channelUsers: ChannelUsers[];
+  @ManyToMany(type => User, users => users.channels)
+  @JoinTable()
+  users: User[];
 
   @Column({default: false})
   IsPrivate: boolean;
