@@ -1,6 +1,6 @@
 //The most crucial concept to grasp when using TypeORM is the entity. It is a class that maps to a database table.
 
-import {Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryColumn} from "typeorm";
+import {Column, Entity, ManyToMany, PrimaryColumn} from "typeorm";
 import {Channel} from "../../chat/channel/channel.entity";
 
 @Entity('users')
@@ -26,5 +26,9 @@ export class User {
 
    @ManyToMany(type => Channel, channel => channel.users)
     channels : Channel[];
+
+    @ManyToMany(type => Channel, admin => admin.users)
+    admin : Channel[];
+
 
 }

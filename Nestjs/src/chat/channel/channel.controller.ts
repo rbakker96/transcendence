@@ -17,11 +17,13 @@ export class ChannelController {
   async addOneChannel(
     @Body('Name') ChannelName:string,
     @Body("IsPrivate") Private:boolean,
-    @Body('Users') Users: User[]){
+    @Body('Users') Users: User[],
+    @Body('Admins') Admins: User[]){
     const channel = new Channel();
     channel.ChannelName = ChannelName;
     channel.IsPrivate = Private;
     channel.users = Users;
+    channel.admins = Admins;
 
     const generatedID = await this.channelService.create(channel);
     return {id: generatedID}

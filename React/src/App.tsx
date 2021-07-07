@@ -21,7 +21,7 @@ function App() {
 
               <Route exact path={'/register'} component={Register}  />
 
-              <Route exact path={"/createChannel"} component={RenderCreateChannel}  />
+              <Route exact path={"/createChannel"}><RenderCreateChannel /></Route>
 
               <Route exact path={'/profile'} component={Profile}  />
 

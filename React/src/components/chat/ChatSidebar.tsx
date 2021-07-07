@@ -1,7 +1,8 @@
 // import styles from "./ChatSideBar.module.css";
 import RenderChatChannels from "./RenderChatChannels";
 import RenderDirectMessage from "./RenderDirectMessage";
-import RenderCreateChannel from "./CreateChannel/RenderCreateChannel";
+import React from "react";
+import { Link } from "react-router-dom";
 
 type ChatSidebarType ={
   setActiveId: Function;
@@ -12,8 +13,7 @@ function ChatSidebar(props: ChatSidebarType) {
     <div>
         <RenderChatChannels setActiveId={props.setActiveId}/>
         <RenderDirectMessage setActiveId={props.setActiveId}/>
-        <RenderCreateChannel />
-
+        <Link to='/createChannel'> Create New Channel</Link>
     </div>
   );
 }

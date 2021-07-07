@@ -6,26 +6,6 @@ import {Multiselect} from "multiselect-react-dropdown";
 import {ChannelUser} from "../../../Models/ChannelUser.model";
 
 
-const USER_DUMMY = [
-    {
-        "id" : 1,
-        "username": "thimo",
-    },
-    {
-        "id" : 2,
-        "username": "bert",
-    },
-    {
-        "id" : 3,
-        "username": "henk",
-    },
-    {
-        "id" : 4,
-        "username": "piet",
-    }
-];
-
-
 function RenderCreateChannel() {
 
     // states for data types
@@ -35,9 +15,8 @@ function RenderCreateChannel() {
 
     // states for data transfer
     const [users, setUsers] = useState<Array<User>>([]);
-    const [createdChannel, setCreatedChannel] = useState([]);
     const [channelUsers, setChannelUsers] = useState<Array<ChannelUser>>([]);
-
+    const [channelAdmins, setChannelAdmins] = useState<Array<ChannelUser>>([]);
 
     useEffect(() => {
         const getUser = async () => {
@@ -51,13 +30,13 @@ function RenderCreateChannel() {
 // dit werkt volgens mij
     let submit = async (e: SyntheticEvent) => {
         e.preventDefault();
-        const {data} = await axios.post('channels', {
+        await axios.post('channels', {
             Name: channelName,
             IsPrivate: isPrivate,
-            Users: channelUsers
+            Users: channelUsers,
+            Admins: channelAdmins
         });
-        setCreatedChannel(data.id);
-        console.log(data.id);
+
     }
 
 
@@ -74,9 +53,11 @@ function RenderCreateChannel() {
 
     function renderChooseUsers() {
 
-        function OnSelect(selectedList: any, SelectedItem: any) {
+        function OnSelectUser(selectedList: any) {
             setChannelUsers(selectedList);
         }
+
+
 
         return (
             <div>
@@ -84,7 +65,7 @@ function RenderCreateChannel() {
                     options={users}
                     displayValue="username" // Property name to display in the dropdown options
                     placeholder="Choose Users"
-                    onSelect={OnSelect}
+                    onSelect={OnSelectUser}
 
                 />
             </div>
@@ -92,12 +73,17 @@ function RenderCreateChannel() {
     }
 
     function renderChooseAdmin() {
+        function OnSelectAdmin(selectedList: any) {
+            setChannelAdmins(selectedList);
+        }
+
         return (
             <div>
                 <Multiselect
-                    options={USER_DUMMY}
+                    options={users}
                     displayValue="username" // Property name to display in the dropdown options
                     placeholder="Choose Admins"
+                    onSelect={OnSelectAdmin}
                 />
             </div>
         )
