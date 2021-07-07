@@ -57,6 +57,8 @@ type GameState = {
 
 type GameProps = {
 	specialGame: boolean
+	mapStyle: string
+	color: string
 }
 
 class Game extends Component<GameProps> {
@@ -477,8 +479,9 @@ class Game extends Component<GameProps> {
 			);
 		} else {
 			return (
-				<div className="game">
+				<div className={this.props.mapStyle}>
 					<LeftPlayer
+						color = { this.props.color }
 						playerX = { this.state.leftPlayerX }
 						playerY = { this.state.leftPlayerY }
 						playerWidth = { PLAYER_WIDTH }
@@ -487,6 +490,7 @@ class Game extends Component<GameProps> {
 						gameHeight = { GAME_HEIGHT }
 					/>
 					<RightPlayer
+						color = { this.props.color }
 						playerX = { this.state.rightPlayerX }
 						playerY = { this.state.rightPlayerY }
 						playerWidth = { PLAYER_WIDTH }
@@ -495,6 +499,7 @@ class Game extends Component<GameProps> {
 						gameHeight = { GAME_HEIGHT }
 					/>
 					<Ball
+						color = { this.props.color }
 						xPosition = { this.state.ballX }
 						yPosition = { this.state.ballY }
 						width = { BALL_WIDTH }

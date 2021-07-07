@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 
 type PlayerProps = {
+	color: string
 	playerX: number
 	playerY: number
 	playerWidth: number
@@ -14,7 +15,7 @@ class LeftPlayer extends Component<PlayerProps> {
 		return {
 			width: `${this.props.playerWidth}px`,
 			height: `${this.props.playerHeight}px`,
-			backgroundColor: "white",
+			backgroundColor: `${this.props.color}`,
 			marginLeft: `${this.props.playerX}px`,
 			position: "absolute",
 			top: `${this.props.playerY}px`,

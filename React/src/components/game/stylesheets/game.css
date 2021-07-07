@@ -6,34 +6,36 @@
     margin: auto;
 }
 
+.red
+{
+    width: 800px;
+    height: 600px;
+    background-color: #ee4747;
+    margin: auto;
+}
+
+.blue
+{
+    width: 800px;
+    height: 600px;
+    background-color: #6f6fff;
+    margin: auto;
+}
+
+.green
+{
+    width: 800px;
+    height: 600px;
+    background-color: #76de76;
+    margin: auto;
+}
+
 .stats
 {
     width: 800px;
     height: 600px;
     background-color: black;
     margin: auto;
-}
-
-.leftPlayer
-{
-    color: white;
-    font-size: xx-large;
-    text-align: left;
-    width: 50%;
-    float: left;
-    pointer-events: none;
-    user-select: none;
-}
-
-.rightPlayer
-{
-    color: white;
-    font-size: xx-large;
-    text-align: right;
-    width: 50%;
-    float: right;
-    pointer-events: none;
-    user-select: none;
 }
 
 .winner

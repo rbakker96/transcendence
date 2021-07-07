@@ -7,7 +7,7 @@ import LoginTwoFactor from "./components/users/LoginTwoFactor";
 import UpdateUser from "./components/users/Update";
 import ChatPage from "./pages/ChatPage";
 import GamePage from "./components/game/GamePage";
-import SpecialGame from "./components/game/SpecialGame";
+import SpecialGame from "./components/game/SpecialGamePage";
 import enableTwoFactor from "./components/users/EnableTwoFactor";
 
 function App() {
