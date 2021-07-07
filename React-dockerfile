@@ -4,9 +4,8 @@ FROM node:15.4
 WORKDIR /usr/src/app
 
 # Install app dependencies
-COPY /React/package*.json ./
-
-RUN npm install
+# COPY /React/package*.json ./
+# RUN npm install
 
 # Bundle app source
 COPY /React .

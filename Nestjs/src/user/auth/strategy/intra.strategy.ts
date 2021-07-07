@@ -39,11 +39,7 @@ export class IntraStrategy extends PassportStrategy(Strategy, 'intra') {
         const data = await this.http.get('https://api.intra.42.fr/v2/me', {
             headers: { Authorization: `Bearer ${ accessToken }` },
         }).toPromise();
-
-        console.log(data.data.id);
-
         const jwt = await this.jwtService.signAsync({id: data.data.id});
-        console.log(jwt);
 
         return jwt;
     }

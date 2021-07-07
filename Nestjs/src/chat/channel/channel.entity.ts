@@ -1,5 +1,5 @@
 import {Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn} from "typeorm";
-import {User} from "../../user/models/user.entity";
+import {User} from "../../user/user.entity";
 
 
 @Entity('channels')

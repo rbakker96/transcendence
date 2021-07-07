@@ -1,21 +1,31 @@
-import {Controller, Get, Query} from '@nestjs/common';
-import {UserService} from "./user.service";
-import {User} from "./models/user.entity";
+import { Controller, Get, Query, Req, UseGuards } from "@nestjs/common";
+import { UserService } from "./user.service";
+import { User } from "./user.entity";
+import { AuthService } from "./auth/auth.service";
+import { Request } from "express";
+import { verifyUser } from "./auth/strategy/auth.guard";
 
-@Controller('users')
+@Controller("users")
 export class UserController {
+  constructor(
+    private userService: UserService,
+    private authService: AuthService
+  ) {}
 
-    constructor( private userService: UserService ) {}
-
-    @Get()
-    async all(): Promise<User[]> {
-        return this.userService.all();
-    }
+  @Get()
+  async all(): Promise<User[]> {
+    return this.userService.all();
+  }
 
   @Get("findName")
   async findUserName(@Query() query): Promise<User> {
-    console.log(query);
-
     return await this.userService.findUserName(query);
+  }
+
+  @UseGuards(verifyUser)
+  @Get("getActiveUser")
+  async getActiveUser(@Req() request: Request) {
+    const id = await this.authService.clientID(request);
+    return { activeUserID: id };
   }
 }

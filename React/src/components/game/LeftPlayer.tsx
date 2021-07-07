@@ -1,7 +1,10 @@
 import React, {Component} from 'react';
 
 type PlayerProps = {
-	playerPos: number
+	playerX: number
+	playerY: number
+	playerWidth: number
+	playerHeight: number
 	gameWidth: number
 	gameHeight: number
 }
@@ -9,12 +12,12 @@ type PlayerProps = {
 class LeftPlayer extends Component<PlayerProps> {
 	styleLeftPlayer(): any {
 		return {
-			width: "10px",
-			height: "100px",
+			width: `${this.props.playerWidth}px`,
+			height: `${this.props.playerHeight}px`,
 			backgroundColor: "white",
-			marginLeft: "10px",
+			marginLeft: `${this.props.playerX}px`,
 			position: "absolute",
-			top: `${(this.props.playerPos / 100) * this.props.gameHeight}` + "px",
+			top: `${this.props.playerY}px`,
 			content: ""
 		};
 	}

@@ -6,6 +6,10 @@
     padding-bottom: 40px;
 }
 
+.register_title {
+    color: white;
+}
+
 form {
     text-align: center;
 }
@@ -47,4 +51,6 @@ form {
 .btn-primary {
     margin-top: 10px;
     background-color: #00babc!important;
+    border: #00babc!important;
+    color: white !important;
 }

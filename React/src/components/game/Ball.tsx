@@ -1,18 +1,20 @@
 import React, {Component} from 'react';
 
 type BallProps = {
-	xPosition: number,
+	xPosition: number
 	yPosition: number
+	width: number
+	height: number
 }
 
 class Ball extends Component<BallProps> {
 	styleBall(): any {
 		return {
-			width: "10px",
-			height: "10px",
+			width: `${this.props.width}px`,
+			height: `${this.props.height}px`,
 			backgroundColor: "white",
-			marginLeft: `${this.props.xPosition}` + "px",
-			top: `${this.props.yPosition}` + "px",
+			marginLeft: `${this.props.xPosition}px`,
+			top: `${this.props.yPosition}px`,
 			borderRadius: "50%",
 			position: "absolute",
 			content: "",

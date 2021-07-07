@@ -5,3 +5,64 @@
     background-color: black;
     margin: auto;
 }
+
+.stats
+{
+    width: 800px;
+    height: 600px;
+    background-color: black;
+    margin: auto;
+}
+
+.leftPlayer
+{
+    color: white;
+    font-size: xx-large;
+    text-align: left;
+    width: 50%;
+    float: left;
+    pointer-events: none;
+    user-select: none;
+}
+
+.rightPlayer
+{
+    color: white;
+    font-size: xx-large;
+    text-align: right;
+    width: 50%;
+    float: right;
+    pointer-events: none;
+    user-select: none;
+}
+
+.winner
+{
+    position: absolute;
+    left: 0;
+    top: 200px;
+    color: white;
+    text-align: center;
+    font-size: xx-large;
+    width: 100%;
+    pointer-events: none;
+    user-select: none;
+}
+
+.powerUp
+{
+    width: 120px;
+    height: 60px;
+    background-color: white;
+    margin-top: 10px;
+    display: inline-block;
+    margin-left: 40px;
+    margin-right: 40px;
+    pointer-events: none;
+    user-select: none;
+}
+
+.powerUpsBar
+{
+    margin-top: 550px;
+}

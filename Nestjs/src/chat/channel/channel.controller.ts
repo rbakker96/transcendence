@@ -1,7 +1,7 @@
-import {Body, Controller, Get, Post} from '@nestjs/common';
-import {ChannelService} from "./channel.service";
-import {Channel} from "./channel.entity";
-import {User} from "../../user/models/user.entity";
+import { Body, Controller, Get, Post, Query } from "@nestjs/common";
+import { ChannelService } from "./channel.service";
+import { Channel } from "./channel.entity";
+import { User } from "../../user/user.entity";
 
 
 @Controller('channels')
@@ -29,5 +29,8 @@ export class ChannelController {
     return {id: generatedID}
   }
 
-
+  @Get("findName")
+  async findUserName(@Query() query): Promise<Channel> {
+    return await this.channelService.findChannelName(query);
+  }
 }

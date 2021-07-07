@@ -2,6 +2,7 @@ import React, {Component, SyntheticEvent} from "react";
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 
+import logo from "./img/42_logo.svg"
 import './stylesheets/Register.css'
 
 class Register extends Component {
@@ -34,8 +35,8 @@ class Register extends Component {
         return (
             <main className="Register_component">
             <form onSubmit={this.submit}>
-                <img className="mb-4" src={"./img/42_logo.svg"} alt="./img/42_logo.svg" width="72" height="57"/>
-                <h1 className="h3 mb-3 fw-normal">Please register</h1>
+                <img className="mb-4" src={logo} alt="./img/42_logo.svg" width="72" height="57"/>
+                <h1 className="h3 mb-3 fw-normal register_title">Please register</h1>
 
                 <div className="form-floating">
                     <input required className="form-control" id="floatingInput" placeholder="name@example.com"

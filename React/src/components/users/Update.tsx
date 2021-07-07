@@ -1,11 +1,13 @@
 import React, {SyntheticEvent, useEffect, useState} from "react";
-import { Redirect } from 'react-router-dom';
+import UploadImg from "./UploadImg";
+import {Link, Redirect} from 'react-router-dom';
 import axios from 'axios';
 
 import logo from "./img/42_logo.svg";
 import './stylesheets/Register.css'
 
 const UpdateUser = () => {
+
     const [id, setId] = useState(0);
     const [username, setUsername] = useState('');
     const [avatar, setAvatar] = useState('');
@@ -38,6 +40,7 @@ const UpdateUser = () => {
         setRedirect(true);
     }
 
+
     if (redirect)
         return <Redirect to={'/profile'}/>
 
@@ -45,7 +48,7 @@ const UpdateUser = () => {
         <main className="Register_component">
             <form onSubmit={submit}>
                 <img className="mb-4" src={logo} alt="logo" width="72" height="57"/>
-                <h1 className="h3 mb-3 fw-normal">Update your profile here</h1>
+                <h1 className="h3 mb-3 fw-normal register_title">Update your profile here</h1>
 
                 <div className="form-floating">
                     <input required className="form-control" id="floatingInput" placeholder="name@example.com"
@@ -68,13 +71,22 @@ const UpdateUser = () => {
                     <label htmlFor="floatingPassword">Phonenumber</label>
                 </div>
 
-                <div className="form-check">
-                    <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault"
-                           defaultChecked={authentication}
-                           onChange={e => setAuthentication(e.target.checked)}/>
-                    <label className="form-check-label" htmlFor="flexCheckDefault"><b>Two-factor authentication</b></label>
+                <div className="form-floating">
+                    <input className="form-control" id="floatingPassword" placeholder="avatar"
+                           defaultValue={avatar}
+                           onChange={e => setAvatar(e.target.value)}/>
+                    <UploadImg uploaded={setAvatar}/>
+                    <label htmlFor="floatingPassword">Avatar</label>
                 </div>
 
+                {/*<div className="form-check">*/}
+                {/*    <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault"*/}
+                {/*           defaultChecked={authentication}*/}
+                {/*           onChange={e => setAuthentication(e.target.checked)}/>*/}
+                {/*    <label className="form-check-label" htmlFor="flexCheckDefault"><b>Two-factor authentication</b></label>*/}
+                {/*</div>*/}
+
+                <Link to="/enableTwoFactor" type="button" className="btn btn btn-primary">Enable Two Factor Authentication</Link>
                 <button className="w-100 btn btn-lg btn-primary" type="submit">Update</button>
 
             </form>

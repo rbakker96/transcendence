@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Post, Put, Redirect, Req, Res, UseGuards} from '@nestjs/common';
+import {Body, Controller, Get, Post, Put, Req, Res, UnauthorizedException, UseGuards} from '@nestjs/common';
 import { UserService } from "../user.service";
 import { RegisterDto } from "./models/register.dto";
 import { UpdateDto } from "./models/update.dto";
@@ -23,7 +23,6 @@ export class AuthController {
         const client = await this.jwtService.verifyAsync(req.user);
 
         const clientData = await this.userService.findOne(client['id']);
-        console.log('clientData', clientData);
 
         if(!clientData)
             return response.redirect('http://localhost:8080/register')
@@ -31,6 +30,41 @@ export class AuthController {
             return response.redirect('http://localhost:8080/twoFactor')
         else
             return response.redirect('http://localhost:8080/profile')
+    }
+
+    @UseGuards(verifyUser)
+    @Get('2fa/generate')
+    async activate2fa(@Req() request: Request) {
+        const clientID = await this.authService.clientID(request);
+        const OtpAuthUrl = await this.authService.twoFactorAuthSecret(clientID);
+
+        return this.authService.createQRcode(OtpAuthUrl);
+    }
+
+    @UseGuards(verifyUser)
+    @Post('2fa/verify')
+    async verify2fa (@Req() request: Request, @Body() data) {
+        const clientID = await this.authService.clientID(request);
+        const validated = await this.authService.twoFactorAuthVerify(data.code, clientID);
+
+        if (!validated)
+            throw new UnauthorizedException('Wrong authentication code');
+        else
+            await  this.userService.enableTwoFactor(clientID);
+
+        return true;
+    }
+
+    @UseGuards(verifyUser)
+    @Post('2fa/login')
+    async login2fa (@Req() request: Request, @Body() data) {
+        const clientID = await this.authService.clientID(request);
+        const validated = await this.authService.twoFactorAuthVerify(data.code, clientID);
+
+        if (!validated)
+            throw new UnauthorizedException('Wrong authentication code');
+
+        return true;
     }
 
     @UseGuards(verifyUser)
@@ -58,9 +92,7 @@ export class AuthController {
     async logout(@Res({passthrough: true}) response: Response) {
         response.clearCookie('clientID');
 
-        return {
-            message: 'Success'
-        }
+        return {message: 'Success'}
     }
 
 }
