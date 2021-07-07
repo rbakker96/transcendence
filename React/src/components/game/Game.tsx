@@ -163,14 +163,20 @@ class Game extends Component<GameProps> {
 		}
 
 		const activateBall = (data: any) => {
-			this.setState({leftPlayerPosition: data[0]});
-			this.setState({rightPlayerPosition: data[1]});
-			this.setState({ballX: data[2]});
-			this.setState({ballY: data[3]});
-			this.setState({velocityX: data[4]});
-			this.setState({velocityY: data[5]});
-			this.setState({leftPlayerScore: data[6]});
-			this.setState({rightPlayerScore: data[7]})
+			this.setState({leftPlayerY: data[0]});
+			this.setState({leftPlayerMoveSpeed: data[1]});
+			this.setState({leftMoveSpeedUsesLeft: data[2]});
+			this.setState({leftMoveSpeedColor: data[3]});
+			this.setState({rightPlayerY: data[4]});
+			this.setState({rightPlayerMoveSpeed: data[5]});
+			this.setState({rightMoveSpeedUsesLeft: data[6]});
+			this.setState({rightMoveSpeedColor: data[7]});
+			this.setState({ballX: data[8]});
+			this.setState({ballY: data[9]});
+			this.setState({velocityX: data[10]});
+			this.setState({velocityY: data[11]});
+			this.setState({leftPlayerScore: data[12]});
+			this.setState({rightPlayerScore: data[13]});
 			this.setState({intervalID: setInterval(this.ballMovement, 20)});
 		}
 
@@ -204,7 +210,6 @@ class Game extends Component<GameProps> {
 		const updateLeftPlayerScore = (score: number) => {
 			this.setState({leftPlayerScore: score});
 			resetPowerUps();
-
 		}
 
 		const updateRightPlayerScore = (score: number) => {
@@ -254,7 +259,6 @@ class Game extends Component<GameProps> {
 		});
 	}
 
-	// returns true if it bounces against to top or bottom of the playing field
 	bouncedAgainstTopOrBottom(): boolean {
 		return ((this.state.ballY + BALL_HEIGHT > GAME_HEIGHT) || (this.state.ballY < 0));
 	}

@@ -11,8 +11,14 @@ import {
 import { Server } from 'ws';
 
 type gameState = {
-	leftPlayerPosition: number
-	rightPlayerPosition: number
+	leftPlayerY: number
+	leftPlayerMoveSpeed: number
+	leftMoveSpeedUsesLeft: number
+	leftMoveSpeedColor: string
+	rightPlayerY: number
+	rightPlayerMoveSpeed: number
+	rightMoveSpeedUsesLeft: number
+	rightMoveSpeedColor: string
 	ballX: number
 	ballY: number
 	velocityX: number
@@ -29,8 +35,14 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	@WebSocketServer() server: Server;
 	numberOfPlayers: number = 0;
 	gameState: gameState = {
-		leftPlayerPosition: 42,
-		rightPlayerPosition: 42,
+		leftPlayerY: 262.5,
+		leftPlayerMoveSpeed: 7.5,
+		leftMoveSpeedUsesLeft: 3,
+		leftMoveSpeedColor: "red",
+		rightPlayerY: 262.5,
+		rightPlayerMoveSpeed: 7.5,
+		rightMoveSpeedUsesLeft: 3,
+		rightMoveSpeedColor: "blue",
 		ballX: 400,
 		ballY: 300,
 		velocityX: 4,
@@ -49,8 +61,14 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		this.numberOfPlayers--;
 		if (this.numberOfPlayers === 2) {
 			this.gameState = {
-				leftPlayerPosition: 42,
-				rightPlayerPosition: 42,
+				leftPlayerY: 262.5,
+				leftPlayerMoveSpeed: 7.5,
+				leftMoveSpeedUsesLeft: 3,
+				leftMoveSpeedColor: "red",
+				rightPlayerY: 262.5,
+				rightPlayerMoveSpeed: 7.5,
+				rightMoveSpeedUsesLeft: 3,
+				rightMoveSpeedColor: "blue",
 				ballX: 400,
 				ballY: 300,
 				velocityX: 4,
@@ -74,7 +92,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 	@SubscribeMessage("updateLeftPlayer")
 	updateLeftPlayer(client: any, data: any): void {
-		this.gameState.leftPlayerPosition = data;
+		this.gameState.leftPlayerY = data;
 		const response = JSON.stringify({ event: 'updateLeftPlayer', data: data });
 		this.server.clients.forEach(c => {
 			c.send(response);
@@ -83,7 +101,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 	@SubscribeMessage("updateRightPlayer")
 	updateRightPlayer(client: any, data: any): void {
-		this.gameState.rightPlayerPosition = data;
+		this.gameState.rightPlayerY = data;
 		const response = JSON.stringify({ event: 'updateRightPlayer', data: data });
 		this.server.clients.forEach(c => {
 			c.send(response);
@@ -92,14 +110,14 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 	@SubscribeMessage("activateBall")
 	activateBall(client: any, data: any): void {
-		const response = JSON.stringify({ event: 'activateBall', data: [  this.gameState.leftPlayerPosition,
-																				this.gameState.rightPlayerPosition,
-																				this.gameState.ballX,
-																				this.gameState.ballY,
-																				this.gameState.velocityX,
-																				this.gameState.velocityY,
-																				this.gameState.leftPlayerScore,
-																				this.gameState.rightPlayerScore] });
+		const response = JSON.stringify({
+			event: 'activateBall',
+			data: [ this.gameState.leftPlayerY, this.gameState.leftPlayerMoveSpeed, this.gameState.leftMoveSpeedUsesLeft,
+					this.gameState.leftMoveSpeedColor, this.gameState.rightPlayerY, this.gameState.rightPlayerMoveSpeed,
+					this.gameState.rightMoveSpeedUsesLeft, this.gameState.rightMoveSpeedColor, this.gameState.ballX,
+					this.gameState.ballY, this.gameState.velocityX, this.gameState.velocityY, this.gameState.leftPlayerScore,
+					this.gameState.rightPlayerScore]
+		});
 		this.server.clients.forEach(c => {
 			c.send(response);
 		});
@@ -146,6 +164,9 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 	@SubscribeMessage("leftPlayerSpeedPowerUp")
 	leftPlayerSpeedPowerUp(client: any, data: any): void {
+		this.gameState.leftPlayerMoveSpeed = data[0];
+		this.gameState.leftMoveSpeedUsesLeft = data[1];
+		this.gameState.leftMoveSpeedColor = data[2];
 		const response = JSON.stringify({event: 'leftPlayerSpeedPowerUp', data: data})
 		this.server.clients.forEach(c => {
 			c.send(response);
@@ -154,6 +175,9 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 	@SubscribeMessage("rightPlayerSpeedPowerUp")
 	rightPlayerSpeedPowerUp(client: any, data: any): void {
+		this.gameState.rightPlayerMoveSpeed = data[0];
+		this.gameState.rightMoveSpeedUsesLeft = data[1];
+		this.gameState.rightMoveSpeedColor = data[2];
 		const response = JSON.stringify({event: 'rightPlayerSpeedPowerUp', data: data})
 		this.server.clients.forEach(c => {
 			c.send(response);
