@@ -81,3 +81,13 @@
     font-size: 32px;
     text-align: center;
 }
+
+.scoreBoard
+{
+    color: white;
+    font-size: 40px;
+    pointer-events: none;
+    user-select: none;
+    display: flex;
+    justify-content: space-between;
+}

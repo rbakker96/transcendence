@@ -8,23 +8,9 @@ type ScoreboardProps = {
 }
 
 class Scoreboard extends Component<ScoreboardProps> {
-	styleScore(): any {
-		return {
-			color: "white",
-			textAlign: "center",
-			fontSize: "40px",
-			pointerEvents: "none",
-			userSelect: "none",
-			displayBlock: "inline",
-			display: "flex",
-			justifyContent: "space-between"
-		};
-	}
-
 	render() {
-		const score = this.styleScore();
 		return (
-			<div style = {score}>
+			<div className={"scoreBoard"}>
 				<p className={"playerName"}>{this.props.leftPlayerName}</p>
 				<p>{this.props.leftPlayerScore.toString()} - {this.props.rightPlayerScore.toString()}</p>
 				<p className={"playerName"}>{this.props.rightPlayerName}</p>

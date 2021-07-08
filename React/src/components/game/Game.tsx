@@ -1,9 +1,11 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import Player from "./Player";
 import Ball from "./Ball";
 import Scoreboard from "./Scoreboard";
 import Stats from "./Stats";
 import PowerUpBar from "./PowerUpBar";
+
+import UserAPI from "../../API/UserAPI";
 
 import './stylesheets/game.css';
 
@@ -28,6 +30,8 @@ type coordinates = {
 }
 
 type GameState = {
+	client: any
+	leftPlayerName: string
 	leftPlayerX: number
 	leftPlayerY: number
 	leftPlayerMoveSpeed: number
@@ -35,6 +39,7 @@ type GameState = {
 	leftMoveSpeedColor: string
 	leftShotSpeedUsesLeft: number
 	leftShotSpeedColor: string
+	rightPlayerName: string
 	rightPlayerX: number
 	rightPlayerY: number
 	rightPlayerMoveSpeed: number
@@ -62,6 +67,8 @@ type GameProps = {
 
 class Game extends Component<GameProps> {
 	state: GameState = {
+		client: null,
+		leftPlayerName: "left",
 		leftPlayerX: 10,
 		leftPlayerY: GAME_HEIGHT / 2 - (PLAYER_HEIGHT / 2),
 		leftPlayerMoveSpeed: 7.5,
@@ -69,6 +76,7 @@ class Game extends Component<GameProps> {
 		leftMoveSpeedColor: "red",
 		leftShotSpeedUsesLeft: 3,
 		leftShotSpeedColor: "red",
+		rightPlayerName: "right",
 		rightPlayerX: GAME_WIDTH - 20,
 		rightPlayerY: GAME_HEIGHT / 2 - (PLAYER_HEIGHT / 2),
 		rightPlayerMoveSpeed: 7.5,
@@ -125,6 +133,10 @@ class Game extends Component<GameProps> {
 		}
 	}
 
+	getActiveUserError() {
+		console.log("error getting active user");
+	}
+
 	componentDidMount() {
 		document.addEventListener("keydown", this.keyDown, false);
 		document.addEventListener("keyup", this.keyUp, false);
@@ -162,7 +174,8 @@ class Game extends Component<GameProps> {
 			this.setState({velocityY: data[11]});
 			this.setState({leftPlayerScore: data[12]});
 			this.setState({rightPlayerScore: data[13]});
-			// this.setState({intervalID: setInterval(this.ballMovement, 20)});
+			this.setState({leftPlayerName: data[14]});
+			this.setState({rightPlayerName: data[15]});
 			this.setState({intervalID: requestAnimationFrame(this.ballMovement)});
 		}
 
@@ -177,8 +190,20 @@ class Game extends Component<GameProps> {
 		const updateRoleStateVariable = (id: number) => {
 			if (id == 2) {
 				this.setState({role: "leftPlayer"});
+				if (this.state.client) {
+					this.setState({leftPlayerName: this.state.client.username});
+				} else {
+					this.setState({leftPlayerName: "LEFT_PLAYER_NAME"});
+				}
+				this.state.websocket.send(JSON.stringify({event: 'setLeftPlayerName', data: this.state.leftPlayerName}));
 			} else if (id == 4) {
 				this.setState({role: "rightPlayer"});
+				if (this.state.client) {
+					this.setState({rightPlayerName: this.state.client.username});
+				} else {
+					this.setState({rightPlayerName: "RIGHT_PLAYER_NAME"});
+				}
+				this.state.websocket.send(JSON.stringify({event: 'setRightPlayerName', data: this.state.rightPlayerName}));
 				this.state.websocket.send(JSON.stringify({event: 'activateBall'}));
 			} else {
 				this.setState({role: "viewer"});
@@ -269,6 +294,8 @@ class Game extends Component<GameProps> {
 				finishGame(object.data);
 			}
 		});
+
+		UserAPI.getUserData().then(({data}) => this.setState({client: data}), this.getActiveUserError);
 	}
 
 	bouncedAgainstTopOrBottom(): boolean {
@@ -320,9 +347,9 @@ class Game extends Component<GameProps> {
 	}
 
 	hasScored(): number {
-		if (this.state.ballX + BALL_WIDTH >= GAME_WIDTH) {
+		if (this.state.ballX + this.state.velocityX > GAME_WIDTH) {
 			return (LEFT_PLAYER_SCORED);
-		} else if (this.state.ballX <= 0) {
+		} else if (this.state.ballX + this.state.velocityX < 0) {
 			return (RIGHT_PLAYER_SCORED);
 		}
 		return (0);
@@ -470,14 +497,16 @@ class Game extends Component<GameProps> {
 	}
 
 	render() {
+		const winner = (this.state.leftPlayerScore === 10 ? this.state.leftPlayerName : this.state.rightPlayerName);
+
 		if (this.state.gameFinished) {
 			return (
 				<Stats
-					leftPlayerName = { "LEFT_PLAYER_NAME" } // NEEDS LEFT PLAYER NAME
+					leftPlayerName = { this.state.leftPlayerName }
 					leftPlayerScore = { this.state.leftPlayerScore }
-					rightPlayerName = { "RIGHT_PLAYER_NAME" } // NEEDS RIGHT PLAYER NAME
+					rightPlayerName = { this.state.leftPlayerName}
 					rightPlayerScore = { this.state.rightPlayerScore }
-					winner = { "WINNER" } // NEEDS WINNER NAME
+					winner = { winner }
 				/>
 			);
 		} else {
@@ -510,9 +539,9 @@ class Game extends Component<GameProps> {
 					/>
 					<Scoreboard
 						leftPlayerScore = { this.state.leftPlayerScore }
-						leftPlayerName= { "LEFTPLAYER_NAME" }
+						leftPlayerName= { this.state.leftPlayerName }
 						rightPlayerScore = { this.state.rightPlayerScore }
-						rightPlayerName= { "RIGHTPLAYER_NAME" }
+						rightPlayerName= { this.state.rightPlayerName }
 					/>
 					<PowerUpBar
 						specialGame = {this.props.specialGame}
