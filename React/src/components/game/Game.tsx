@@ -162,7 +162,8 @@ class Game extends Component<GameProps> {
 			this.setState({velocityY: data[11]});
 			this.setState({leftPlayerScore: data[12]});
 			this.setState({rightPlayerScore: data[13]});
-			this.setState({intervalID: setInterval(this.ballMovement, 20)});
+			// this.setState({intervalID: setInterval(this.ballMovement, 20)});
+			this.setState({intervalID: requestAnimationFrame(this.ballMovement)});
 		}
 
 		const updateBall = (data: any) => {
@@ -454,15 +455,18 @@ class Game extends Component<GameProps> {
 		if (this.hasScored() === LEFT_PLAYER_SCORED) {
 			this.state.websocket.send(JSON.stringify({ event: 'leftPlayerScored', data: this.state.leftPlayerScore + 1 }));
 			this.resetBall(LEFT_PLAYER_SCORED);
+			requestAnimationFrame(this.ballMovement);
 			return ;
 		} else if (this.hasScored() === RIGHT_PLAYER_SCORED) {
 			this.state.websocket.send(JSON.stringify({ event: 'rightPlayerScored', data: this.state.rightPlayerScore + 1 }))
 			this.resetBall(RIGHT_PLAYER_SCORED);
+			requestAnimationFrame(this.ballMovement);
 			return ;
 		}
 		const newBallX = this.state.ballX + velocityX;
 		const newBallY = this.state.ballY + velocityY;
 		this.state.websocket.send(JSON.stringify({ event: 'updateBall', data: [newBallX, newBallY, velocityX, velocityY] }));
+		requestAnimationFrame(this.ballMovement);
 	}
 
 	render() {

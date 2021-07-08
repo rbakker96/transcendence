@@ -74,3 +74,10 @@
     padding: 8px;
     font-size: 28px;
 }
+
+.playerStats
+{
+    color: white;
+    font-size: 32px;
+    text-align: center;
+}
