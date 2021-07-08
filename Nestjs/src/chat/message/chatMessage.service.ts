@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ChatMessage } from "./chatMessage.entity";
-import { Repository } from "typeorm";
+import {getConnection, getRepository, Repository} from "typeorm";
 import { ChatMessageDto } from "./dto/chatMessage.dto";
 
 @Injectable()
@@ -13,6 +13,14 @@ export class ChatMessageService {
 
   async findAllChatMessages(): Promise<ChatMessage[]> {
     return await this.chatMessageRepository.find();
+  }
+
+  async findChannelChatsMessages(ID) : Promise<ChatMessage[]> {
+    const messages = await getRepository(ChatMessage)
+        .createQueryBuilder("messages")
+        .where("messages.channelID = :Channelid", {Channelid: ID})
+        .getMany()
+    return messages;
   }
 
   async createChatMessage(data: ChatMessageDto): Promise<ChatMessage> {

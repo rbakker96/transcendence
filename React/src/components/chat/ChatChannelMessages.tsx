@@ -32,7 +32,7 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
 
   useEffect(() => {
     const getChatMessages = async () => {
-      const { data } = await API.ChatMessage.getAllChatMessages();
+      const { data } = await API.ChatMessage.getChannelMessages(props.activeChannelID);
       setHistoricChatMessages(data);
     };
     getChatMessages();
@@ -71,10 +71,6 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
   return (
     <div>
       {historicChatMessages
-        .filter(
-          (message: DatabaseMessageType) =>
-            message.channelID === props.activeChannelID
-        )
         .map((message: DatabaseMessageType) => (
           <EachChatMessage key={message.messageID} message={message} />
         ))}
