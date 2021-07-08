@@ -2,8 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { Game } from "./game.entity";
-import {newGameDto} from "./models/newGame.dto";
-import {gameStatsDto} from "./models/gameStats.dto";
+import { newGameDto } from "./models/newGame.dto";
+import { gameStatsDto } from "./models/gameStats.dto";
 
 
 @Injectable()
