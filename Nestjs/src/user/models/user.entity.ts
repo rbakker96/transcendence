@@ -27,7 +27,7 @@ export class User {
     @Column({ nullable: true })
     twoFactorSecret?: string;
 
-   @ManyToMany(type => Channel, channel => channel.users)
+    @ManyToMany(type => Channel, channel => channel.users)
     channels : Channel[];
 
     @ManyToMany(type => Channel, admin => admin.users)
