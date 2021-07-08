@@ -4,7 +4,7 @@ import '../stylesheets/Register.css'
 import {User} from "../../../Models/User.model";
 import {Multiselect} from "multiselect-react-dropdown";
 import {ChannelUser} from "../../../Models/ChannelUser.model";
-import API from "../../../API/API";
+
 
 
 function RenderCreateChannel() {
@@ -77,7 +77,7 @@ function RenderCreateChannel() {
             <div>
                 <Multiselect
                     options={users}
-                    displayValue="username" // Property name to display in the dropdown options
+                    displayValue="username"
                     placeholder="Choose Admins"
                     onSelect={OnSelectAdmin}
                 />

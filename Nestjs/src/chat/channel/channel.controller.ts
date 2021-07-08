@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Query } from "@nestjs/common";
 import { ChannelService } from "./channel.service";
 import { Channel } from "./channel.entity";
-import { User } from "../../user/user.entity";
+import {User} from "../../user/models/user.entity";
 
 
 @Controller('channels')

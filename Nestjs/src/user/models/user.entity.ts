@@ -24,6 +24,9 @@ export class User {
     @Column()
     authentication: boolean;
 
+    @Column({ nullable: true })
+    twoFactorSecret?: string;
+
    @ManyToMany(type => Channel, channel => channel.users)
     channels : Channel[];
 
