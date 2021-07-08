@@ -11,28 +11,21 @@ function ChatChannelHeader(props: ChatChannelHeaderProps) {
 
   useEffect(() => {
     const getChannelName = async () => {
-      const { data } = await API.Channels.findName(props.activeChannelID);
-      setChannelName(data.ChannelName);
+      if (props.activeChannelID) {
+        const { data } = await API.Channels.findName(props.activeChannelID);
+        setChannelName(data.ChannelName);
+      } else setChannelName("Select a channel on the left to view messages");
     };
     getChannelName();
   }, [props, setChannelName]);
 
-  if (!props.activeChannelID)
-    return (
-      <div>
-        <Divider orientation={"center"} style={{ color: "#5B8FF9" }}>
-          Select a channel on the left to view messages
-        </Divider>
-      </div>
-    );
-  else
-    return (
-      <div>
-        <Divider orientation={"center"} style={{ color: "#5B8FF9" }}>
-          {ChannelName}
-        </Divider>
-      </div>
-    );
+  return (
+    <div>
+      <Divider orientation={"center"} style={{ color: "#5B8FF9" }}>
+        {ChannelName}
+      </Divider>
+    </div>
+  );
 }
 
 export default ChatChannelHeader;
