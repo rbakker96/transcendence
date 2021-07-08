@@ -4,6 +4,7 @@ import '../stylesheets/Register.css'
 import {User} from "../../../Models/User.model";
 import {Multiselect} from "multiselect-react-dropdown";
 import {ChannelUser} from "../../../Models/ChannelUser.model";
+import {Redirect} from "react-router-dom";
 
 
 
@@ -13,7 +14,7 @@ function RenderCreateChannel() {
 
     const [channelName, setChannelName] = useState('');
     const [isPrivate, setIsPrivate] = useState(false);
-
+    const [redirect, setRedirect] = useState(false);
     // states for data transfer
     const [users, setUsers] = useState<Array<User>>([]);
     const [channelUsers, setChannelUsers] = useState<Array<ChannelUser>>([]);
@@ -37,6 +38,7 @@ function RenderCreateChannel() {
             Users: channelUsers,
             Admins: channelAdmins
         });
+        setRedirect(true);
     }
 
     function renderChannelName() {
@@ -94,13 +96,6 @@ function RenderCreateChannel() {
                 <label className="form-check-label" htmlFor="defaultCheck1">
                     Private
                 </label>
-
-                <input className="form-check-input" type="checkbox" value="" id="defaultCheck1"
-                       onChange={e => setIsPrivate(false)}
-                />
-                <label className="form-check-label" htmlFor="defaultCheck1">
-                    Public
-                </label>
             </div>
         )
     }
@@ -116,6 +111,8 @@ function RenderCreateChannel() {
         )
     }
 
+    if (redirect)
+        return <Redirect to={'/chat'}/>;
     return (
         <main className="Register_component">
             <form onSubmit={submit}>
