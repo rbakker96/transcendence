@@ -53,9 +53,10 @@ const Profile = () => {
                         </div>
 
                         <div className="profile-userbuttons">
-                            <button type="button" className="btn btn-success btn-sm">Game invite</button>
-                            <Link to={`/update`} type="button" className="btn btn-success btn-sm">Update profile</Link>
+                            <Link to={`/PlayGame`} type="button" className="btn btn-success btn-sm">Play game</Link>
+                            <Link to={`/WatchGame`} type="button" className="btn btn-success btn-sm">Watch game</Link>
                             <button type="button" className="btn btn-success btn-sm">Message</button>
+                            <Link to={`/update`} type="button" className="btn btn-success btn-sm">Update profile</Link>
                             <Link to="/" onClick={logout} type="button" className="btn btn-danger btn-sm">Log out</Link>
                         </div>
                     </div>

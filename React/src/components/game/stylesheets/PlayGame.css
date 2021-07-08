@@ -1,0 +1,41 @@
+.PlayGame_component {
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
+.gameInfo {
+    width: 900px;
+    text-align: center;
+    align-items: center;
+}
+
+.logoGame {
+    text-align: center;
+}
+
+.gameDesc {
+    border: 2px solid white;
+    text-align: center;
+    padding: 10px;
+    font-size: 15px;
+    align-items: center;
+    font-style: italic;
+}
+
+.buttonsDiv {
+    width: 600px;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    padding: 40px;
+}
+
+.buttonsDiv p {
+    font-size: 15px;
+    font-weight: bold;
+}
