@@ -9,7 +9,7 @@ import { gameStatsDto } from "./models/gameStats.dto";
 
 
 @Controller()
-export class AuthController {
+export class GameController {
     constructor(
         private gameService: GameService,
         private userService: UserService,
