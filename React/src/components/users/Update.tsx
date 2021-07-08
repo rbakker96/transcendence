@@ -15,6 +15,22 @@ const UpdateUser = () => {
     const [phonenumber, setPhonenumber] = useState('');
     const [authentication, setAuthentication] = useState(false);
     const [redirect, setRedirect] = useState(false);
+    const [unauthorized, setUnauthorized] = useState(false);
+    const [invalid, setInvalid] = useState(false);
+
+    useEffect(() => {
+        let mounted = true;
+
+        const authorization = async () => {
+            try { await axios.get('userData'); }
+            catch(err){
+                if(mounted)
+                    setUnauthorized(true);
+            }
+        }
+        authorization();
+        return () => {mounted = false;}
+    }, []);
 
     useEffect(() => {
         const setDefaults = async () => {
@@ -33,13 +49,17 @@ const UpdateUser = () => {
     const submit = async (e: SyntheticEvent) => {
         e.preventDefault();
 
-        await axios.put('update', {
-            id, avatar, username, email, phonenumber, authentication
-        });
-
-        setRedirect(true);
+        try {
+            await axios.put('update', {
+                id, avatar, username, email, phonenumber, authentication
+            });
+            setRedirect(true);
+        }
+        catch(err) { setInvalid(true); }
     }
 
+    if (unauthorized)
+        return <Redirect to={'/'}/>;
 
     if (redirect)
         return <Redirect to={'/profile'}/>
@@ -49,6 +69,11 @@ const UpdateUser = () => {
             <form onSubmit={submit}>
                 <img className="mb-4" src={logo} alt="logo" width="72" height="57"/>
                 <h1 className="h3 mb-3 fw-normal register_title">Update your profile here</h1>
+
+                {   invalid?
+                    <p className="registerSubTitle">Wrong input values, please try again</p>
+                    :
+                    <p/>  }
 
                 <div className="form-floating">
                     <input required className="form-control" id="floatingInput" placeholder="name@example.com"
@@ -79,14 +104,7 @@ const UpdateUser = () => {
                     <label htmlFor="floatingPassword">Avatar</label>
                 </div>
 
-                {/*<div className="form-check">*/}
-                {/*    <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault"*/}
-                {/*           defaultChecked={authentication}*/}
-                {/*           onChange={e => setAuthentication(e.target.checked)}/>*/}
-                {/*    <label className="form-check-label" htmlFor="flexCheckDefault"><b>Two-factor authentication</b></label>*/}
-                {/*</div>*/}
-
-                <Link to="/enableTwoFactor" type="button" className="btn btn btn-primary">Enable Two Factor Authentication</Link>
+                <Link to="/enableTwoFactor" type="button" className="w-100 btn btn-lg btn-primary">Two Factor Auth settings</Link>
                 <button className="w-100 btn btn-lg btn-primary" type="submit">Update</button>
 
             </form>

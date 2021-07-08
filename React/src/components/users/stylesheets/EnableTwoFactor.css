@@ -19,6 +19,13 @@ form {
     font-size: 15px !important;
 }
 
+.enableText {
+    color: white !important;
+    font-size: 12px;
+    font-style: italic;
+    margin: 0;
+}
+
 .qrImg {
     margin-top: 10px;
     margin-bottom: 25px;
