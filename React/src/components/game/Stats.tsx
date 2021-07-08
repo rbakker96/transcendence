@@ -13,11 +13,11 @@ class Stats extends Component<StatsProps> {
 	render() {
 		return (
 			<div className="stats">
-				<div className="leftPlayer">
+				<div className="playerStats">
 					{this.props.leftPlayerName}<br></br>
 					{this.props.leftPlayerScore}
 				</div>
-				<div className="rightPlayer">
+				<div className="playerStats">
 					{this.props.rightPlayerName}<br></br>
 					{this.props.rightPlayerScore}
 				</div>

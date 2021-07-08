@@ -7,6 +7,8 @@ class GamePage extends Component {
 		return (
 			<Game
 				specialGame={false}
+				mapStyle={"game"}
+				color={"white"}
 			/>
 		);
 	}
