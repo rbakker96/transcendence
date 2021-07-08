@@ -6,7 +6,6 @@ import { IntraStrategy } from "./strategy/intra.strategy";
 import { JwtModule } from "@nestjs/jwt";
 import { PassportModule} from "@nestjs/passport";
 import { jwtConstants } from "./models/constants";
-// import { JwtStrategy } from "./strategy/jwt.strategy";
 
 @Module({
     imports: [

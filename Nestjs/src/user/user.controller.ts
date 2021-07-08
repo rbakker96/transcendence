@@ -1,6 +1,6 @@
 import { Controller, Get, Query, Req, UseGuards } from "@nestjs/common";
 import { UserService } from "./user.service";
-import { User } from "./user.entity";
+import { User } from "./models/user.entity";
 import { AuthService } from "./auth/auth.service";
 import { Request } from "express";
 import { verifyUser } from "./auth/strategy/auth.guard";

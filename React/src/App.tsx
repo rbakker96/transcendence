@@ -9,6 +9,8 @@ import ChatPage from "./pages/ChatPage";
 import GamePage from "./components/game/GamePage";
 import SpecialGame from "./components/game/SpecialGamePage";
 import enableTwoFactor from "./components/users/EnableTwoFactor";
+import Game from "./components/game/Game";
+import RenderCreateChannel from "./components/chat/CreateChannel/RenderCreateChannel";
 
 function App() {
   return (
@@ -21,7 +23,9 @@ function App() {
 
               <Route exact path={'/twoFactor'} component={LoginTwoFactor}  />
 
-              <Route exact path={'/register'} component={Register}  />
+              <Route exact path={'/register'} component={Register} />
+
+              <Route exact path={"/createChannel"}><RenderCreateChannel /></Route>
 
               <Route exact path={'/profile'} component={Profile}  />
 

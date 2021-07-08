@@ -1,9 +1,10 @@
 import { Body, Controller, Get, Post, Query } from "@nestjs/common";
 import { ChannelService } from "./channel.service";
 import { Channel } from "./channel.entity";
-import { User } from "../../user/user.entity";
+import {User} from "../../user/models/user.entity";
 
-@Controller("channels")
+
+@Controller('channels')
 export class ChannelController {
   constructor(private channelService: ChannelService) {}
 
@@ -14,19 +15,18 @@ export class ChannelController {
 
   @Post()
   async addOneChannel(
-    @Body("Name") ChannelName: string,
-    @Body("Admin") ChannelAdmin: string,
-    @Body("Users") ChannelUsers: string,
-    @Body("IsPrivate") Private: boolean
-  ) {
+    @Body('Name') ChannelName:string,
+    @Body("IsPrivate") Private:boolean,
+    @Body('Users') Users: User[],
+    @Body('Admins') Admins: User[]){
     const channel = new Channel();
     channel.ChannelName = ChannelName;
-    channel.Admin = ChannelAdmin;
-    channel.Users = ChannelUsers;
     channel.IsPrivate = Private;
+    channel.users = Users;
+    channel.admins = Admins;
 
     const generatedID = await this.channelService.create(channel);
-    return { id: generatedID };
+    return {id: generatedID}
   }
 
   @Get("findName")

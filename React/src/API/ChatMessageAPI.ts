@@ -12,6 +12,12 @@ export default class ChatMessageAPI {
     return axios.get("chatMessage");
   }
 
+  static getChannelMessages(id : number) {
+    let url = 'chatMessage/' + id.toString();
+    return axios.get(url);
+  }
+
+
   static createChatMessage(new_message: newMessageType) {
     return axios.post("chatMessage/newMessage", {
       channelID: new_message.channelID,

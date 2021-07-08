@@ -1,19 +1,23 @@
 import {IsEmail, IsNotEmpty, IsPhoneNumber} from "class-validator";
 
 export class UpdateDto {
-    id?: number;
+    id: number;
 
-    avatar?: string;
+    @IsNotEmpty()
+    avatar: string;
 
-    username?: string;
+    @IsNotEmpty()
+    username: string;
 
+    @IsNotEmpty()
     @IsEmail()
-    email?: string;
+    email: string;
 
+    @IsNotEmpty()
     @IsPhoneNumber('NL')
-    phonenumber?: string;
+    phonenumber: string;
 
-    authentication?: boolean;
+    authentication: boolean;
 
     twoFactorSecret?: string;
 }

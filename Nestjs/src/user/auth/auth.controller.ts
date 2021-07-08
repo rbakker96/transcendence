@@ -50,7 +50,7 @@ export class AuthController {
         if (!validated)
             throw new UnauthorizedException('Wrong authentication code');
         else
-            await  this.userService.enableTwoFactor(clientID);
+            await this.userService.enableTwoFactor(clientID);
 
         return true;
     }
@@ -63,6 +63,13 @@ export class AuthController {
 
         if (!validated)
             throw new UnauthorizedException('Wrong authentication code');
+    }
+
+    @UseGuards(verifyUser)
+    @Post('2fa/disable')
+    async disable2fa (@Req() request: Request) {
+        const clientID = await this.authService.clientID(request);
+        await this.userService.disableTwoFactor(clientID);
 
         return true;
     }

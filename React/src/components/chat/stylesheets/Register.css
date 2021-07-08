@@ -1,4 +1,4 @@
-.EnableTwoFactor_component {
+.Register_component {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -10,31 +10,10 @@ form {
     text-align: center;
 }
 
-.enableTitle {
-    color: white;
-}
-
-.enableSubTitle {
-    color: white;
-    font-size: 15px !important;
-}
-
-.enableText {
-    color: white !important;
-    font-size: 12px;
-    font-style: italic;
-    margin: 0;
-}
-
-.qrImg {
-    margin-top: 10px;
-    margin-bottom: 25px;
-}
-
 .form-signin {
     width: 100%;
     max-width: 330px;
-    padding: 20px;
+    padding: 15px;
     margin: auto;
 }
 
@@ -56,13 +35,15 @@ form {
     color: black;
 }
 
+
+
 .form-check-input {
     margin-bottom: 10px;
     margin-bottom: 10px;
 }
 
-.form-check-label, h1 {
-    color: white;
+.form-check-label, h1, h3 {
+    color: black;
 }
 
 .btn-primary {

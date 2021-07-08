@@ -1,7 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { User } from "./user.entity";
+import {User} from "./models/user.entity";
 import { Repository } from "typeorm";
+
 
 @Injectable()
 export class UserService {
@@ -31,6 +32,10 @@ export class UserService {
 
   async enableTwoFactor(clientID: number): Promise<any> {
     return this.userRepository.update(clientID, {authentication: true});
+  }
+
+  async disableTwoFactor(clientID: number): Promise<any> {
+    return this.userRepository.update(clientID, {authentication: false});
   }
 
   async findUserName(data: any): Promise<User> {
