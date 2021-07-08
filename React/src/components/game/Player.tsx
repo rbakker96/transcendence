@@ -11,7 +11,7 @@ type PlayerProps = {
 }
 
 class Player extends Component<PlayerProps> {
-	stylePlayer(): any {
+	stylePlayerPaddle(): any {
 		return {
 			width: `${this.props.playerWidth}px`,
 			height: `${this.props.playerHeight}px`,
@@ -24,9 +24,10 @@ class Player extends Component<PlayerProps> {
 	}
 
 	render() {
-		const style = this.stylePlayer();
+		const paddleStyle = this.stylePlayerPaddle();
 		return (
-			<div style = {style} >
+			<div>
+				<div style = {paddleStyle} />
 			</div>
 		);
 	}

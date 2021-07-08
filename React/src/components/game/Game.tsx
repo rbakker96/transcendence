@@ -506,7 +506,9 @@ class Game extends Component<GameProps> {
 					/>
 					<Scoreboard
 						leftPlayerScore = { this.state.leftPlayerScore }
+						leftPlayerName= { "LEFTPLAYER_NAME" }
 						rightPlayerScore = { this.state.rightPlayerScore }
+						rightPlayerName= { "RIGHTPLAYER_NAME" }
 					/>
 					<PowerUpBar
 						specialGame = {this.props.specialGame}
