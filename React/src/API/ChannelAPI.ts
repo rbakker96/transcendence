@@ -16,7 +16,7 @@ export default class ChannelAPI {
   }
 
   static show(id: number): Promise<Channel> {
-    return axios.get("http://localhost:8000/api/channels/${id}");
+    return axios.get(`http://localhost:8000/api/channels/${id}`);
   }
 
   static privateChannels(): Promise<Channel[]> {
@@ -28,11 +28,11 @@ export default class ChannelAPI {
   }
 
   static update(channel: Channel, body: ChannelUpdate): Promise<Channel> {
-    return axios.post("channels/${channel.id}", body);
+    return axios.post(`channels/${channel.ID}`, body);
   }
 
   static destroy(channel: Channel): Promise<void> {
-    return axios.delete("channels/${channel.id}");
+    return axios.delete(`channels/${channel.ID}`);
   }
 
   static findName(channelID: number) {
