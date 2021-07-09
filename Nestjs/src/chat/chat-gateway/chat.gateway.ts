@@ -5,10 +5,9 @@ import {
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
-  WsResponse,
 } from "@nestjs/websockets";
 
-import { Server } from "ws";
+import { Server, Socket } from "ws";
 
 @WebSocketGateway()
 export class ChatGateway
@@ -16,20 +15,20 @@ export class ChatGateway
 {
   @WebSocketServer() server: Server;
 
-  afterInit(server: any): any {
+  afterInit(server: Server) {
     console.log("ChatGateway: init");
   }
 
-  handleConnection(client: any, ...args: any[]): any {
+  handleConnection(client: Socket, ...args: any[]) {
     console.log("ChatGateway: new client connected");
   }
 
-  handleDisconnect(client: any): any {
+  handleDisconnect(client: Socket) {
     console.log("ChatGateway: client disconnected");
   }
 
   @SubscribeMessage("newMessage")
-  newMessageHandler(client: any, data: any): any {
+  newMessageHandler(client: Socket, data: any) {
     console.log("ChatGateway: newMessageHandler");
     const response = JSON.stringify({ event: "newMessage", data: data });
     this.server.clients.forEach((c) => {
