@@ -188,7 +188,7 @@ class Game extends Component<GameProps> {
 
 		// THIS NEEDS A GOOD IMPLEMENTATION, NEED TO WORK THIS OUT LATER
 		const updateRoleStateVariable = (id: number) => {
-			if (id == 2) {
+			if (id === 2) {
 				this.setState({role: "leftPlayer"});
 				if (this.state.client) {
 					this.setState({leftPlayerName: this.state.client.username});
@@ -196,7 +196,7 @@ class Game extends Component<GameProps> {
 					this.setState({leftPlayerName: "LEFT_PLAYER_NAME"});
 				}
 				this.state.websocket.send(JSON.stringify({event: 'setLeftPlayerName', data: this.state.leftPlayerName}));
-			} else if (id == 4) {
+			} else if (id === 4) {
 				this.setState({role: "rightPlayer"});
 				if (this.state.client) {
 					this.setState({rightPlayerName: this.state.client.username});
