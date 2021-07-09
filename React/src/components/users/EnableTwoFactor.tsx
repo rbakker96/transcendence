@@ -65,7 +65,7 @@ const EnableTwoFactor = () => {
                 <h1 className="h3 mb-3 fw-normal enableTitle">Enable Two Factor authentication</h1>
                 <p className="enableSubTitle">Scan this QR-code with the Google Authenticator app</p>
 
-                <div><img className="qrImg" src={QRCode}/></div>
+                <div><img className="qrImg" alt="QRcode" src={QRCode}/></div>
 
                 {   invalid?
                     <p className="faSubTitle">Wrong validation code, please try again</p>

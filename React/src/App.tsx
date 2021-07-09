@@ -9,7 +9,6 @@ import ChatPage from "./pages/ChatPage";
 import GamePage from "./components/game/GamePage";
 import SpecialGame from "./components/game/SpecialGamePage";
 import enableTwoFactor from "./components/users/EnableTwoFactor";
-import Game from "./components/game/Game";
 import RenderCreateChannel from "./components/chat/CreateChannel/RenderCreateChannel";
 import PlayGame from "./components/game/PlayGame";
 import WatchGame from "./components/game/WatchGame";
