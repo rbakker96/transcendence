@@ -12,4 +12,8 @@ export default class UserAPI {
   static async getActiveUser() {
     return await axios.get("users/getActiveUser");
   }
+
+  static async getUserData() {
+    return await axios.get("userData");
+  }
 }

@@ -11,12 +11,14 @@ import {
 import { Server } from 'ws';
 
 type gameState = {
+	leftPlayerName: string
 	leftPlayerY: number
 	leftPlayerMoveSpeed: number
 	leftMoveSpeedUsesLeft: number
 	leftMoveSpeedColor: string
 	leftShotSpeedUsesLeft: number
 	leftShotSpeedColor: string
+	rightPlayerName: string
 	rightPlayerY: number
 	rightPlayerMoveSpeed: number
 	rightMoveSpeedUsesLeft: number
@@ -39,12 +41,14 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	@WebSocketServer() server: Server;
 	numberOfPlayers: number = 0;
 	gameState: gameState = {
+		leftPlayerName: "LEFT_PLAYER_NAME",
 		leftPlayerY: 262.5,
 		leftPlayerMoveSpeed: 7.5,
 		leftMoveSpeedUsesLeft: 3,
 		leftMoveSpeedColor: "red",
 		leftShotSpeedUsesLeft: 3,
 		leftShotSpeedColor: "red",
+		rightPlayerName: "RIGHT_PLAYER_NAME",
 		rightPlayerY: 262.5,
 		rightPlayerMoveSpeed: 7.5,
 		rightMoveSpeedUsesLeft: 3,
@@ -69,12 +73,14 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		this.numberOfPlayers--;
 		if (this.numberOfPlayers === 2) {
 			this.gameState = {
+				leftPlayerName: "LEFT_PLAYER_NAME",
 				leftPlayerY: 262.5,
 				leftPlayerMoveSpeed: 7.5,
 				leftMoveSpeedUsesLeft: 3,
 				leftMoveSpeedColor: "red",
 				leftShotSpeedUsesLeft: 3,
 				leftShotSpeedColor: "red",
+				rightPlayerName: "RIGHT_PLAYER_NAME",
 				rightPlayerY: 262.5,
 				rightPlayerMoveSpeed: 7.5,
 				rightMoveSpeedUsesLeft: 3,
@@ -128,7 +134,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 					this.gameState.leftMoveSpeedColor, this.gameState.rightPlayerY, this.gameState.rightPlayerMoveSpeed,
 					this.gameState.rightMoveSpeedUsesLeft, this.gameState.rightMoveSpeedColor, this.gameState.ballX,
 					this.gameState.ballY, this.gameState.velocityX, this.gameState.velocityY, this.gameState.leftPlayerScore,
-					this.gameState.rightPlayerScore]
+					this.gameState.rightPlayerScore, this.gameState.leftPlayerName, this.gameState.rightPlayerName]
 		});
 		this.server.clients.forEach(c => {
 			c.send(response);
@@ -232,5 +238,15 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		this.server.clients.forEach(c => {
 			c.send(response);
 		});
+	}
+
+	@SubscribeMessage("setLeftPlayerName")
+	setLeftPlayerName(client: any, data: any): void {
+		this.gameState.leftPlayerName = data;
+	}
+
+	@SubscribeMessage("setRightPlayerName")
+	setRightPlayerName(client: any, data: any): void {
+		this.gameState.rightPlayerName = data;
 	}
 }

@@ -1,0 +1,40 @@
+.PlayGame_component {
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
+.gameInfo {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    width: 900px;
+    text-align: center;
+    align-items: center;
+}
+
+.logoGame {
+    text-align: center;
+}
+
+.activeGames {
+    color: #496b53;
+    padding: 20px;
+    background-color: white;
+    border: 12px solid #496b53;
+    height: 300px;
+    width: 500px;
+    contain: content;
+    overflow: scroll;
+    overflow-scrolling: auto;
+}
+
+.gameLink {
+    display: flex;
+    justify-content: space-around;
+    margin: 10px;
+}

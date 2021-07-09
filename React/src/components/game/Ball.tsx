@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 
 type BallProps = {
+	color: string
 	xPosition: number
 	yPosition: number
 	width: number
@@ -12,7 +13,7 @@ class Ball extends Component<BallProps> {
 		return {
 			width: `${this.props.width}px`,
 			height: `${this.props.height}px`,
-			backgroundColor: "white",
+			backgroundColor: `${this.props.color}`,
 			marginLeft: `${this.props.xPosition}px`,
 			top: `${this.props.yPosition}px`,
 			borderRadius: "50%",
