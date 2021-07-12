@@ -32,7 +32,7 @@ const WaitingRoom = () => {
     }, []);
 
 
-    const URL = "ws://localhost:8000/WaitingRoom";
+    const URL = "ws://localhost:8000/WaitingRoom/1";
     // const URL = `ws://localhost:8000/chat/${props.activeChannelID}`;
     const websocket: any = useRef<WebSocket>(null);
 
