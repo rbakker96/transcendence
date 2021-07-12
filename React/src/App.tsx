@@ -35,13 +35,13 @@ function App() {
 
               <Route exact path={"/chat"}><ChatPage /></Route>
 
-              <Route exact path={'/game'} component={GamePage}  />
-
               <Route exact path={'/PlayGame'} component={PlayGame}  />
 
               <Route exact path={'/WatchGame'} component={WatchGame}  />
 
               <Route exact path={'/WaitingRoom'} component={WaitingRoom}  />
+
+              <Route exact path={'/game'} component={GamePage}  />
 
               <Route exact path={'/specialGame'} component={SpecialGame}  />
 
