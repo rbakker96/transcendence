@@ -30,13 +30,15 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
 
   useEffect(() => {
     const getChatMessages = async () => {
-      const { data } = await API.ChatMessage.getChannelMessages(props.activeChannelID);
+      const { data } = await API.ChatMessage.getChannelMessages(
+        props.activeChannelID
+      );
       setHistoricChatMessages(data);
     };
     getChatMessages();
   }, [props.activeChannelID]);
 
-  const URL = `ws://localhost:8000/${props.activeChannelID}`;
+  const URL = `ws://localhost:8000/chat/${props.activeChannelID}`;
 
   useEffect(() => {
     websocket.current = new WebSocket(URL);
@@ -72,10 +74,9 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
 
   return (
     <div>
-      {historicChatMessages
-        .map((message: DatabaseMessageType) => (
-          <EachChatMessage key={message.messageID} message={message} />
-        ))}
+      {historicChatMessages.map((message: DatabaseMessageType) => (
+        <EachChatMessage key={message.messageID} message={message} />
+      ))}
       {newMessages.map((message: SocketMessageType) => (
         <EachChatMessage key={message.messageTimestamp} message={message} />
       ))}

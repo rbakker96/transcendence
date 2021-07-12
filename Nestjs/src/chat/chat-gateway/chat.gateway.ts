@@ -9,6 +9,9 @@ import {
 
 import { Server, Socket } from "ws";
 
+let chat_sockets: Socket[][] = [];
+let chat_channel_IDs: number[] = [];
+
 @WebSocketGateway()
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
@@ -20,18 +23,35 @@ export class ChatGateway
   }
 
   handleConnection(client: Socket, ...args: any[]) {
-    console.log("ChatGateway: new client connected");
+    if (args[0].url.includes("chat")) {
+      console.log("ChatGateway: new client connected");
+      console.log(args[0].url);
+      const id = args[0].url.replace(/[^0-9]/g, "");
+      if (!chat_sockets[id]) chat_sockets[id] = [];
+      chat_sockets[id].push(client);
+      chat_channel_IDs.push(id);
+    }
   }
 
   handleDisconnect(client: Socket) {
-    console.log("ChatGateway: client disconnected");
+    chat_channel_IDs.forEach(function (id) {
+      if (chat_sockets[id]) {
+        let index = chat_sockets[id].indexOf(client);
+        if (index > -1) {
+          console.log("ChatGateway: client disconnected");
+          chat_sockets[id].splice(index, 1);
+          // remove active channel id after the array is empty
+        }
+      }
+    });
   }
 
   @SubscribeMessage("newMessage")
   newMessageHandler(client: Socket, data: any) {
     console.log("ChatGateway: newMessageHandler");
     const response = JSON.stringify({ event: "newMessage", data: data });
-    this.server.clients.forEach((c) => {
+    // console.log(data.channelID);
+    chat_sockets[data.channelID].forEach((c) => {
       c.send(response);
     });
   }
