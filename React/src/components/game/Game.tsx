@@ -67,8 +67,8 @@ type GameProps = {
 
 class Game extends Component<GameProps> {
 	state: GameState = {
-		client: null,
-		leftPlayerName: "left",
+		client: null,											//userID form waiting room
+		leftPlayerName: "left",									//not needed
 		leftPlayerX: 10,
 		leftPlayerY: GAME_HEIGHT / 2 - (PLAYER_HEIGHT / 2),
 		leftPlayerMoveSpeed: 7.5,
@@ -76,7 +76,7 @@ class Game extends Component<GameProps> {
 		leftMoveSpeedColor: "red",
 		leftShotSpeedUsesLeft: 3,
 		leftShotSpeedColor: "red",
-		rightPlayerName: "right",
+		rightPlayerName: "right",								//not needed
 		rightPlayerX: GAME_WIDTH - 20,
 		rightPlayerY: GAME_HEIGHT / 2 - (PLAYER_HEIGHT / 2),
 		rightPlayerMoveSpeed: 7.5,
@@ -88,7 +88,7 @@ class Game extends Component<GameProps> {
 		ballY: GAME_HEIGHT / 2,
 		velocityX: 4,
 		velocityY: 4,
-		role: "viewer",
+		role: "viewer",											//from waiting room
 		leftPlayerScore: 0,
 		rightPlayerScore: 0,
 		gameFinished: false,
@@ -108,6 +108,8 @@ class Game extends Component<GameProps> {
 		this.keyUp = this.keyUp.bind(this);
 		this.ballMovement = this.ballMovement.bind(this);
 	}
+
+
 
 	keyDown(event: any) {
 		if (event.keyCode === W_KEYCODE) {
@@ -188,25 +190,21 @@ class Game extends Component<GameProps> {
 
 		// THIS NEEDS A GOOD IMPLEMENTATION, NEED TO WORK THIS OUT LATER
 		const updateRoleStateVariable = (id: number) => {
-			if (id == 2) {
+			if (id === 2) {
 				this.setState({role: "leftPlayer"});
 				if (this.state.client) {
 					this.setState({leftPlayerName: this.state.client.username});
-				} else {
-					this.setState({leftPlayerName: "LEFT_PLAYER_NAME"});
 				}
-				this.state.websocket.send(JSON.stringify({event: 'setLeftPlayerName', data: this.state.leftPlayerName}));
-			} else if (id == 4) {
+				this.state.websocket.send(JSON.stringify({event: 'setLeftPlayerName', data: this.state.leftPlayerName})); //SET UP FRONT
+			} else if (id === 4) {
 				this.setState({role: "rightPlayer"});
 				if (this.state.client) {
 					this.setState({rightPlayerName: this.state.client.username});
-				} else {
-					this.setState({rightPlayerName: "RIGHT_PLAYER_NAME"});
 				}
-				this.state.websocket.send(JSON.stringify({event: 'setRightPlayerName', data: this.state.rightPlayerName}));
+				this.state.websocket.send(JSON.stringify({event: 'setRightPlayerName', data: this.state.rightPlayerName})); //SET UP FRONT
 				this.state.websocket.send(JSON.stringify({event: 'activateBall'}));
 			} else {
-				this.setState({role: "viewer"});
+				this.setState({role: "viewer"}); //DEFAULT ??
 				this.state.websocket.send(JSON.stringify({event: 'activateBall'}));
 			}
 		}
@@ -500,11 +498,14 @@ class Game extends Component<GameProps> {
 		const winner = (this.state.leftPlayerScore === 10 ? this.state.leftPlayerName : this.state.rightPlayerName);
 
 		if (this.state.gameFinished) {
+
+
+
 			return (
 				<Stats
 					leftPlayerName = { this.state.leftPlayerName }
 					leftPlayerScore = { this.state.leftPlayerScore }
-					rightPlayerName = { this.state.leftPlayerName}
+					rightPlayerName = { this.state.rightPlayerName}
 					rightPlayerScore = { this.state.rightPlayerScore }
 					winner = { winner }
 				/>

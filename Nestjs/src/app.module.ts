@@ -9,6 +9,7 @@ import { ChatMessageModule } from "./chat/message/chatMessage.module";
 import { ChannelModule } from "./chat/channel/channel.module";
 import { GameModule } from "./game/game.module";
 import { ChatGatewayModule } from "./chat/chat-gateway/chat-gateway.module";
+import {WaitingRoomGatewayModule} from "./game/waitingRoom/waitingRoom.module";
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { ChatGatewayModule } from "./chat/chat-gateway/chat-gateway.module";
     ChannelModule,
     ChatGatewayModule,
     GameModule,
+    WaitingRoomGatewayModule,
   ],
   controllers: [AppController],
   providers: [AppService],

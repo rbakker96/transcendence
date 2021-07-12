@@ -5,6 +5,8 @@ class GamePage extends Component {
 
 	render() {
 		return (
+
+
 			<Game
 				specialGame={false}
 				mapStyle={"game"}

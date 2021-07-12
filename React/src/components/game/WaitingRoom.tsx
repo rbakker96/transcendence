@@ -1,4 +1,4 @@
-import React, { useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 
@@ -6,8 +6,8 @@ import logo from "./img/42_logo.svg"
 import './stylesheets/WaitingRoom.css'
 
 const WaitingRoom = () => {
-
     const [unauthorized, setUnauthorized] = useState(false);
+    const [user, setUser] = useState({username: '', id: 0,});
 
     useEffect(() => {
         let mounted = true;
@@ -22,6 +22,38 @@ const WaitingRoom = () => {
         authorization();
         return () => {mounted = false;}
     }, []);
+
+    useEffect(() => {
+        const getUser = async () => {
+            const {data} = await axios.get('userData')
+            setUser(data);
+        }
+        getUser();
+    }, []);
+
+
+    const URL = "ws://localhost:8000/WaitingRoom";
+    // const URL = `ws://localhost:8000/chat/${props.activeChannelID}`;
+    const websocket: any = useRef<WebSocket>(null);
+
+    useEffect(() => {
+        websocket.current = new WebSocket(URL);
+
+        websocket.current.onopen = () => {
+            console.log("ws entered waitingRoom: ");
+        };
+
+        websocket.current.onclose = () => {
+            console.log("ws left waitingRoom ");
+        };
+
+        return () => {
+            websocket.current.close();
+        };
+    }, []);
+
+
+
 
     if (unauthorized)
         return <Redirect to={'/'}/>;
