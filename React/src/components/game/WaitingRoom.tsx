@@ -47,6 +47,19 @@ const WaitingRoom = () => {
             console.log("ws left waitingRoom ");
         };
 
+        websocket.current.addEventListener("newArrival", function (event: any) {
+            const object = JSON.parse(event.data);
+            if (object.event === "addToQueue") {
+                console.log("React: addToQueue event triggered");
+                const new_client = {
+                    clientID: ,
+                    userName: ,
+                    messageContent: ,
+                    messageTimestamp: ,
+                };
+            }
+        });
+
         return () => {
             websocket.current.close();
         };
