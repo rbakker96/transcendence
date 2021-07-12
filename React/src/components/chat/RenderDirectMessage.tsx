@@ -19,7 +19,7 @@ function RenderDirectMessage(props: RenderDirectMessageType) {
       const { data } = await API.Channels.index();
       let result = [];
       result = data.filter((newData: any) => {
-        return newData.IsPrivate === true;
+        return newData.IsPrivate;
       });
       setDirectMessage(result);
     };

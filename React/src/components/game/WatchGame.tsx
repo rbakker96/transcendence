@@ -1,5 +1,5 @@
-import React, { useEffect, useState} from "react";
-import { Redirect} from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 
 import logo from "./img/42_logo.svg"

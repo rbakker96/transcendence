@@ -195,6 +195,7 @@ class Game extends Component<GameProps> {
 				if (this.state.client) {
 					this.setState({leftPlayerName: this.state.client.username});
 				}
+
 				this.state.websocket.send(JSON.stringify({event: 'setLeftPlayerName', data: this.state.leftPlayerName})); //SET UP FRONT
 			} else if (id === 4) {
 				this.setState({role: "rightPlayer"});
