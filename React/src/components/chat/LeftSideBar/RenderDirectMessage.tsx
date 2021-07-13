@@ -28,7 +28,7 @@ function RenderDirectMessage (props: RenderDirectMessageType) {
   return (
       <div>
         <Divider orientation={"left"} style={{ "color": "#5B8FF9" }}>
-          Chat channels
+          Direct Messages
         </Divider>
         {channel.map((item: any) => (
             <dl key={item.Id} onClick={() => setActiveChannelId(item.Id)}>
