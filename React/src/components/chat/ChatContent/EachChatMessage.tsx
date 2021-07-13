@@ -1,6 +1,6 @@
 import { Comment } from "antd";
 import { useEffect, useState } from "react";
-import API from "../../API/API";
+import API from "../../../API/API";
 
 type ChatMessageType = {
   // messageID: number;
