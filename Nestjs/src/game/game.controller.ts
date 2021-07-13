@@ -30,6 +30,12 @@ export class GameController {
     }
 
     @UseGuards(verifyUser)
+    @Post('updateGameURL')
+    async updateGameURL (@Req() request: Request, @Body() data) : Promise<any> {
+        return this.gameService.updateGameURL(data.gameID, data.URL);
+    }
+
+    @UseGuards(verifyUser)
     @Post('updateGameStats')
     async updateGameStats (@Req() request: Request, @Body() data: gameStatsDto) : Promise<any> {
         return this.gameService.update(data.gameID, data);

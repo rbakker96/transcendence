@@ -6,6 +6,9 @@ import logo from "./img/42_logo.svg"
 import './stylesheets/WaitingRoom.css'
 
 const WaitingRoom = () => {
+    const [gameData, setGameData] = useState('');
+    const [redirectURL, setRedirectURL] = useState('');
+    const [redirect, setRedirect] = useState(false);
     const [unauthorized, setUnauthorized] = useState(false);
     const [user, setUser] = useState({username: '', id: 0,});
 
@@ -27,12 +30,13 @@ const WaitingRoom = () => {
         const getUser = async () => {
             const {data} = await axios.get('userData')
             setUser(data);
+            console.log(data);
         }
         getUser();
     }, []);
 
 
-    const URL = "ws://localhost:8000/WaitingRoom/1";
+    const URL = "ws://localhost:8000/WaitingRoom";
     // const URL = `ws://localhost:8000/chat/${props.activeChannelID}`;
     const websocket: any = useRef<WebSocket>(null);
 
@@ -41,35 +45,52 @@ const WaitingRoom = () => {
 
         websocket.current.onopen = () => {
             console.log("ws entered waitingRoom: ");
+
+            if (user.id) {
+                const playerData = {id: user.id};
+                console.log(playerData);
+                const newPlayer = JSON.stringify({event: "newClassicGamePlayer", data: playerData});
+                websocket.current.send(newPlayer);
+            }
         };
 
         websocket.current.onclose = () => {
             console.log("ws left waitingRoom ");
         };
 
-        websocket.current.addEventListener("newArrival", function (event: any) {
+        websocket.current.addEventListener("message", function (event: any) {
             const object = JSON.parse(event.data);
-            if (object.event === "addToQueue") {
-                console.log("React: addToQueue event triggered");
-                const new_client = {
-                    clientID: ,
-                    userName: ,
-                    messageContent: ,
-                    messageTimestamp: ,
-                };
+            if (object.event === "newClassicGamePlayer") {
+                console.log("React: newClassicGamePlayer event triggered");
+                setRedirectURL(object.data.gameURL);
+                setRedirect(true);
             }
+
+            if (object.event === "newDeluxeGamePlayer") {
+                console.log("React: newDeluxeGamePlayer event triggered");
+            }
+
+            if (object.event === "duplicateClient") {
+                console.log("React: duplicateClient event triggered");
+
+            }
+
         });
 
         return () => {
             websocket.current.close();
         };
-    }, []);
+    }, [user]);
 
 
 
 
     if (unauthorized)
         return <Redirect to={'/'}/>;
+
+    if (redirect)
+        return <Redirect to={redirectURL}/>;
+
 
     return (
         <main className="WaitingRoom_component">

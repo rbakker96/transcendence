@@ -7,8 +7,5 @@ export class newGameDto {
     @IsNotEmpty()
     playerTwo: number;
 
-    @IsNotEmpty()
-    gameURL: string;
-
     active: boolean;
 }

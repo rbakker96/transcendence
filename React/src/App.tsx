@@ -41,7 +41,7 @@ function App() {
 
               <Route exact path={'/WaitingRoom'} component={WaitingRoom}  />
 
-              <Route exact path={'/game'} component={GamePage}  />
+              <Route exact path={'/game:gameID'} component={GamePage}  />
 
               <Route exact path={'/specialGame'} component={SpecialGame}  />
 
