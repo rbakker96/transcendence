@@ -16,8 +16,11 @@ export class Channel {
   @JoinTable()
   admins: User[];
 
-  @Column({default: false})
+  @Column()
   IsPrivate: boolean;
+
+  @Column({default : false})
+  IsDirect: boolean;
 
   @PrimaryGeneratedColumn()
   Id: number;
