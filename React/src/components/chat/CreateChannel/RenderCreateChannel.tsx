@@ -1,24 +1,25 @@
 import React, { SyntheticEvent, useEffect, useState} from "react";
 import axios from 'axios';
 import '../stylesheets/Register.css'
-import {User} from "../../../Models/User.model";
+import {User} from "../../../models/User.model";
 import {Multiselect} from "multiselect-react-dropdown";
-import {ChannelUser} from "../../../Models/ChannelUser.model";
 import {Redirect} from "react-router-dom";
+
 
 
 
 function RenderCreateChannel() {
 
     // states for data types
-
+    let participants : number = 1;
     const [channelName, setChannelName] = useState('');
     const [isPrivate, setIsPrivate] = useState(false);
     const [redirect, setRedirect] = useState(false);
     // states for data transfer
     const [users, setUsers] = useState<Array<User>>([]);
-    const [channelUsers, setChannelUsers] = useState<Array<ChannelUser>>([]);
-    const [channelAdmins, setChannelAdmins] = useState<Array<ChannelUser>>([]);
+    const [channelUsers, setChannelUsers] = useState<Array<User>>([]);
+    const [channelAdmins, setChannelAdmins] = useState<Array<User>>([]);
+
 
     useEffect(() => {
         const getUser = async () => {
@@ -29,14 +30,13 @@ function RenderCreateChannel() {
     }, []);
 
 
-// dit werkt volgens mij
     let submit = async (e: SyntheticEvent) => {
         e.preventDefault();
         await axios.post('channels', {
             Name: channelName,
             IsPrivate: isPrivate,
             Users: channelUsers,
-            Admins: channelAdmins
+            Admins: channelAdmins,
         });
         setRedirect(true);
     }
@@ -53,9 +53,9 @@ function RenderCreateChannel() {
 
 
     function renderChooseUsers() {
-
         function OnSelectUser(selectedList: any) {
             setChannelUsers(selectedList);
+            participants++;
         }
         return (
             <div>

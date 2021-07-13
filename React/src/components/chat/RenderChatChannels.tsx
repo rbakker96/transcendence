@@ -1,7 +1,7 @@
 import { Divider } from "antd";
 import API from "../../API/API";
 import React, { useEffect, useState } from "react";
-import { Channel } from "../../Models/Channel.model";
+import {Channel} from "../../models/Channel.model";
 
 type RenderChatChannelsType = {
   setActiveId: Function;
@@ -16,7 +16,9 @@ function RenderChatChannels(props: RenderChatChannelsType) {
   useEffect(() => {
     const getchannels = async () => {
       const { data } = await API.Channels.index();
-      setChannel(data);
+      let result: Channel[];
+      result = data.filter((channel : any) => channel.IsDirect === false);
+      setChannel(result);
     };
     getchannels();
   }, []);

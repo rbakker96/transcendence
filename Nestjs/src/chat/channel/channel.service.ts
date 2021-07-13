@@ -1,7 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Channel } from "./channel.entity";
-import { Repository } from "typeorm";
+import {getRepository, Repository} from "typeorm";
+import {User} from "../../user/models/user.entity";
 
 @Injectable()
 export class ChannelService {
@@ -10,10 +11,17 @@ export class ChannelService {
     private readonly channelRepository: Repository<Channel>
   ) {}
 
-  async all(): Promise<Channel[]> {
+  async allx(): Promise<Channel[]> {
     return this.channelRepository.find();
   }
 
+  async all() : Promise<Channel[]> {
+    const channelUsers = await getRepository(Channel)
+        .createQueryBuilder("channel")
+        .leftJoinAndSelect("channel.users", "user")
+        .getMany();
+    return channelUsers;
+  }
   async create(channel: Channel): Promise<Channel> {
     return this.channelRepository.save(channel);
   }

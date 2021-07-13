@@ -1,3 +1,4 @@
+
 import {User} from './User.model'
 import {ChannelUser} from "./ChannelUser.model";
 
