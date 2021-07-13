@@ -22,8 +22,6 @@ type SocketMessageType = {
   messageTimestamp: string;
 };
 
-const URL = "ws://localhost:8000";
-
 function ChatChannelMessages(props: ChatChannelMessagesProps) {
   const [historicChatMessages, setHistoricChatMessages] = useState([]);
   const [newMessages, setNewMessages] = useState<SocketMessageType[]>([]);
@@ -32,21 +30,26 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
 
   useEffect(() => {
     const getChatMessages = async () => {
-      const { data } = await API.ChatMessage.getChannelMessages(props.activeChannelID);
+      const { data } = await API.ChatMessage.getChannelMessages(
+        props.activeChannelID
+      );
       setHistoricChatMessages(data);
     };
     getChatMessages();
   }, [props.activeChannelID]);
 
+  const URL = `ws://localhost:8000/chat/${props.activeChannelID}`;
+
   useEffect(() => {
     websocket.current = new WebSocket(URL);
 
     websocket.current.onopen = () => {
-      console.log("ws opened & active channel: " + props.activeChannelID);
+      console.log(`ws opened & active channel: ${props.activeChannelID}`);
     };
 
     websocket.current.onclose = () => {
-      console.log("ws closed & active channel: " + props.activeChannelID);
+      console.log(`ws closed & active channel: ${props.activeChannelID}`);
+      setNewMessages([]);
     };
 
     websocket.current.addEventListener("message", function (event: any) {
@@ -59,23 +62,23 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
           messageContent: object.data.messageContent,
           messageTimestamp: object.data.messageTimestamp,
         };
-        setNewMessages((prevState) => [...prevState, new_message]);
+        if (object.data.channelID === props.activeChannelID)
+          setNewMessages((prevState) => [...prevState, new_message]);
       }
     });
 
     return () => {
       websocket.current.close();
     };
-  }, [props.activeChannelID]);
+  }, [props.activeChannelID, URL]);
 
   return (
     <div>
-      {historicChatMessages
-        .map((message: DatabaseMessageType) => (
-          <EachChatMessage key={message.messageID} message={message} />
-        ))}
+      {historicChatMessages.map((message: DatabaseMessageType) => (
+        <EachChatMessage key={message.messageID} message={message} />
+      ))}
       {newMessages.map((message: SocketMessageType) => (
-        <EachChatMessage message={message} />
+        <EachChatMessage key={message.messageTimestamp} message={message} />
       ))}
       <ChatInputBar
         websocket={websocket.current}

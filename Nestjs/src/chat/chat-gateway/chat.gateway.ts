@@ -5,10 +5,12 @@ import {
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
-  WsResponse,
 } from "@nestjs/websockets";
 
-import { Server } from "ws";
+import { Server, Socket } from "ws";
+
+let chat_sockets: Socket[][] = [];
+let chat_channel_IDs: number[] = [];
 
 @WebSocketGateway()
 export class ChatGateway
@@ -16,23 +18,40 @@ export class ChatGateway
 {
   @WebSocketServer() server: Server;
 
-  afterInit(server: any): any {
+  afterInit(server: Server) {
     console.log("ChatGateway: init");
   }
 
-  handleConnection(client: any, ...args: any[]): any {
-    console.log("ChatGateway: new client connected");
+  handleConnection(client: Socket, ...args: any[]) {
+    if (args[0].url.includes("chat")) {
+      console.log("ChatGateway: new client connected");
+      console.log(args[0].url);
+      const id = args[0].url.replace(/[^0-9]/g, "");
+      if (!chat_sockets[id]) chat_sockets[id] = [];
+      chat_sockets[id].push(client);
+      chat_channel_IDs.push(id);
+    }
   }
 
-  handleDisconnect(client: any): any {
-    console.log("ChatGateway: client disconnected");
+  handleDisconnect(client: Socket) {
+    chat_channel_IDs.forEach(function (id) {
+      if (chat_sockets[id]) {
+        let index = chat_sockets[id].indexOf(client);
+        if (index > -1) {
+          console.log("ChatGateway: client disconnected");
+          chat_sockets[id].splice(index, 1);
+          // remove active channel id after the array is empty
+        }
+      }
+    });
   }
 
   @SubscribeMessage("newMessage")
-  newMessageHandler(client: any, data: any): any {
+  newMessageHandler(client: Socket, data: any) {
     console.log("ChatGateway: newMessageHandler");
     const response = JSON.stringify({ event: "newMessage", data: data });
-    this.server.clients.forEach((c) => {
+    // console.log(data.channelID);
+    chat_sockets[data.channelID].forEach((c) => {
       c.send(response);
     });
   }

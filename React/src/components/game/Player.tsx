@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 
 type PlayerProps = {
+	color: string
 	playerX: number
 	playerY: number
 	playerWidth: number
@@ -9,12 +10,12 @@ type PlayerProps = {
 	gameHeight: number
 }
 
-class RightPlayer extends Component<PlayerProps> {
-	styleRightPlayer(): any {
+class Player extends Component<PlayerProps> {
+	stylePlayerPaddle(): any {
 		return {
 			width: `${this.props.playerWidth}px`,
 			height: `${this.props.playerHeight}px`,
-			backgroundColor: "white",
+			backgroundColor: `${this.props.color}`,
 			marginLeft: `${this.props.playerX}px`,
 			position: "absolute",
 			top: `${this.props.playerY}px`,
@@ -23,12 +24,13 @@ class RightPlayer extends Component<PlayerProps> {
 	}
 
 	render() {
-		const style = this.styleRightPlayer();
+		const paddleStyle = this.stylePlayerPaddle();
 		return (
-			<div style = {style} >
+			<div>
+				<div style = {paddleStyle} />
 			</div>
 		);
 	}
 }
 
-export default RightPlayer;
+export default Player;
