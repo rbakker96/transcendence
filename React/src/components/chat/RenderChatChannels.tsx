@@ -34,8 +34,8 @@ function RenderChatChannels (props: RenderChatChannelsType) {
     }
     else
       return ;
-
   }
+
   return (
     <div>
       <Divider orientation={"left"} style={{ "color": "#5B8FF9" }}>
@@ -45,7 +45,6 @@ function RenderChatChannels (props: RenderChatChannelsType) {
         <ul key={item.Id} onClick={() => setActiveChannelId(item.Id)}>
           {item.ChannelName}
           {renderLocks(item)}
-
         </ul>
       ))}
     </div>

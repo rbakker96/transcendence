@@ -4,7 +4,7 @@ import { Channel } from "./channel.entity";
 import {User} from "../../user/models/user.entity";
 
 
-@Controller('channels')
+@Controller('channels/')
 export class ChannelController {
   constructor(private channelService: ChannelService) {}
 
