@@ -20,12 +20,14 @@ export class ChannelController {
     @Body("IsPrivate") Private:boolean,
     @Body('Users') Users: User[],
     @Body('Admins') Admins: User[],
-    @Body('IsDirect') IsDirect:boolean){
+    @Body('IsDirect') IsDirect:boolean,
+    @Body('Password') Password:string){
     const channel = new Channel();
     channel.ChannelName = ChannelName;
     channel.IsPrivate = Private;
     channel.users = Users;
     channel.admins = Admins;
+    channel.Password = Password;
     if (Users.length === 2)
       channel.IsDirect = true;
     else
