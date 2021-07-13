@@ -1,7 +1,7 @@
 import { Divider } from "antd";
 import API from "../../API/API";
 import { useEffect, useState } from "react";
-import { Channel } from "../../Models/Channel.model";
+import { Channel } from "../../models/Channel.model";
 
 type RenderDirectMessageType = {
   setActiveId: Function;
