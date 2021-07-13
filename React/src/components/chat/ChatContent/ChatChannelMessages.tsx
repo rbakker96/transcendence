@@ -1,6 +1,6 @@
 import EachChatMessage from "./EachChatMessage";
 import { useEffect, useRef, useState } from "react";
-import API from "../../API/API";
+import API from "../../../API/API";
 import ChatInputBar from "./ChatInputBar";
 
 type ChatChannelMessagesProps = {

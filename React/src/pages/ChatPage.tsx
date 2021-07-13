@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Row, Col } from "antd";
 import "antd/dist/antd.css";
-import ChatContent from "../components/chat/ChatContent";
-import ChatSidebar from "../components/chat/ChatSidebar";
+import ChatContent from "../components/chat/ChatContent/ChatContent";
+import ChatSidebar from "../components/chat/LeftSideBar/ChatSidebar";
 
 function ChatPage() {
   const [ActiveId, setActiveId] = useState(0);

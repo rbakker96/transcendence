@@ -1,6 +1,6 @@
 import styles from "./ChatInputBar.module.css";
 import { SyntheticEvent, useEffect, useState } from "react";
-import API from "../../API/API";
+import API from "../../../API/API";
 
 type TextBarType = {
   websocket: WebSocket;

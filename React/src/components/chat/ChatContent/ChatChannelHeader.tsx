@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import API from "../../API/API";
+import API from "../../../API/API";
 import { Divider } from "antd";
 
 type ChatChannelHeaderProps = {
