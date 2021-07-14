@@ -4,6 +4,7 @@ import API from "../../API/API";
 type ChatContentProps = {
     activeChannelID: number;
     setPasswordValid: Function;
+    setActiveId: Function;
 };
 
 function RenderGivePassword(props : ChatContentProps) {
@@ -22,8 +23,8 @@ function RenderGivePassword(props : ChatContentProps) {
     {
         if (givenPassword === dbPassword)
         {
-            // ik ga hier een bool zetten zodat de ding weet dat ww is ingevuld
             props.setPasswordValid(true);
+            props.setActiveId(props.activeChannelID);
             // ik forward hem terug naar chatcontent
         }
         else

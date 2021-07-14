@@ -14,7 +14,7 @@ function ChatPage() {
           <ChatSidebar setActiveId={setActiveId} />
         </Col>
         <Col className="gutter-row" span={20}>
-          <ChatContent activeChannelID={ActiveId} />
+          <ChatContent activeChannelID={ActiveId} setActiveChannelId={setActiveId} />
         </Col>
       </Row>
     </div>

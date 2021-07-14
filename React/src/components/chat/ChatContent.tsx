@@ -7,6 +7,7 @@ import RenderGivePassword from "./RenderGivePassword";
 
 type ChatContentProps = {
   activeChannelID: number;
+  setActiveChannelId: Function;
 };
 
 function ChatContent(props: ChatContentProps) {
@@ -25,25 +26,23 @@ function ChatContent(props: ChatContentProps) {
   })
 
   console.log("Is private = ", isPrivate)
+  console.log("channelID is = ", props.activeChannelID)
   if (isPrivate && !PasswordValid)
-  {
-    return <div>
-      // if channel is private render password screen
-      <RenderGivePassword activeChannelID={active_channel_ID} setPasswordValid={setPasswordValid}  />
-    </div>
-  }
-  else
   {
     return (
         <div>
-          <ChatChannelHeader activeChannelID={active_channel_ID} />
-          {active_channel_ID
-              ? <ChatChannelMessages activeChannelID={active_channel_ID} />
-              : <div />
-          }
-        </div>
-    );
+      <RenderGivePassword activeChannelID={active_channel_ID} setPasswordValid={setPasswordValid} setActiveId={props.setActiveChannelId} />
+    </div>)
   }
+  return (
+      <div>
+        <ChatChannelHeader activeChannelID={active_channel_ID} />
+        {active_channel_ID
+            ? <ChatChannelMessages activeChannelID={active_channel_ID} />
+            : <div />
+        }
+      </div>
+  );
 }
 
 export default ChatContent;
