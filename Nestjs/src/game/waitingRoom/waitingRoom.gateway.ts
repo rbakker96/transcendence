@@ -91,6 +91,7 @@ export class WaitingRoomGateway implements OnGatewayInit, OnGatewayConnection, O
         const playerOne = await this.userService.findOne(waitingUsers[game.classic][0]);
         const playerTwo = await this.userService.findOne(waitingUsers[game.classic][1]);
         const gameData = {
+          gameID: gameID,
           gameURL: gameURL,
           playerOne: playerOne.id,
           playerOneUsername: playerOne.username,

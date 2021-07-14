@@ -5,6 +5,7 @@ import axios from 'axios';
 import logo from "./img/42_logo.svg"
 import './stylesheets/WaitingRoom.css'
 
+
 const WaitingRoom = () => {
     const [gameData, setGameData] = useState('');
     const [redirectURL, setRedirectURL] = useState('');
@@ -63,6 +64,7 @@ const WaitingRoom = () => {
             if (object.event === "newClassicGamePlayer") {
                 console.log("React: newClassicGamePlayer event triggered");
                 setRedirectURL(object.data.gameURL);
+                setGameData(object.data);
                 setRedirect(true);
             }
 
@@ -86,11 +88,11 @@ const WaitingRoom = () => {
 
 
     if (unauthorized)
-        return <Redirect to={'/'}/>;
+        return <Redirect to={'/'} />;
 
     if (redirect)
-        return <Redirect to={redirectURL}/>;
-
+        return <Redirect to={{pathname: redirectURL, state: {gameData} }} />;
+        // return <GamePage Object={gameData}/>;
 
     return (
         <main className="WaitingRoom_component">
