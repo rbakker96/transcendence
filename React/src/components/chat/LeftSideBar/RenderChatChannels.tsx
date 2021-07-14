@@ -1,7 +1,6 @@
 import { Divider } from "antd";
 import API from "../../../API/API";
 import React, { useEffect, useState } from "react";
-import {Channel} from "../../models/Channel.model";
 import {FaLock} from 'react-icons/fa';
 import {Channel} from "../../../models/Channel.model";
 

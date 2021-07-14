@@ -5,9 +5,6 @@ import {User} from "../../../models/User.model";
 import {Multiselect} from "multiselect-react-dropdown";
 import {Redirect} from "react-router-dom";
 
-
-
-
 function RenderCreateChannel() {
 
     // states for data types
