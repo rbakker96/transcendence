@@ -1,5 +1,5 @@
 import { Card } from "antd";
-import { SettingOutlined } from "@ant-design/icons";
+import { MinusOutlined } from "@ant-design/icons";
 import { SyntheticEvent } from "react";
 
 type UserProfilePopupType = {
@@ -21,7 +21,7 @@ function UserProfilePopup(props: UserProfilePopupType) {
       hoverable
       style={{ width: 240 }}
       cover={<img alt="userAvatar" src={props.Avatar} />}
-      actions={[<SettingOutlined key={"setting"} onClick={onclick} />]}
+      actions={[<MinusOutlined onClick={onclick} />]}
     >
       <Meta title={props.UserName} description={props.ProfileLink} />
     </Card>

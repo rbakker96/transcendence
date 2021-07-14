@@ -1,10 +1,6 @@
-import ChatChannelHeader from "./ChatChannelHeader";
-import ChatChannelMessages from "./ChatChannelMessages";
-
 import {useEffect, useState} from "react";
 import API from "../../../API/API";
 import RenderGivePassword from "../RenderGivePassword";
-import {Redirect} from "react-router-dom";
 import RenderChatContent from "../RenderChatContent";
 
 type ChatContentProps = {
