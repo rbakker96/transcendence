@@ -9,13 +9,22 @@ type UserProfilePopupType = {
   Avatar: string;
   ProfileLink: string;
   handleClose: any;
+  setIDIsMuted: Function;
 };
 
 const { Meta } = Card;
 
 function UserProfilePopup(props: UserProfilePopupType) {
-  let actions: JSX.Element[];
 
+  function onclick(e: SyntheticEvent) {
+    e.preventDefault();
+    props.setIDIsMuted((prevState: number[]) => [
+      ...prevState,
+      props.MessageUserID,
+    ]);
+  }
+
+  let actions: JSX.Element[];
   if (props.ActiveUserID === props.MessageUserID) {
     actions = [<CloseOutlined onClick={props.handleClose} />];
   } else {
@@ -23,10 +32,6 @@ function UserProfilePopup(props: UserProfilePopupType) {
       <UserDeleteOutlined onClick={onclick} />,
       <CloseOutlined onClick={props.handleClose} />,
     ];
-  }
-
-  function onclick(e: SyntheticEvent) {
-    alert("This is where to mute the user");
   }
 
   return (

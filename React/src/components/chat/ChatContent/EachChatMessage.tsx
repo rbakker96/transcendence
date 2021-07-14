@@ -4,7 +4,6 @@ import API from "../../../API/API";
 import UserProfilePopup from "../UserProfilePopup/UserProfilePopup";
 
 type ChatMessageType = {
-  // messageID: number;
   channelID: number;
   senderID: number;
   messageContent: string;
@@ -22,6 +21,7 @@ function EachChatMessage(props: EachChatMessageProps) {
   const [Avatar, setAvatar] = useState("");
   const [OpenPopup, setOpenPopup] = useState(false);
   const [ActiveUser, setActiveUser] = useState(0);
+  const [IDIsMuted, setIDIsMuted] = useState<number[]>([]);
 
   const togglePopup = () => {
     setOpenPopup(!OpenPopup);
@@ -44,26 +44,29 @@ function EachChatMessage(props: EachChatMessageProps) {
     setActiveUserID();
   }, []);
 
-  return (
-    <div onClick={togglePopup}>
-      <Comment
-        content={content}
-        author={UserName}
-        avatar={Avatar}
-        datetime={datetime}
-      />
-      {OpenPopup && (
-        <UserProfilePopup
-          ActiveUserID={ActiveUser}
-          MessageUserID={props.message.senderID}
-          UserName={UserName}
-          Avatar={Avatar}
-          ProfileLink={"http://placeholder"}
-          handleClose={togglePopup}
+  if (IDIsMuted.includes(props.message.senderID)) return <div />;
+  else
+    return (
+      <div onClick={togglePopup}>
+        <Comment
+          content={content}
+          author={UserName}
+          avatar={Avatar}
+          datetime={datetime}
         />
-      )}
-    </div>
-  );
+        {OpenPopup && (
+          <UserProfilePopup
+            ActiveUserID={ActiveUser}
+            MessageUserID={props.message.senderID}
+            UserName={UserName}
+            Avatar={Avatar}
+            ProfileLink={"http://placeholder"}
+            handleClose={togglePopup}
+            setIDIsMuted={setIDIsMuted}
+          />
+        )}
+      </div>
+    );
 }
 
 export default EachChatMessage;
