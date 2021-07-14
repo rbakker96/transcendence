@@ -2,6 +2,7 @@ import EachChatMessage from "./EachChatMessage";
 import { useEffect, useRef, useState } from "react";
 import API from "../../../API/API";
 import ChatInputBar from "./ChatInputBar";
+import UserProfilePopup from "../UserProfilePopup/UserProfilePopup";
 
 type ChatChannelMessagesProps = {
   activeChannelID: number;

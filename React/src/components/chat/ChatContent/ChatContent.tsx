@@ -32,7 +32,6 @@ function ChatContent(props: ChatContentProps) {
   }
   else
   {
-    console.log("Hier zou hij als eerste in moeten gaan")
     return (
         <div>
           <RenderChatContent activeChannelId={active_channel_ID}/>
