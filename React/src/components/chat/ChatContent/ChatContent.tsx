@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import API from "../../../API/API";
-import RenderGivePassword from "../RenderGivePassword";
-import RenderChatContent from "../RenderChatContent";
+import RenderGivePassword from "./RenderGivePassword";
+import RenderChatContent from "./RenderChatContent";
 
 type ChatContentProps = {
   activeChannelID: number;

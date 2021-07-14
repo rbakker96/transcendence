@@ -1,5 +1,5 @@
-import ChatChannelHeader from "./ChatContent/ChatChannelHeader";
-import ChatChannelMessages from "./ChatContent/ChatChannelMessages";
+import ChatChannelHeader from "./ChatChannelHeader";
+import ChatChannelMessages from "./ChatChannelMessages";
 
 function RenderChatContent(props: any) {
   return (

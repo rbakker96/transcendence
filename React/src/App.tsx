@@ -13,7 +13,7 @@ import RenderCreateChannel from "./components/chat/CreateChannel/RenderCreateCha
 import PlayGame from "./components/game/PlayGame";
 import WatchGame from "./components/game/WatchGame";
 import WaitingRoom from "./components/game/WaitingRoom";
-import RenderChatContent from "./components/chat/RenderChatContent";
+import RenderChatContent from "./components/chat/ChatContent/RenderChatContent";
 
 function App() {
   return (
