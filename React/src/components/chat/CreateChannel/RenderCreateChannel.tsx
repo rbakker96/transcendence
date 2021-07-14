@@ -1,6 +1,6 @@
 import React, { SyntheticEvent, useEffect, useState} from "react";
 import axios from 'axios';
-import '../stylesheets/Register.css'
+import './RenderCreateChannel.css'
 import {User} from "../../../models/User.model";
 import {Multiselect} from "multiselect-react-dropdown";
 import {Redirect} from "react-router-dom";
