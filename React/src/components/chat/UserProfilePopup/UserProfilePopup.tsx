@@ -3,6 +3,8 @@ import { UserDeleteOutlined, CloseOutlined } from "@ant-design/icons";
 import { SyntheticEvent } from "react";
 
 type UserProfilePopupType = {
+  ActiveUserID: number;
+  MessageUserID: number;
   UserName: string;
   Avatar: string;
   ProfileLink: string;
@@ -12,6 +14,17 @@ type UserProfilePopupType = {
 const { Meta } = Card;
 
 function UserProfilePopup(props: UserProfilePopupType) {
+  let actions: JSX.Element[];
+
+  if (props.ActiveUserID === props.MessageUserID) {
+    actions = [<CloseOutlined onClick={props.handleClose} />];
+  } else {
+    actions = [
+      <UserDeleteOutlined onClick={onclick} />,
+      <CloseOutlined onClick={props.handleClose} />,
+    ];
+  }
+
   function onclick(e: SyntheticEvent) {
     alert("This is where to mute the user");
   }
@@ -21,8 +34,7 @@ function UserProfilePopup(props: UserProfilePopupType) {
       hoverable
       style={{ width: 240 }}
       cover={<img alt="userAvatar" src={props.Avatar} />}
-      actions={[<UserDeleteOutlined onClick={onclick} />,
-        <CloseOutlined onClick={props.handleClose}/>]}
+      actions={actions}
     >
       <Meta title={props.UserName} description={props.ProfileLink} />
     </Card>
