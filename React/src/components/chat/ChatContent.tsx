@@ -4,15 +4,17 @@ import ChatChannelMessages from "./ChatChannelMessages";
 import {useEffect, useState} from "react";
 import API from "../../API/API";
 import RenderGivePassword from "./RenderGivePassword";
+import {Redirect} from "react-router-dom";
+import RenderChatContent from "./RenderChatContent";
 
 type ChatContentProps = {
   activeChannelID: number;
-  setActiveChannelId: Function;
+  setActiveChannelID : Function;
 };
 
 function ChatContent(props: ChatContentProps) {
-  const active_channel_ID = props.activeChannelID;
-  const [isPrivate, setIsPrivate] = useState(true);
+  const active_channel_ID : number = props.activeChannelID;
+  const [isPrivate, setIsPrivate] = useState(false);
   const [PasswordValid, setPasswordValid] = useState(false);
 
   // API call to check if channel is private
@@ -25,24 +27,24 @@ function ChatContent(props: ChatContentProps) {
     getChannelType();
   })
 
-  console.log("Is private = ", isPrivate)
-  console.log("channelID is = ", props.activeChannelID)
   if (isPrivate && !PasswordValid)
   {
     return (
-        <div>
-      <RenderGivePassword activeChannelID={active_channel_ID} setPasswordValid={setPasswordValid} setActiveId={props.setActiveChannelId} />
+    <div>
+      <RenderGivePassword activeChannelID={active_channel_ID} setPasswordValid={setPasswordValid} passwordValid={PasswordValid} />
     </div>)
   }
-  return (
-      <div>
-        <ChatChannelHeader activeChannelID={active_channel_ID} />
-        {active_channel_ID
-            ? <ChatChannelMessages activeChannelID={active_channel_ID} />
-            : <div />
-        }
-      </div>
-  );
+  else
+  {
+    console.log("Hier zou hij als eerste in moeten gaan")
+    return (
+        <div>
+          <RenderChatContent activeChannelId={active_channel_ID}/>
+        </div>
+    );
+  }
+
+
 }
 
 export default ChatContent;
