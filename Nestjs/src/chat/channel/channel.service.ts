@@ -11,8 +11,9 @@ export class ChannelService {
     private readonly channelRepository: Repository<Channel>
   ) {}
 
-  async allx(): Promise<Channel[]> {
-    return this.channelRepository.find();
+  async one(id : number) : Promise<Channel> {
+    console.log("in find one function", id);
+    return this.channelRepository.findOne(id)
   }
 
   async all() : Promise<Channel[]> {

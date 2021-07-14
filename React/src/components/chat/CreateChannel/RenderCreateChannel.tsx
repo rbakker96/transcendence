@@ -15,6 +15,7 @@ function RenderCreateChannel() {
     const [channelName, setChannelName] = useState('');
     const [isPrivate, setIsPrivate] = useState(false);
     const [redirect, setRedirect] = useState(false);
+    const [Password, setPassword] = useState('');
     // states for data transfer
     const [users, setUsers] = useState<Array<User>>([]);
     const [channelUsers, setChannelUsers] = useState<Array<User>>([]);
@@ -37,6 +38,7 @@ function RenderCreateChannel() {
             IsPrivate: isPrivate,
             Users: channelUsers,
             Admins: channelAdmins,
+            Password: Password,
         });
         setRedirect(true);
     }
@@ -100,6 +102,20 @@ function RenderCreateChannel() {
         )
     }
 
+    function renderPassword() {
+        if (isPrivate === true) {
+            return (
+                <div className="form-floating">
+                    <input required className="form-control" id="floatingInput" placeholder="name@example.com"
+                           onChange={e => setPassword(e.target.value)}/>
+                    <label htmlFor="floatingInput">Password</label>
+                </div>
+            )
+        }
+        else
+            return ;
+    }
+
     function renderChannelCreation() {
         return (
             <div>
@@ -107,6 +123,8 @@ function RenderCreateChannel() {
                 {renderChooseAdmin()}
                 {renderChooseUsers()}
                 {renderIsPrivate()}
+                {renderPassword()}
+
             </div>
         )
     }

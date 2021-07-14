@@ -22,6 +22,9 @@ export class Channel {
   @Column({default : false})
   IsDirect: boolean;
 
+  @Column({nullable: true})
+  Password: string;
+
   @PrimaryGeneratedColumn()
   Id: number;
 

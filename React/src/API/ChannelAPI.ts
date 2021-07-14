@@ -16,11 +16,12 @@ export default class ChannelAPI {
   }
 
   static show(id: number): Promise<Channel> {
-    return axios.get(`http://localhost:8000/api/channels/${id}`);
-  }
+    return axios.get(`http://localhost:8000/api/channels`, {
+      params: {
+        channelID: id,
+      }
 
-  static privateChannels(): Promise<Channel[]> {
-    return axios.get("http://localhost:8000/api/channels");
+    });
   }
 
   static create(body: ChannelCreate): Promise<Channel> {

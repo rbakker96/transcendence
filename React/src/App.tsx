@@ -13,6 +13,8 @@ import RenderCreateChannel from "./components/chat/CreateChannel/RenderCreateCha
 import PlayGame from "./components/game/PlayGame";
 import WatchGame from "./components/game/WatchGame";
 import WaitingRoom from "./components/game/WaitingRoom";
+import ChatContent from "./components/chat/ChatContent";
+import RenderChatContent from "./components/chat/RenderChatContent";
 
 function App() {
   return (
@@ -44,6 +46,7 @@ function App() {
               <Route exact path={'/game'} component={GamePage}  />
 
               <Route exact path={'/specialGame'} component={SpecialGame}  />
+              <Route exact path={'/renderChatContent'} component={RenderChatContent} />
 
           </main>
         </BrowserRouter>

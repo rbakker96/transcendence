@@ -8,4 +8,5 @@ export interface Channel {
     Name : string
     admin : User
     users : ChannelUser[]
+    IsPrivate : boolean
 }
