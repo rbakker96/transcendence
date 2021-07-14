@@ -1,6 +1,7 @@
 import { Comment } from "antd";
 import { useEffect, useState } from "react";
 import API from "../../../API/API";
+import UserProfilePopup from "../UserProfilePopup/UserProfilePopup";
 
 type ChatMessageType = {
   // messageID: number;
@@ -20,6 +21,11 @@ function EachChatMessage(props: EachChatMessageProps) {
 
   const [UserName, setUserName] = useState("");
   const [Avatar, setAvatar] = useState("");
+  const [OpenPopup, setOpenPopup] = useState(false);
+
+  const togglePopup = () => {
+    setOpenPopup(!OpenPopup);
+  };
 
   useEffect(() => {
     const getUser = async () => {
@@ -31,13 +37,21 @@ function EachChatMessage(props: EachChatMessageProps) {
   }, [props, setUserName, setAvatar]);
 
   return (
-    <div>
+    <div onClick={togglePopup}>
       <Comment
         content={content}
         author={UserName}
         avatar={Avatar}
         datetime={datetime}
       />
+      {OpenPopup && (
+        <UserProfilePopup
+          UserName={UserName}
+          Avatar={Avatar}
+          ProfileLink={"http://placeholder"}
+          handleClose={togglePopup}
+        />
+      )}
     </div>
   );
 }
