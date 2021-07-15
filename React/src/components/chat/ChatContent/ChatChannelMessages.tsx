@@ -7,6 +7,7 @@ type ChatChannelMessagesProps = {
   activeChannelID: number;
   IDIsMuted: number[];
   setIDIsMuted: Function;
+  activeUserID: number;
 };
 
 type DatabaseMessageType = {
@@ -94,10 +95,10 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
           setIDIsMuted={props.setIDIsMuted}
         />
       ))}
-
       <ChatInputBar
         websocket={websocket.current}
         activeChannelID={props.activeChannelID}
+        activeUserID={props.activeUserID}
       />
     </div>
   );
