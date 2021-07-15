@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Channel } from "./channel.entity";
-import {getRepository, Repository} from "typeorm";
+import {getConnection, getRepository, Repository} from "typeorm";
 import {User} from "../../user/models/user.entity";
 
 @Injectable()
@@ -29,5 +29,15 @@ export class ChannelService {
 
   async findChannelName(data: any): Promise<Channel> {
     return await this.channelRepository.findOne({ Id: data.channelID });
+  }
+
+  async removeUser(userId : number, channelId : number) {
+    console.log("userID = ", userId);
+    console.log("channelID = ", channelId);
+    await getConnection()
+        .createQueryBuilder()
+        .relation(Channel, "users")
+        .of(channelId)
+        .remove(userId)
   }
 }

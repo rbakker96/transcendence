@@ -12,7 +12,7 @@ export class Channel {
   @JoinTable()
   users: User[];
 
-  @ManyToMany(type => User, admin => admin.channels)
+  @ManyToMany(type => User, admin => admin.channels , {cascade: true})
   @JoinTable()
   admins: User[];
 

@@ -4,6 +4,7 @@ import { Channel } from "./channel.entity";
 import {User} from "../../user/models/user.entity";
 
 
+
 @Controller('channels/')
 export class ChannelController {
   constructor(private channelService: ChannelService) {}
@@ -40,5 +41,14 @@ export class ChannelController {
   @Get("findName")
   async findUserName(@Query() query): Promise<Channel> {
     return await this.channelService.findChannelName(query);
+  }
+
+  @Post('remove')
+  async removeUser(
+      @Body('userId') userId: number,
+      @Body('channelId') channelId: number)
+  {
+
+    await this.channelService.removeUser(userId, channelId);
   }
 }
