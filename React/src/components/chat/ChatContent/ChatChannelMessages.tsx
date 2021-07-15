@@ -45,11 +45,11 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
     websocket.current = new WebSocket(URL);
 
     websocket.current.onopen = () => {
-      console.log(`ws opened & active channel: ${props.activeChannelID}`);
+      // console.log(`ws opened & active channel: ${props.activeChannelID}`);
     };
 
     websocket.current.onclose = () => {
-      console.log(`ws closed & active channel: ${props.activeChannelID}`);
+      // console.log(`ws closed & active channel: ${props.activeChannelID}`);
       setNewMessages([]);
     };
 

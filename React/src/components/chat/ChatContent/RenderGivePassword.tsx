@@ -17,7 +17,6 @@ function RenderGivePassword(props : ChatContentProps) {
     useEffect( () => {
         const getChannelType = async () => {
             const {data}  = await API.Channels.findName(props.activeChannelID)
-            console.log(data);
             setDbPassword(data.Password);
         }
         getChannelType();

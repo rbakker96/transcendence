@@ -43,4 +43,11 @@ export default class ChannelAPI {
       },
     });
   }
+
+  static leaveChannel(userID: number, channelID : number) {
+      return axios.post("channels/remove", {
+        userId: userID,
+        channelId: channelID
+      })
+  }
 }

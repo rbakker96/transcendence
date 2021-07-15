@@ -28,4 +28,6 @@ export class UserController {
     const id = await this.authService.clientID(request);
     return { activeUserID: id };
   }
+
 }
+

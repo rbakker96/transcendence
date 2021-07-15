@@ -3,6 +3,7 @@ import API from "../../../API/API";
 import React, { useEffect, useState } from "react";
 import {FaLock} from 'react-icons/fa';
 import {Channel} from "../../../models/Channel.model";
+import axios from "axios";
 
 type RenderChatChannelsType = {
   setActiveId: Function;
@@ -10,10 +11,21 @@ type RenderChatChannelsType = {
 
 function RenderChatChannels (props: RenderChatChannelsType) {
   const [channel, setChannel] = useState<Array<Channel>>([]);
+  const [user, setUser] = useState(0);
   function setActiveChannelId(activeChannelId: number) {
     props.setActiveId(activeChannelId);
     console.log("Clicked channelID: " + activeChannelId);
   }
+
+  // here i need to retrieve the current user
+  useEffect(() => {
+    const getUser = async () => {
+      const {data} = await axios.get('userData')
+      setUser(data.id);
+    }
+    getUser();
+  }, []);
+
   useEffect(() => {
     const getchannels = async () => {
       const { data } = await API.Channels.index();

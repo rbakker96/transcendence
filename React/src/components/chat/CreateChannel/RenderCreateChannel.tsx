@@ -8,7 +8,6 @@ import {Redirect} from "react-router-dom";
 function RenderCreateChannel() {
 
     // states for data types
-    let participants : number = 1;
     const [channelName, setChannelName] = useState('');
     const [isPrivate, setIsPrivate] = useState(false);
     const [redirect, setRedirect] = useState(false);
@@ -17,7 +16,7 @@ function RenderCreateChannel() {
     const [users, setUsers] = useState<Array<User>>([]);
     const [channelUsers, setChannelUsers] = useState<Array<User>>([]);
     const [channelAdmins, setChannelAdmins] = useState<Array<User>>([]);
-
+    const [invalid, setInvalid] = useState(false);
 
     useEffect(() => {
         const getUser = async () => {
@@ -54,7 +53,10 @@ function RenderCreateChannel() {
     function renderChooseUsers() {
         function OnSelectUser(selectedList: any) {
             setChannelUsers(selectedList);
-            participants++;
+            if (selectedList.length < 2)
+                setInvalid(true);
+            else
+                setInvalid(false);
         }
         return (
             <div>
@@ -121,25 +123,30 @@ function RenderCreateChannel() {
                 {renderChooseUsers()}
                 {renderIsPrivate()}
                 {renderPassword()}
-
             </div>
         )
     }
-
-    if (redirect)
+    console.log("invalid is : ", invalid);
+    if (redirect && invalid !== true)
         return <Redirect to={'/chat'}/>;
-    return (
-        <main className="Register_component">
-            <form onSubmit={submit}>
-                <img className="mb-4" src={"./img/42_logo.svg"} alt="./img/42_logo.svg" width="72" height="57"/>
-                <h1 className="h3 mb-3 fw-normal">Create new Channel</h1>
+    else
+    {
+        return (
+            <main className="Register_component">
+                <form onSubmit={submit}>
+                    { invalid?
+                        <p className="registerSubTitle">Choose more then 1 participant</p>
+                        :
+                        <p/>  }
+                    <img className="mb-4" src={"./img/42_logo.svg"} alt="./img/42_logo.svg" width="72" height="57"/>
+                    <h1 className="h3 mb-3 fw-normal">Create new Channel</h1>
+                    {renderChannelCreation()}
+                    <button className="w-100 btn btn-lg btn-primary" type="submit">Submit</button>
+                </form>
+            </main>
+        )
+    }
 
-                {renderChannelCreation()}
-                <button className="w-100 btn btn-lg btn-primary" type="submit">Submit</button>
-
-            </form>
-        </main>
-    )
 }
 
 export default RenderCreateChannel
