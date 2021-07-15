@@ -14,6 +14,8 @@ type EachChatMessageProps = {
   message: ChatMessageType;
   IDIsMuted: number[];
   setIDIsMuted: Function;
+  oneShownPopup: string;
+  setOneShownPopup: Function;
 };
 
 function EachChatMessage(props: EachChatMessageProps) {
@@ -26,6 +28,7 @@ function EachChatMessage(props: EachChatMessageProps) {
 
   const togglePopup = () => {
     setOpenPopup(!OpenPopup);
+    props.setOneShownPopup(props.message.messageTimestamp);
   };
 
   useEffect(() => {
@@ -55,17 +58,18 @@ function EachChatMessage(props: EachChatMessageProps) {
           avatar={Avatar}
           datetime={datetime}
         />
-        {OpenPopup && (
-          <UserProfilePopup
-            ActiveUserID={ActiveUser}
-            MessageUserID={props.message.senderID}
-            UserName={UserName}
-            Avatar={Avatar}
-            ProfileLink={"http://placeholder"}
-            handleClose={togglePopup}
-            setIDIsMuted={props.setIDIsMuted}
-          />
-        )}
+        {OpenPopup &&
+          props.oneShownPopup === props.message.messageTimestamp && (
+            <UserProfilePopup
+              ActiveUserID={ActiveUser}
+              MessageUserID={props.message.senderID}
+              UserName={UserName}
+              Avatar={Avatar}
+              ProfileLink={"http://placeholder"}
+              handleClose={togglePopup}
+              setIDIsMuted={props.setIDIsMuted}
+            />
+          )}
       </div>
     );
 }

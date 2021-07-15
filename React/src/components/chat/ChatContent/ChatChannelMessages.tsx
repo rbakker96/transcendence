@@ -28,15 +28,14 @@ type SocketMessageType = {
 function ChatChannelMessages(props: ChatChannelMessagesProps) {
   const [historicChatMessages, setHistoricChatMessages] = useState([]);
   const [newMessages, setNewMessages] = useState<SocketMessageType[]>([]);
+  const [oneShownPopup, setOneShownPopup] = useState("");
 
   const websocket: any = useRef<WebSocket>(null);
   const URL = `ws://localhost:8000/chat/${props.activeChannelID}`;
 
   useEffect(() => {
     const getChatMessages = async () => {
-      const { data } = await API.ChatMessage.getChannelMessages(
-        props.activeChannelID
-      );
+      const { data } = await API.ChatMessage.getChannelMessages(props.activeChannelID);
       setHistoricChatMessages(data);
     };
     getChatMessages();
@@ -65,13 +64,9 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
           messageTimestamp: object.data.messageTimestamp,
         };
         if (object.data.channelID === props.activeChannelID)
-          setNewMessages((prevState: SocketMessageType[]) => [
-            ...prevState,
-            new_message,
-          ]);
+          setNewMessages((prevState: SocketMessageType[]) => [...prevState, new_message]);
       }
     });
-
     return () => {
       websocket.current.close();
     };
@@ -85,6 +80,8 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
           message={message}
           IDIsMuted={props.IDIsMuted}
           setIDIsMuted={props.setIDIsMuted}
+          oneShownPopup={oneShownPopup}
+          setOneShownPopup={setOneShownPopup}
         />
       ))}
       {newMessages.map((message: SocketMessageType) => (
@@ -93,6 +90,8 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
           message={message}
           IDIsMuted={props.IDIsMuted}
           setIDIsMuted={props.setIDIsMuted}
+          oneShownPopup={oneShownPopup}
+          setOneShownPopup={setOneShownPopup}
         />
       ))}
       <ChatInputBar
