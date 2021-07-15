@@ -1,5 +1,6 @@
 import { Comment } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import API from "../../../API/API";
 import UserProfilePopup from "../UserProfilePopup/UserProfilePopup";
 
 type ChatMessageType = {
@@ -24,11 +25,22 @@ function EachChatMessage(props: EachChatMessageProps) {
   const content = props.message.messageContent;
   const datetime = props.message.messageTimestamp;
   const [OpenPopup, setOpenPopup] = useState(false);
+  const [UserName, setUserName] = useState("");
+  const [Avatar, setAvatar] = useState("");
 
   const togglePopup = () => {
     setOpenPopup(!OpenPopup);
     props.setOneShownPopup(props.message.messageTimestamp);
   };
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data } = await API.User.findName(props.message.senderID);
+      setUserName(data.username);
+      setAvatar(data.avatar);
+    };
+    getUser();
+  }, [props, setUserName, setAvatar]);
 
   if (props.IDIsMuted.includes(props.message.senderID)) return <div />;
   else
@@ -36,8 +48,8 @@ function EachChatMessage(props: EachChatMessageProps) {
       <div onClick={togglePopup}>
         <Comment
           content={content}
-          author={props.userName}
-          avatar={props.avatar}
+          author={UserName}
+          avatar={Avatar}
           datetime={datetime}
         />
         {OpenPopup &&
@@ -45,8 +57,8 @@ function EachChatMessage(props: EachChatMessageProps) {
             <UserProfilePopup
               ActiveUserID={props.activeUserID}
               MessageUserID={props.message.senderID}
-              UserName={props.userName}
-              Avatar={props.avatar}
+              UserName={UserName}
+              Avatar={Avatar}
               ProfileLink={"http://placeholder"}
               handleClose={togglePopup}
               setIDIsMuted={props.setIDIsMuted}
