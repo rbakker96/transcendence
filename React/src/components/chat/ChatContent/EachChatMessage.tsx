@@ -1,9 +1,9 @@
 import { Comment } from "antd";
 import { useEffect, useState } from "react";
 import API from "../../../API/API";
+import UserProfilePopup from "../UserProfilePopup/UserProfilePopup";
 
 type ChatMessageType = {
-  // messageID: number;
   channelID: number;
   senderID: number;
   messageContent: string;
@@ -17,9 +17,15 @@ type EachChatMessageProps = {
 function EachChatMessage(props: EachChatMessageProps) {
   const content = props.message.messageContent;
   const datetime = props.message.messageTimestamp;
-
   const [UserName, setUserName] = useState("");
   const [Avatar, setAvatar] = useState("");
+  const [OpenPopup, setOpenPopup] = useState(false);
+  const [ActiveUser, setActiveUser] = useState(0);
+  const [IDIsMuted, setIDIsMuted] = useState<number[]>([]);
+
+  const togglePopup = () => {
+    setOpenPopup(!OpenPopup);
+  };
 
   useEffect(() => {
     const getUser = async () => {
@@ -30,16 +36,37 @@ function EachChatMessage(props: EachChatMessageProps) {
     getUser();
   }, [props, setUserName, setAvatar]);
 
-  return (
-    <div>
-      <Comment
-        content={content}
-        author={UserName}
-        avatar={Avatar}
-        datetime={datetime}
-      />
-    </div>
-  );
+  useEffect(() => {
+    const setActiveUserID = async () => {
+      const { data } = await API.User.getActiveUser();
+      setActiveUser(data.activeUserID);
+    };
+    setActiveUserID();
+  }, []);
+
+  if (IDIsMuted.includes(props.message.senderID)) return <div />;
+  else
+    return (
+      <div onClick={togglePopup}>
+        <Comment
+          content={content}
+          author={UserName}
+          avatar={Avatar}
+          datetime={datetime}
+        />
+        {OpenPopup && (
+          <UserProfilePopup
+            ActiveUserID={ActiveUser}
+            MessageUserID={props.message.senderID}
+            UserName={UserName}
+            Avatar={Avatar}
+            ProfileLink={"http://placeholder"}
+            handleClose={togglePopup}
+            setIDIsMuted={setIDIsMuted}
+          />
+        )}
+      </div>
+    );
 }
 
 export default EachChatMessage;
