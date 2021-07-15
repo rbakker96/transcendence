@@ -22,7 +22,8 @@ function ChatContent(props: ChatContentProps) {
     getChannelType();
   });
 
-  if (isPrivate && !PasswordValid) {
+  if (isPrivate && !PasswordValid)
+  {
     return (
       <div>
         <RenderGivePassword
@@ -32,14 +33,15 @@ function ChatContent(props: ChatContentProps) {
         />
       </div>
     );
-  } else {
+  }
+  else
+  {
     return (
       <div>
         <ChatChannelHeader activeChannelID={props.activeChannelID} />
         {props.activeChannelID
           ? <ChatChannelMessages activeChannelID={props.activeChannelID} />
-          : <div />
-        }
+          : <div />}
       </div>
     );
   }
