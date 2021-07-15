@@ -43,6 +43,8 @@ function ChatPage() {
             activeChannelID={ActiveChannelID}
             setActiveChannelID={setActiveChannelID}
             activeUserID={ActiveUserID}
+            UserName={UserName}
+            Avatar={Avatar}
             IDIsMuted={IDIsMuted}
             setIDIsMuted={setIDIsMuted}
           />

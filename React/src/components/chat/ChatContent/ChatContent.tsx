@@ -10,6 +10,8 @@ type ChatContentProps = {
   IDIsMuted: number[];
   setIDIsMuted: Function;
   activeUserID: number;
+  UserName: string;
+  Avatar: string;
 };
 
 function ChatContent(props: ChatContentProps) {
@@ -40,7 +42,9 @@ function ChatContent(props: ChatContentProps) {
               activeChannelID={props.activeChannelID}
               activeUserID={props.activeUserID}
               IDIsMuted={props.IDIsMuted}
-              setIDIsMuted={props.setIDIsMuted} />)
+              setIDIsMuted={props.setIDIsMuted}
+              userName={props.UserName}
+              avatar={props.Avatar} />)
             : (<div />)}
           </>)
       }

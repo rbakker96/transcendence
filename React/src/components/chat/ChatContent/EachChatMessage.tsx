@@ -1,6 +1,5 @@
 import { Comment } from "antd";
-import { useEffect, useState } from "react";
-import API from "../../../API/API";
+import { useState } from "react";
 import UserProfilePopup from "../UserProfilePopup/UserProfilePopup";
 
 type ChatMessageType = {
@@ -16,37 +15,20 @@ type EachChatMessageProps = {
   setIDIsMuted: Function;
   oneShownPopup: string;
   setOneShownPopup: Function;
+  activeUserID: number;
+  userName: string;
+  avatar: string;
 };
 
 function EachChatMessage(props: EachChatMessageProps) {
   const content = props.message.messageContent;
   const datetime = props.message.messageTimestamp;
-  const [UserName, setUserName] = useState("");
-  const [Avatar, setAvatar] = useState("");
   const [OpenPopup, setOpenPopup] = useState(false);
-  const [ActiveUser, setActiveUser] = useState(0);
 
   const togglePopup = () => {
     setOpenPopup(!OpenPopup);
     props.setOneShownPopup(props.message.messageTimestamp);
   };
-
-  useEffect(() => {
-    const getUser = async () => {
-      const { data } = await API.User.findName(props.message.senderID);
-      setUserName(data.username);
-      setAvatar(data.avatar);
-    };
-    getUser();
-  }, [props, setUserName, setAvatar]);
-
-  useEffect(() => {
-    const setActiveUserID = async () => {
-      const { data } = await API.User.getActiveUser();
-      setActiveUser(data.activeUserID);
-    };
-    setActiveUserID();
-  }, []);
 
   if (props.IDIsMuted.includes(props.message.senderID)) return <div />;
   else
@@ -54,17 +36,17 @@ function EachChatMessage(props: EachChatMessageProps) {
       <div onClick={togglePopup}>
         <Comment
           content={content}
-          author={UserName}
-          avatar={Avatar}
+          author={props.userName}
+          avatar={props.avatar}
           datetime={datetime}
         />
         {OpenPopup &&
           props.oneShownPopup === props.message.messageTimestamp && (
             <UserProfilePopup
-              ActiveUserID={ActiveUser}
+              ActiveUserID={props.activeUserID}
               MessageUserID={props.message.senderID}
-              UserName={UserName}
-              Avatar={Avatar}
+              UserName={props.userName}
+              Avatar={props.avatar}
               ProfileLink={"http://placeholder"}
               handleClose={togglePopup}
               setIDIsMuted={props.setIDIsMuted}
