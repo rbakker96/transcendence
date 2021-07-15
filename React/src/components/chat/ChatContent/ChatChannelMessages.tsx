@@ -2,7 +2,6 @@ import EachChatMessage from "./EachChatMessage";
 import { useEffect, useRef, useState } from "react";
 import API from "../../../API/API";
 import ChatInputBar from "./ChatInputBar";
-import {Affix} from "antd";
 
 type ChatChannelMessagesProps = {
   activeChannelID: number;
@@ -80,13 +79,11 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
       {newMessages.map((message: SocketMessageType) => (
         <EachChatMessage key={message.messageTimestamp} message={message} />
       ))}
-      <Affix offsetBottom={100}>
 
       <ChatInputBar
         websocket={websocket.current}
         activeChannelID={props.activeChannelID}
       />
-      </Affix>
     </div>
   );
 }

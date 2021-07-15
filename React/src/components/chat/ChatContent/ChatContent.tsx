@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import API from "../../../API/API";
 import RenderGivePassword from "./RenderGivePassword";
-import RenderChatContent from "./RenderChatContent";
+import ChatChannelHeader from "./ChatChannelHeader";
+import ChatChannelMessages from "./ChatChannelMessages";
 
 type ChatContentProps = {
   activeChannelID: number;
@@ -12,8 +13,6 @@ function ChatContent(props: ChatContentProps) {
   const active_channel_ID: number = props.activeChannelID;
   const [isPrivate, setIsPrivate] = useState(false);
   const [PasswordValid, setPasswordValid] = useState(false);
-
-  // API call to check if channel is private
 
   useEffect(() => {
     const getChannelType = async () => {
@@ -36,7 +35,11 @@ function ChatContent(props: ChatContentProps) {
   } else {
     return (
       <div>
-        <RenderChatContent activeChannelId={active_channel_ID} />
+        <ChatChannelHeader activeChannelID={props.activeChannelID} />
+        {props.activeChannelID
+          ? <ChatChannelMessages activeChannelID={props.activeChannelID} />
+          : <div />
+        }
       </div>
     );
   }
