@@ -2,46 +2,40 @@ import { Divider } from "antd";
 import API from "../../../API/API";
 import { useEffect, useState } from "react";
 import { Channel } from "../../../models/Channel.model";
+import EachDirectChannel from "./EachDirectChannel";
 
 type RenderDirectMessageType = {
-  setActiveId: Function;
+  setActiveChannelId: Function;
+  ActiveUserName: string;
 };
 
-function RenderDirectMessage (props: RenderDirectMessageType) {
-  const [channel, setChannel] = useState<Array<Channel>>([]);
-
-  function setActiveChannelId(activeChannelId: number) {
-    props.setActiveId(activeChannelId);
-    console.log("Clicked channelID: " + activeChannelId);
-  }
+function RenderDirectMessage(props: RenderDirectMessageType) {
+  const [DirectChannels, setDirectChannels] = useState<Channel[]>([]);
 
   useEffect(() => {
     const getchannels = async () => {
       const { data } = await API.Channels.index();
       let result: Channel[];
-      result = data.filter((channel : any) => channel.IsDirect === true);
-      setChannel(result);
+      result = data.filter((channel: any) => channel.IsDirect);
+      setDirectChannels(result);
     };
     getchannels();
   }, []);
 
   return (
-      <div>
-        <Divider orientation={"left"} style={{ "color": "#5B8FF9" }}>
-          Direct messages
-        </Divider>
-        {channel.map((item: any) => (
-            <dl key={item.Id} onClick={() => setActiveChannelId(item.Id)}>
-              <dt> {item.ChannelName}</dt>
-              {item.users.map((output : any) =>(
-                  <dd> {output.username}</dd>
-              ))}
-                </dl>
-        ))}
-      </div>
-
+    <div>
+      <Divider orientation={"left"} style={{ color: "#5B8FF9" }}>
+        Direct messages
+      </Divider>
+      {DirectChannels.map((channel: Channel) => (
+        <EachDirectChannel
+          setActiveChannelId={props.setActiveChannelId}
+          ActiveUserName={props.ActiveUserName}
+          directChannel={channel}
+        />
+      ))}
+    </div>
   );
 }
-
 
 export default RenderDirectMessage;
