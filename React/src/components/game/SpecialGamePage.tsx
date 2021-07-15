@@ -4,14 +4,12 @@ import './stylesheets/game.css';
 import axios from "axios";
 import {Redirect} from "react-router-dom";
 
-
 function SpecialGamePage (props: any) {
 	const [role, setRole] = useState('');
-	const [mapArray, setMapArray] = useState(["red", "blue", "green"]);
-	const [mapColorIndex, setmapColorIndex] = useState(Math.floor(Math.random() * 3));
+	const [mapArray, setMapArray] = useState(['']);
+	const [mapColorIndex, setmapColorIndex] = useState(0);
 	const [playerColorIndex, setplayerColorIndex] = useState(0);
 	const [unauthorized, setUnauthorized] = useState(false);
-	const [user, setUser] = useState({username: '', id: 0,});
 
 	useEffect(() => {
 		let mounted = true;
@@ -27,29 +25,22 @@ function SpecialGamePage (props: any) {
 		return () => {mounted = false;}
 	}, []);
 
-	useEffect(() => {
-		const getUser = async () => {
-			const {data} = await axios.get('userData')
-			setUser(data);
-			console.log(data);
-		}
-		getUser();
-	}, []);
 
 	useEffect(() => {
 		const getGameData = async () => {
-			if (user.id === props.playerOne) {
+			const {data} = await axios.get('userData')
+
+			if (data.id === props.location.state.gameData.playerOne)
 				setRole('leftPlayer');
-			}
-			else if (user.id === props.playerTwo) {
+			else if (data.id === props.location.state.gameData.playerTwo)
 				setRole('rightPlayer');
-			}
-			else {
+			else
 				setRole('viewer');
-			}
+			setMapArray(["red", "blue", "green"]);
+			setmapColorIndex(Math.floor(Math.random() * 3));
 		}
 		getGameData();
-	}, [user.id, props.playerOne, props.playerTwo]);
+	}, [props.location.state.gameData.playerOne, props.location.state.gameData.playerTwo]);
 
 	useEffect(() => {
 		const calcPlayerColor = async (index: number) => {
@@ -65,10 +56,12 @@ function SpecialGamePage (props: any) {
 
 	return (
 		<Game
-			gameID={props.gameID}
+			gameID={props.location.state.gameData.gameID}
 			role={role}
-			leftPlayerName={props.playerOneUsername}
-			rightPlayerName={props.playerTwoUsername}
+			leftPlayerID = {props.location.state.gameData.playerOne}
+			leftPlayerName={props.location.state.gameData.playerOneUsername}
+			rightPlayerID = {props.location.state.gameData.playerTwo}
+			rightPlayerName={props.location.state.gameData.playerTwoUsername}
 			specialGame={true}
 			mapStyle={mapArray[mapColorIndex]}
 			color={mapArray[playerColorIndex]}
@@ -77,25 +70,3 @@ function SpecialGamePage (props: any) {
 }
 
 export default SpecialGamePage;
-
-
-// class SpecialGamePage extends Component {
-// 	calcPlayerColor(index: number): number {
-// 		return ((index - 1 === -1) ? 2 : index - 1);
-// 	}
-//
-// 	render() {
-// 		const mapArray = ["red", "blue", "green"];
-// 		const mapColorIndex = Math.floor(Math.random() * 3);
-// 		const playerColorIndex = this.calcPlayerColor(mapColorIndex);
-//
-// 		return (
-// 			<Game
-// 				specialGame={true}
-// 				mapStyle={mapArray[mapColorIndex]}
-// 				color={mapArray[playerColorIndex]}
-// 			/>
-// 		);
-// 	}
-// }
-

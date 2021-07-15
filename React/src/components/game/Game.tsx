@@ -5,9 +5,8 @@ import Scoreboard from "./Scoreboard";
 import Stats from "./Stats";
 import PowerUpBar from "./PowerUpBar";
 
-import UserAPI from "../../API/UserAPI";
-
 import './stylesheets/game.css';
+import axios from "axios";
 
 const GAME_WIDTH = 800;
 const GAME_HEIGHT = 600;
@@ -62,7 +61,9 @@ type GameState = {
 type GameProps = {
 	gameID: number
 	role: string
+	leftPlayerID: number
 	leftPlayerName: string
+	rightPlayerID: number
 	rightPlayerName: string
 	specialGame: boolean
 	mapStyle: string
@@ -262,8 +263,20 @@ class Game extends Component<GameProps> {
 			this.setState({rightShotSpeedColor: data});
 		}
 
-		const finishGame = (data: boolean) => {
+		const finishGame = async (data: boolean) => {
 			this.setState({gameFinished: data});
+
+			const winnerID = (this.state.leftPlayerScore === 10 ? this.props.leftPlayerID : this.props.rightPlayerID);
+			const loserID = (this.state.leftPlayerScore === 10 ? this.props.rightPlayerID : this.props.leftPlayerID);
+
+			await axios.post('/updateGameStats', {
+				gameID: this.props.gameID,
+				playerOneScore: this.state.rightPlayerScore,
+				playerTwoScore: this.state.leftPlayerScore,
+				winner: winnerID,
+				loser: loserID,
+				active: false,
+			})
 		}
 
 		this.state.websocket.addEventListener('message', function (event: { data: string; }) {
@@ -504,9 +517,6 @@ class Game extends Component<GameProps> {
 		const winner = (this.state.leftPlayerScore === 10 ? this.state.leftPlayerName : this.state.rightPlayerName);
 
 		if (this.state.gameFinished) {
-
-
-
 			return (
 				<Stats
 					leftPlayerName = { this.state.leftPlayerName }

@@ -7,7 +7,6 @@ function GamePage(props : any)
 {
 	const [role, setRole] = useState('');
 	const [unauthorized, setUnauthorized] = useState(false);
-	const [user, setUser] = useState({username: '', id: 0,});
 
 	useEffect(() => {
 		let mounted = true;
@@ -24,43 +23,29 @@ function GamePage(props : any)
 	}, []);
 
 	useEffect(() => {
-		const getUser = async () => {
-			const {data} = await axios.get('userData')
-			setUser(data);
-			console.log(data);
-		}
-		getUser();
-	}, []);
-
-	useEffect(() => {
 		const getGameData = async () => {
-			if (user.id === props.location.state.gameData.playerOne) {
+			const {data} = await axios.get('userData')
+
+			if (data.id === props.location.state.gameData.playerOne)
 				setRole('leftPlayer');
-			}
-			else if (user.id === props.location.state.gameData.playerTwo) {
+			else if (data.id === props.location.state.gameData.playerTwo)
 				setRole('rightPlayer');
-			}
-			else {
+			else
 				setRole('viewer');
-			}
 		}
 		getGameData();
-	}, [user.id, props.location.state.gameData.playerOne, props.location.state.gameData.playerTwo]);
+	}, [props.location.state.gameData.playerOne, props.location.state.gameData.playerTwo]);
 
 	if (unauthorized)
 		return <Redirect to={'/'}/>;
-
-	// console.log('role', role);
-	// console.log('gameID', props.location.state.gameData.gameID);
-	// console.log('leftPlayerName', props.location.state.gameData.playerOneUsername);
-	// console.log('rightPlayerName', props.location.state.gameData.playerTwoUsername);
-	// console.log('gameID', props.location.state.gameData.gameID);
 
 	return (
 		<Game
 			gameID={props.location.state.gameData.gameID}
 			role={role}
+			leftPlayerID = {props.location.state.gameData.playerOne}
 			leftPlayerName={props.location.state.gameData.playerOneUsername}
+			rightPlayerID = {props.location.state.gameData.playerTwo}
 			rightPlayerName={props.location.state.gameData.playerTwoUsername}
 			specialGame={false}
 			mapStyle={"game"}
@@ -68,19 +53,5 @@ function GamePage(props : any)
 		/>
 	);
 }
-
-
-// class GamePage extends Component {
-//
-// 	render() {
-// 		return (
-// 			<Game
-// 				specialGame={false}
-// 				mapStyle={"game"}
-// 				color={"white"}
-// 			/>
-// 		);
-// 	}
-// }
 
 export default GamePage;
