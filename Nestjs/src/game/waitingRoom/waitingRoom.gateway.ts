@@ -70,11 +70,16 @@ export class WaitingRoomGateway implements OnGatewayInit, OnGatewayConnection, O
     else {
       waitingUsers[game.classic].push(data.id);
       if (waitingUsers[game.classic].length == 2) {
+        const playerOne = await this.userService.findOne(waitingUsers[game.classic][0]);
+        const playerTwo = await this.userService.findOne(waitingUsers[game.classic][1]);
+
         // new database entry
         let newGameDto = {
           playerOne: waitingUsers[game.classic][0],
+          playerOneUsername: playerOne.username,
           playerOneScore: 0,
           playerTwo: waitingUsers[game.classic][1],
+          playerTwoUsername: playerTwo.username,
           playerTwoScore: 0,
           winner: 0,
           loser: 0,
@@ -88,8 +93,6 @@ export class WaitingRoomGateway implements OnGatewayInit, OnGatewayConnection, O
         console.log(await this.gameService.findOne(gameID));
 
         // send event for redirect to game page
-        const playerOne = await this.userService.findOne(waitingUsers[game.classic][0]);
-        const playerTwo = await this.userService.findOne(waitingUsers[game.classic][1]);
         const gameData = {
           gameID: gameID,
           gameURL: gameURL,
