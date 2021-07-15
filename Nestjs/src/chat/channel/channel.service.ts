@@ -12,7 +12,6 @@ export class ChannelService {
   ) {}
 
   async one(id : number) : Promise<Channel> {
-    console.log("in find one function", id);
     return this.channelRepository.findOne(id)
   }
 
@@ -40,4 +39,5 @@ export class ChannelService {
         .of(channelId)
         .remove(userId)
   }
+
 }

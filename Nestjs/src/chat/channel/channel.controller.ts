@@ -14,7 +14,6 @@ export class ChannelController {
     return this.channelService.all();
   }
 
-
   @Post()
   async addOneChannel(
     @Body('Name') ChannelName:string,
@@ -48,7 +47,6 @@ export class ChannelController {
       @Body('userId') userId: number,
       @Body('channelId') channelId: number)
   {
-
     await this.channelService.removeUser(userId, channelId);
   }
 }

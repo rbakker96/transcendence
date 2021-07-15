@@ -27,7 +27,6 @@ function ChatChannelHeader(props: ChatChannelHeaderProps) {
       setUser(data.id);
     }
     getUser();
-    console.log("volledige object =: ", user)
   }, []);
 
   function leaveChannel()
