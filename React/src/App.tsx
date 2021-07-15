@@ -12,6 +12,7 @@ import enableTwoFactor from "./components/users/EnableTwoFactor";
 import PlayGame from "./components/game/PlayGame";
 import WatchGame from "./components/game/WatchGame";
 import WaitingRoom from "./components/game/WaitingRoom";
+import RenderCreateChannel from "./components/chat/CreateChannel/RenderCreateChannel";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route exact path={"/update"} component={UpdateUser} />
         {/*Chat*/}
         <Route exact path={"/chat"} component={ChatPage} />
+        <Route exact path={"/createChannel"} component={RenderCreateChannel} />
         {/*Game*/}
         <Route exact path={"/PlayGame"} component={PlayGame} />
         <Route exact path={"/WatchGame"} component={WatchGame} />
