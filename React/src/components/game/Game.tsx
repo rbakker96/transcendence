@@ -276,7 +276,7 @@ class Game extends Component<GameProps> {
 				winner: winnerID,
 				loser: loserID,
 				active: false,
-			})
+			});
 		}
 
 		this.state.websocket.addEventListener('message', function (event: { data: string; }) {
