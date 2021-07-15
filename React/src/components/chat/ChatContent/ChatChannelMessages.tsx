@@ -79,6 +79,7 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
       {newMessages.map((message: SocketMessageType) => (
         <EachChatMessage key={message.messageTimestamp} message={message} />
       ))}
+
       <ChatInputBar
         websocket={websocket.current}
         activeChannelID={props.activeChannelID}
