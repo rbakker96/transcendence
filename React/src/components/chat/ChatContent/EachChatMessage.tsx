@@ -17,8 +17,6 @@ type EachChatMessageProps = {
   oneShownPopup: string;
   setOneShownPopup: Function;
   activeUserID: number;
-  userName: string;
-  avatar: string;
 };
 
 function EachChatMessage(props: EachChatMessageProps) {

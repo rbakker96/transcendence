@@ -8,8 +8,6 @@ type ChatChannelMessagesProps = {
   IDIsMuted: number[];
   setIDIsMuted: Function;
   activeUserID: number;
-  userName: string;
-  avatar: string;
 };
 
 type DatabaseMessageType = {
@@ -85,8 +83,6 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
           oneShownPopup={oneShownPopup}
           setOneShownPopup={setOneShownPopup}
           activeUserID={props.activeUserID}
-          userName={props.userName}
-          avatar={props.avatar}
         />
       ))}
       {newMessages.map((message: SocketMessageType) => (
@@ -98,8 +94,6 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
           oneShownPopup={oneShownPopup}
           setOneShownPopup={setOneShownPopup}
           activeUserID={props.activeUserID}
-          userName={props.userName}
-          avatar={props.avatar}
         />
       ))}
       <ChatInputBar

@@ -13,7 +13,6 @@ function ChatPage() {
   const [Avatar, setAvatar] = useState("");
   const [IDIsMuted, setIDIsMuted] = useState<number[]>([]);
 
-  // Potentially best to get activeUser in the main page already to avoid duplicate API call
   useEffect(() => {
     const setActiveID = async () => {
       const { data } = await API.User.getActiveUser();
@@ -43,8 +42,6 @@ function ChatPage() {
             activeChannelID={ActiveChannelID}
             setActiveChannelID={setActiveChannelID}
             activeUserID={ActiveUserID}
-            UserName={UserName}
-            Avatar={Avatar}
             IDIsMuted={IDIsMuted}
             setIDIsMuted={setIDIsMuted}
           />
