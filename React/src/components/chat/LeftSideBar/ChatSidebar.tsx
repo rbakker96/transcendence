@@ -1,4 +1,3 @@
-// import styles from "./ChatSideBar.module.css";
 import RenderChatChannels from "./RenderChatChannels";
 import RenderDirectMessage from "./RenderDirectMessage";
 import React from "react";
