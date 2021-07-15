@@ -11,6 +11,7 @@ function ChatPage() {
   const [ActiveUserID, setActiveUserID] = useState<number>(0);
   const [UserName, setUserName] = useState("");
   const [Avatar, setAvatar] = useState("");
+  const [IDIsMuted, setIDIsMuted] = useState<number[]>([]);
 
   // Potentially best to get activeUser in the main page already -> should only have one call to check activeUser
   useEffect(() => {
@@ -41,6 +42,8 @@ function ChatPage() {
           <ChatContent
             activeChannelID={ActiveChannelID}
             setActiveChannelID={setActiveChannelID}
+            IDIsMuted={IDIsMuted}
+            setIDIsMuted={setIDIsMuted}
           />
         </Col>
       </Row>

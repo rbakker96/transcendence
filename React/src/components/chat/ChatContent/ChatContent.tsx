@@ -7,6 +7,8 @@ import ChatChannelMessages from "./ChatChannelMessages";
 type ChatContentProps = {
   activeChannelID: number;
   setActiveChannelID: Function;
+  IDIsMuted: number[];
+  setIDIsMuted: Function;
 };
 
 function ChatContent(props: ChatContentProps) {
@@ -22,8 +24,7 @@ function ChatContent(props: ChatContentProps) {
     getChannelType();
   });
 
-  if (isPrivate && !PasswordValid)
-  {
+  if (isPrivate && !PasswordValid) {
     return (
       <div>
         <RenderGivePassword
@@ -33,15 +34,19 @@ function ChatContent(props: ChatContentProps) {
         />
       </div>
     );
-  }
-  else
-  {
+  } else {
     return (
       <div>
         <ChatChannelHeader activeChannelID={props.activeChannelID} />
-        {props.activeChannelID
-          ? <ChatChannelMessages activeChannelID={props.activeChannelID} />
-          : <div />}
+        {props.activeChannelID ? (
+          <ChatChannelMessages
+            activeChannelID={props.activeChannelID}
+            IDIsMuted={props.IDIsMuted}
+            setIDIsMuted={props.setIDIsMuted}
+          />
+        ) : (
+          <div />
+        )}
       </div>
     );
   }

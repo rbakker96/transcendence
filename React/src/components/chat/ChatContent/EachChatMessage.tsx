@@ -12,6 +12,8 @@ type ChatMessageType = {
 
 type EachChatMessageProps = {
   message: ChatMessageType;
+  IDIsMuted: number[];
+  setIDIsMuted: Function;
 };
 
 function EachChatMessage(props: EachChatMessageProps) {
@@ -21,7 +23,6 @@ function EachChatMessage(props: EachChatMessageProps) {
   const [Avatar, setAvatar] = useState("");
   const [OpenPopup, setOpenPopup] = useState(false);
   const [ActiveUser, setActiveUser] = useState(0);
-  const [IDIsMuted, setIDIsMuted] = useState<number[]>([]);
 
   const togglePopup = () => {
     setOpenPopup(!OpenPopup);
@@ -44,7 +45,7 @@ function EachChatMessage(props: EachChatMessageProps) {
     setActiveUserID();
   }, []);
 
-  if (IDIsMuted.includes(props.message.senderID)) return <div />;
+  if (props.IDIsMuted.includes(props.message.senderID)) return <div />;
   else
     return (
       <div onClick={togglePopup}>
@@ -62,7 +63,7 @@ function EachChatMessage(props: EachChatMessageProps) {
             Avatar={Avatar}
             ProfileLink={"http://placeholder"}
             handleClose={togglePopup}
-            setIDIsMuted={setIDIsMuted}
+            setIDIsMuted={props.setIDIsMuted}
           />
         )}
       </div>

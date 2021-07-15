@@ -5,6 +5,8 @@ import ChatInputBar from "./ChatInputBar";
 
 type ChatChannelMessagesProps = {
   activeChannelID: number;
+  IDIsMuted: number[];
+  setIDIsMuted: Function;
 };
 
 type DatabaseMessageType = {
@@ -55,14 +57,17 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
       const object = JSON.parse(event.data);
       if (object.event === "newMessage") {
         console.log("React: newMessage event triggered");
-        const new_message = {
+        const new_message: SocketMessageType = {
           channelID: object.data.channelID,
           senderID: object.data.senderID,
           messageContent: object.data.messageContent,
           messageTimestamp: object.data.messageTimestamp,
         };
         if (object.data.channelID === props.activeChannelID)
-          setNewMessages((prevState) => [...prevState, new_message]);
+          setNewMessages((prevState: SocketMessageType[]) => [
+            ...prevState,
+            new_message,
+          ]);
       }
     });
 
@@ -74,10 +79,20 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
   return (
     <div>
       {historicChatMessages.map((message: DatabaseMessageType) => (
-        <EachChatMessage key={message.messageID} message={message} />
+        <EachChatMessage
+          key={message.messageID}
+          message={message}
+          IDIsMuted={props.IDIsMuted}
+          setIDIsMuted={props.setIDIsMuted}
+        />
       ))}
       {newMessages.map((message: SocketMessageType) => (
-        <EachChatMessage key={message.messageTimestamp} message={message} />
+        <EachChatMessage
+          key={message.messageTimestamp}
+          message={message}
+          IDIsMuted={props.IDIsMuted}
+          setIDIsMuted={props.setIDIsMuted}
+        />
       ))}
 
       <ChatInputBar
