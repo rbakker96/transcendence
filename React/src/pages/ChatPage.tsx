@@ -15,7 +15,7 @@ function ChatPage() {
 
   useEffect(() => {
     const setActiveID = async () => {
-      const { data } = await API.User.getActiveUser();
+      const { data } = await API.User.getActiveUserID();
       setActiveUserID(data.activeUserID);
     };
     setActiveID();

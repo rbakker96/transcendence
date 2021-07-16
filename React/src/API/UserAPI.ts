@@ -9,6 +9,10 @@ export default class UserAPI {
     });
   }
 
+  static async getActiveUserID() {
+    return await axios.get("users/getActiveUserID");
+  }
+
   static async getActiveUser() {
     return await axios.get("users/getActiveUser");
   }

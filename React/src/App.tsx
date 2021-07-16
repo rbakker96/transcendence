@@ -22,7 +22,7 @@ function App() {
 
   useEffect(() => {
     const getActiveUser = async () => {
-      const { data } = await API.User.getActiveUser();
+      const { data } = await API.User.getActiveUserID();
       setActiveUser(data);
     };
     getActiveUser();
