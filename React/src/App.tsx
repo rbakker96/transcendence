@@ -13,6 +13,7 @@ import PlayGame from "./components/game/PlayGame";
 import WatchGame from "./components/game/WatchGame";
 import WaitingRoom from "./components/game/WaitingRoom";
 import RenderCreateChannel from "./components/chat/CreateChannel/RenderCreateChannel";
+import CreateDirectMessage from "./components/chat/CreateChannel/CreateDirectChannel";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         {/*Chat*/}
         <Route exact path={"/chat"} component={ChatPage} />
         <Route exact path={"/createChannel"} component={RenderCreateChannel} />
+        <Route exact path={"/createDirectMessage"} component={CreateDirectMessage} />
         {/*Game*/}
         <Route exact path={"/PlayGame"} component={PlayGame} />
         <Route exact path={"/WatchGame"} component={WatchGame} />

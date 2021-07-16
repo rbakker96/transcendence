@@ -29,11 +29,11 @@ export default class ChannelAPI {
   }
 
   static update(channel: Channel, body: ChannelUpdate): Promise<Channel> {
-    return axios.post(`channels/${channel.ID}`, body);
+    return axios.post(`channels/${channel.Id}`, body);
   }
 
   static destroy(channel: Channel): Promise<void> {
-    return axios.delete(`channels/${channel.ID}`);
+    return axios.delete(`channels/${channel.Id}`);
   }
 
   static findName(channelID: number) {
