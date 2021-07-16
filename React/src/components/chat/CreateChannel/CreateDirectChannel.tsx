@@ -1,17 +1,21 @@
 import React, { SyntheticEvent, useEffect, useState } from "react";
 import axios from "axios";
-import "./RenderCreateChannel.css";
 import { User } from "../../../models/User.model";
 import { Multiselect } from "multiselect-react-dropdown";
 import { Redirect } from "react-router-dom";
 import styles from "./CreateDirectMessage.module.css";
+import API from "../../../API/API";
 
-function CreateDirectMessage() {
-  const [redirect, setRedirect] = useState(false);
+function CreateDirectMessage(props: any) {
   const [users, setUsers] = useState<Array<User>>([]);
   const [channelUsers, setChannelUsers] = useState<Array<User>>([]);
-  const [channelAdmins, setChannelAdmins] = useState<Array<User>>([]);
-  const [invalid, setInvalid] = useState(false);
+  // const [channelAdmin, setChannelAdmin] = useState<Array<User>>([]);
+  const [redirect, setRedirect] = useState(false);
+  const [valid, setValid] = useState(true);
+
+  let admins: User[] = [];
+  admins.push(props.activeUser);
+  console.log(admins);
 
   useEffect(() => {
     const getUser = async () => {
@@ -27,7 +31,7 @@ function CreateDirectMessage() {
       Name: "DirectMessage",
       IsPrivate: false,
       Users: channelUsers,
-      Admins: channelAdmins,
+      Admins: admins,
       Password: "",
     });
     setRedirect(true);
@@ -36,18 +40,16 @@ function CreateDirectMessage() {
   function ChooseUsers() {
     function OnSelectUser(selectedList: any) {
       setChannelUsers(selectedList);
-      if (selectedList.length < 2) {
-        setInvalid(true);
-      } else {
-        setInvalid(false);
+      if (selectedList.length > 2) {
+        setValid(false);
       }
     }
     return (
       <div>
         <Multiselect
           options={users}
-          displayValue="username" // Property name to display in the dropdown options
-          placeholder="Choose Users"
+          displayValue="username"
+          placeholder="Add one user"
           onSelect={OnSelectUser}
         />
       </div>
@@ -55,16 +57,17 @@ function CreateDirectMessage() {
   }
 
   function ChooseAdmin() {
-    function OnSelectAdmin(selectedList: any) {
-      setChannelAdmins(selectedList);
-    }
+    // function OnSelectAdmin(selectedList: any) {
+    //   setChannelAdmin(selectedList);
+    // }
     return (
       <div>
         <Multiselect
-          options={users}
+          selectedValues={admins}
+          // options={users}
           displayValue="username"
-          placeholder="Choose Admins"
-          onSelect={OnSelectAdmin}
+          placeholder=""
+          // onSelect={OnSelectAdmin}
         />
       </div>
     );
@@ -77,8 +80,8 @@ function CreateDirectMessage() {
         : (
         <main className={styles.Register_component}>
           <form onSubmit={submit}>
-            {invalid
-              ? ( <p className={styles.registerSubTitle}>Choose more than 1 participant</p> )
+            {!valid
+              ? ( <p className={styles.registerSubTitle}>Can only add one user for direct message</p> )
               : ( <p /> )
             }
             <h1 className={styles.form_header}>
@@ -86,7 +89,7 @@ function CreateDirectMessage() {
             </h1>
             {ChooseAdmin()}
             {ChooseUsers()}
-            <button className="w-100 btn btn-lg btn-primary" type="submit">
+            <button className={styles.submit_button}>
               Submit
             </button>
           </form>
