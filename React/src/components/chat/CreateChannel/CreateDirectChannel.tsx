@@ -6,12 +6,12 @@ import { Redirect } from "react-router-dom";
 import styles from "./CreateDirectMessage.module.css";
 import API from "../../../API/API";
 
-function CreateDirectMessage(props: any) {
+function CreateDirectMessage() {
   const [users, setUsers] = useState<Array<User>>([]);
   const [channelUsers, setChannelUsers] = useState<Array<User>>([]);
   const [channelAdmin, setChannelAdmin] = useState<User>();
   const [redirect, setRedirect] = useState(false);
-  const [valid, setValid] = useState(true);
+  const [valid, setValid] = useState(false);
 
   useEffect(() => {
     const getUser = async () => {
@@ -25,8 +25,7 @@ function CreateDirectMessage(props: any) {
     const getActiveUserID = async () => {
       const { data } = await API.User.getActiveUserID();
       users.forEach((user: User) => {
-        if (user.id === data.activeUserID)
-          setChannelAdmin(user);
+        if (user.id === data.activeUserID) setChannelAdmin(user);
       });
     };
     getActiveUserID();
@@ -34,66 +33,63 @@ function CreateDirectMessage(props: any) {
 
   let submit = async (e: SyntheticEvent) => {
     e.preventDefault();
-    await axios.post("channels", {
-      Name: "DirectMessage",
-      IsPrivate: false,
-      Users: channelUsers,
-      Admins: channelAdmin,
-      Password: "",
-    });
-    setRedirect(true);
+    if (valid) {
+      await axios.post("channels", {
+        Name: "DirectMessage",
+        IsPrivate: false,
+        Users: channelUsers,
+        Admins: channelAdmin,
+        Password: "",
+      });
+      setRedirect(true);
+    }
   };
 
-  function ChooseUsers() {
-    function OnSelectUser(selectedList: any) {
-      setChannelUsers(selectedList);
-      if (selectedList.length > 2) {
-        setValid(false);
-      }
-    }
-    return (
-      <div>
-        <Multiselect
-          options={users}
-          displayValue="username"
-          placeholder="Add one user"
-          onSelect={OnSelectUser}
-        />
-      </div>
-    );
+  function OnSelectUser(selectedList: User[]) {
+    setChannelUsers(selectedList);
+    if (selectedList.length === 2) setValid(true);
+    else if (selectedList.length === 1 || selectedList.length > 2)
+      setValid(false);
   }
 
-  function ChooseAdmin() {
-    return (
-      <div>
-        <Multiselect
-          selectedValues={[channelAdmin]}
-          displayValue="username"
-          placeholder=""
-        />
-      </div>
-    );
+  function OnRemove(selectedList: User[]) {
+    if (selectedList.length === 2) setValid(true);
+    else if (selectedList.length === 1 || selectedList.length > 2)
+      setValid(false);
   }
 
   return (
     <div>
-      {redirect
-        ? (<Redirect to={"/chat"} />)
+      {redirect ? ( <Redirect to={"/chat"} /> )
         : (
         <main className={styles.Register_component}>
           <form onSubmit={submit}>
-            {!valid
-              ? ( <p className={styles.registerSubTitle}>Can only add one user for direct message</p> )
-              : ( <p /> )
+            {!valid &&
+              <p className={styles.registerSubTitle}>
+                Please add one user for direct message
+              </p>
             }
             <h1 className={styles.form_header}>
               Choose a user for direct messaging
             </h1>
-            {ChooseAdmin()}
-            {ChooseUsers()}
-            <button className={styles.submit_button}>
-              Submit
-            </button>
+            {channelAdmin && (
+              <>
+                <Multiselect
+                  selectedValues={[channelAdmin]}
+                  displayValue="username"
+                  placeholder=""
+                />
+                <Multiselect
+                  options={users}
+                  selectedValues={[channelAdmin]}
+                  displayValue="username"
+                  placeholder="Add one user"
+                  onSelect={OnSelectUser}
+                  onRemove={OnRemove}
+                />
+              </>
+            )}
+            <button className={styles.submit_button}>Submit</button>
           </form>
         </main>
       )}
