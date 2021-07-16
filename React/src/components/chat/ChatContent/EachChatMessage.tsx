@@ -22,12 +22,12 @@ type EachChatMessageProps = {
 function EachChatMessage(props: EachChatMessageProps) {
   const content = props.message.messageContent;
   const datetime = props.message.messageTimestamp;
-  const [OpenPopup, setOpenPopup] = useState(false);
+  const [IsOpenPopup, setIsOpenPopup] = useState(false);
   const [UserName, setUserName] = useState("");
   const [Avatar, setAvatar] = useState("");
 
   const togglePopup = () => {
-    setOpenPopup(!OpenPopup);
+    setIsOpenPopup(!IsOpenPopup);
     props.setOneShownPopup(props.message.messageTimestamp);
   };
 
@@ -50,7 +50,7 @@ function EachChatMessage(props: EachChatMessageProps) {
           avatar={Avatar}
           datetime={datetime}
         />
-        {OpenPopup &&
+        {IsOpenPopup &&
           props.oneShownPopup === props.message.messageTimestamp && (
             <UserProfilePopup
               ActiveUserID={props.activeUserID}

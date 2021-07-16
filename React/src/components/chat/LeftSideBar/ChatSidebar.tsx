@@ -18,7 +18,10 @@ function ChatSidebar(props: ChatSidebarType) {
         ActiveUserName={props.ActiveUserName}
       />
       <Divider orientation={"left"} style={{ color: "#5B8FF9" }}>
-        <Link to="/createChannel"> Create New Channel</Link>
+        <Link to="/createChannel">Create New Channel</Link>
+      </Divider>
+      <Divider orientation={"left"} style={{ color: "#5B8FF9" }}>
+        <Link to="/createDirectMessage">Create Direct Message</Link>
       </Divider>
     </div>
   );

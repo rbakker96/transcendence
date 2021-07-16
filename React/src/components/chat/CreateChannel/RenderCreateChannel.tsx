@@ -126,7 +126,7 @@ function RenderCreateChannel() {
             </div>
         )
     }
-    console.log("invalid is : ", invalid);
+    // console.log("invalid is : ", invalid);
     if (redirect && invalid !== true)
         return <Redirect to={'/chat'}/>;
     else
@@ -135,7 +135,7 @@ function RenderCreateChannel() {
             <main className="Register_component">
                 <form onSubmit={submit}>
                     { invalid?
-                        <p className="registerSubTitle">Choose more then 1 participant</p>
+                        <p className="registerSubTitle">Choose more than 1 participant</p>
                         :
                         <p/>  }
                     <img className="mb-4" src={"./img/42_logo.svg"} alt="./img/42_logo.svg" width="72" height="57"/>

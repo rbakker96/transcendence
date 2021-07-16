@@ -1,0 +1,29 @@
+.Register_component {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+.form_header {
+  color: white;
+  font-weight: 400 !important;
+  font-size: 30px;
+  margin-bottom: 1rem !important;
+}
+
+.registerSubTitle {
+  font-weight: bold;
+  color: red;
+  font-size: 15px;
+}
+
+.submit_button {
+  margin-top: 10px;
+  background-color: #00babc !important;
+  width: 100% !important;
+  font-size: 1.25rem;
+  border-radius: 0.3rem;
+  color: white;
+}

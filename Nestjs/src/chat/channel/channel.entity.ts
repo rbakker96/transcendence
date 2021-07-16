@@ -5,7 +5,8 @@ import {User} from "../../user/models/user.entity";
 @Entity('channels')
 
 export class Channel {
-  @Column({unique:true})
+
+  @Column()
   ChannelName: string;
 
   @ManyToMany(type => User, users => users.channels)

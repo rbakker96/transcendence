@@ -29,6 +29,7 @@ function RenderDirectMessage(props: RenderDirectMessageType) {
       </Divider>
       {DirectChannels.map((channel: Channel) => (
         <EachDirectChannel
+          key={channel.Id}
           setActiveChannelId={props.setActiveChannelId}
           ActiveUserName={props.ActiveUserName}
           directChannel={channel}
