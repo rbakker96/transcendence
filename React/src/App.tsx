@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import { BrowserRouter, Route } from "react-router-dom";
 import Register from "./components/users/Register";
 import Login from "./components/users/Login";
@@ -14,20 +14,8 @@ import WatchGame from "./components/game/WatchGame";
 import WaitingRoom from "./components/game/WaitingRoom";
 import RenderCreateChannel from "./components/chat/CreateChannel/RenderCreateChannel";
 import CreateDirectMessage from "./components/chat/CreateChannel/CreateDirectChannel";
-import {User} from "./models/User.model";
-import API from "./API/API";
 
 function App() {
-  const [activeUser, setActiveUser] = useState<User>();
-
-  useEffect(() => {
-    const getActiveUser = async () => {
-      const { data } = await API.User.getActiveUserID();
-      setActiveUser(data);
-    };
-    getActiveUser();
-  }, []);
-
   return (
     <BrowserRouter>
       <main>
@@ -41,7 +29,7 @@ function App() {
         {/*Chat*/}
         <Route exact path={"/chat"} component={ChatPage} />
         <Route exact path={"/createChannel"} component={RenderCreateChannel} />
-        <Route exact path={"/createDirectMessage"} render={() => <CreateDirectMessage activeUser={activeUser} />} />
+        <Route exact path={"/createDirectMessage"} component={CreateDirectMessage} />
         {/*Game*/}
         <Route exact path={"/PlayGame"} component={PlayGame} />
         <Route exact path={"/WatchGame"} component={WatchGame} />

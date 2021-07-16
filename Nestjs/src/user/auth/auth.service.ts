@@ -42,11 +42,6 @@ export class AuthService {
         return data['id'];
     }
 
-    async client(request: Request): Promise<User> {
-        const cookie = request.cookies['clientID'];
-        return await this.jwtService.verifyAsync(cookie);
-    }
-
     async newUser(@Body() data: RegisterDto, clientID: number) {
         data.avatar = 'http://localhost:8000/api/uploads/egg.jpeg';
         data.id = clientID;

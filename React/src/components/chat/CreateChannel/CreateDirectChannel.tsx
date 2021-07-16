@@ -9,13 +9,9 @@ import API from "../../../API/API";
 function CreateDirectMessage(props: any) {
   const [users, setUsers] = useState<Array<User>>([]);
   const [channelUsers, setChannelUsers] = useState<Array<User>>([]);
-  // const [channelAdmin, setChannelAdmin] = useState<Array<User>>([]);
+  const [channelAdmin, setChannelAdmin] = useState<User>();
   const [redirect, setRedirect] = useState(false);
   const [valid, setValid] = useState(true);
-
-  let admins: User[] = [];
-  admins.push(props.activeUser);
-  console.log(admins);
 
   useEffect(() => {
     const getUser = async () => {
@@ -25,13 +21,24 @@ function CreateDirectMessage(props: any) {
     getUser();
   }, []);
 
+  useEffect(() => {
+    const getActiveUserID = async () => {
+      const { data } = await API.User.getActiveUserID();
+      users.forEach((user: User) => {
+        if (user.id === data.activeUserID)
+          setChannelAdmin(user);
+      });
+    };
+    getActiveUserID();
+  }, [users]);
+
   let submit = async (e: SyntheticEvent) => {
     e.preventDefault();
     await axios.post("channels", {
       Name: "DirectMessage",
       IsPrivate: false,
       Users: channelUsers,
-      Admins: admins,
+      Admins: channelAdmin,
       Password: "",
     });
     setRedirect(true);
@@ -57,17 +64,12 @@ function CreateDirectMessage(props: any) {
   }
 
   function ChooseAdmin() {
-    // function OnSelectAdmin(selectedList: any) {
-    //   setChannelAdmin(selectedList);
-    // }
     return (
       <div>
         <Multiselect
-          selectedValues={admins}
-          // options={users}
+          selectedValues={[channelAdmin]}
           displayValue="username"
           placeholder=""
-          // onSelect={OnSelectAdmin}
         />
       </div>
     );
