@@ -43,4 +43,10 @@ export class UserService {
     return await this.userRepository.findOne({ id: data.userID });
   }
 
+  async channels(data : number) : Promise<User>{
+    return await this.userRepository.findOne(data, {
+      relations: ['channels']
+    })
+  }
+
 }

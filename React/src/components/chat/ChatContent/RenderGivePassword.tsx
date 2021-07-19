@@ -10,7 +10,6 @@ type ChatContentProps = {
 
 function RenderGivePassword(props : ChatContentProps) {
     const [givenPassword, setGivenPassword] = useState('');
-    const [dbPassword, setDbPassword] = useState(0);
     const [invalid, setInvalid] = useState(false);
 
 

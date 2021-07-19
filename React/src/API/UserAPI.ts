@@ -18,10 +18,11 @@ export default class UserAPI {
   }
 
   static async getChannels(userID : number) {
-    return await axios.get("users/getChannels", {
+    return await axios.get("users/channels", {
       params: {
-        userID: userID,
+        id: userID,
       }
     });
   }
+
 }

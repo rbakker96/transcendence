@@ -1,5 +1,6 @@
 import { Channel } from "../../../models/Channel.model";
 import { SyntheticEvent, useEffect, useState } from "react";
+import {User} from "../../../models/User.model";
 
 type EachDirectChannelType = {
   setActiveChannelId: Function;
@@ -12,7 +13,8 @@ function EachDirectChannel(props: EachDirectChannelType) {
 
   useEffect(() => {
     const setChannelName = () => {
-      const users = props.directChannel.users;
+      const users : User[] = props.directChannel.users;
+      // console.log(users.length, "how many users?");
       if (users.length === 2) {
         users.forEach((user) => {
           if (user.username !== props.ActiveUserName)
