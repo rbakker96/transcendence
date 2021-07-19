@@ -1,8 +1,8 @@
-import {Body, Controller, Get, Param, Post, Query} from "@nestjs/common";
+import {BadRequestException, Body, Controller, Get, Param, Post, Query} from "@nestjs/common";
 import { ChannelService } from "./channel.service";
 import { Channel } from "./channel.entity";
 import {User} from "../../user/models/user.entity";
-
+import * as bcrypt from 'bcryptjs'
 
 
 @Controller('channels/')
@@ -13,7 +13,6 @@ export class ChannelController {
   async all(): Promise<Channel[]> {
     return this.channelService.all();
   }
-
   @Post()
   async addOneChannel(
     @Body('Name') ChannelName:string,
@@ -27,7 +26,9 @@ export class ChannelController {
     channel.IsPrivate = Private;
     channel.users = Users;
     channel.admins = Admins;
-    channel.Password = Password;
+
+    const hashed = await bcrypt.hash(Password, 12);
+    channel.Password = hashed;
     if (Users.length === 2)
       channel.IsDirect = true;
     else
@@ -48,5 +49,18 @@ export class ChannelController {
       @Body('channelId') channelId: number)
   {
     await this.channelService.removeUser(userId, channelId);
+  }
+
+  @Post('login')
+  async login(@Body('password') password: string,
+              @Body('channelId') channelId: number,)
+  {
+    const channel : Channel = await this.channelService.one(channelId);
+    if(!await bcrypt.compare(password, channel.Password)) {
+      return false;
+    }
+    else
+      return true;
+
   }
 }

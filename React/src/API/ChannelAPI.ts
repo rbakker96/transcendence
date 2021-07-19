@@ -50,4 +50,11 @@ export default class ChannelAPI {
         channelId: channelID
       })
   }
+
+  static login(password :string, channelID: number) {
+    return axios.post("channels/login", {
+      password : password,
+      channelId : channelID
+    })
+  }
 }
