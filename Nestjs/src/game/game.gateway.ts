@@ -100,7 +100,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	}
 
 	afterInit(server: any): any {
-		console.log('init');
+		console.log('GameGateway init');
 	}
 
 	@SubscribeMessage("newConnection")

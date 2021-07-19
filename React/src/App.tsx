@@ -12,6 +12,10 @@ import enableTwoFactor from "./components/users/EnableTwoFactor";
 import PlayGame from "./components/game/PlayGame";
 import WatchGame from "./components/game/WatchGame";
 import WaitingRoom from "./components/game/WaitingRoom";
+
+import PublicProfile from "./components/users/PublicProfile";
+import PublicProfilesOverview from "./components/users/PublicProfilesOverview";
+
 import RenderCreateChannel from "./components/chat/CreateChannel/RenderCreateChannel";
 import CreateDirectMessage from "./components/chat/CreateChannel/CreateDirectChannel";
 
@@ -26,6 +30,8 @@ function App() {
         <Route exact path={"/register"} component={Register} />
         <Route exact path={"/profile"} component={Profile} />
         <Route exact path={"/update"} component={UpdateUser} />
+        <Route exact path={'/publicProfilesOverview'} component={PublicProfilesOverview}  />
+        <Route exact path={'/publicProfile'} component={PublicProfile}  />
         {/*Chat*/}
         <Route exact path={"/chat"} component={ChatPage} />
         <Route exact path={"/createChannel"} component={RenderCreateChannel} />
@@ -34,7 +40,7 @@ function App() {
         <Route exact path={"/PlayGame"} component={PlayGame} />
         <Route exact path={"/WatchGame"} component={WatchGame} />
         <Route exact path={"/WaitingRoom"} component={WaitingRoom} />
-        <Route exact path={"/game"} component={GamePage} />
+        <Route exact path={'/game:gameID'} component={GamePage}  />
         <Route exact path={"/specialGame"} component={SpecialGame} />
       </main>
     </BrowserRouter>

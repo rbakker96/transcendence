@@ -5,9 +5,8 @@ import Scoreboard from "./Scoreboard";
 import Stats from "./Stats";
 import PowerUpBar from "./PowerUpBar";
 
-import UserAPI from "../../API/UserAPI";
-
 import './stylesheets/game.css';
+import axios from "axios";
 
 const GAME_WIDTH = 800;
 const GAME_HEIGHT = 600;
@@ -60,6 +59,12 @@ type GameState = {
 }
 
 type GameProps = {
+	gameID: number
+	role: string
+	leftPlayerID: number
+	leftPlayerName: string
+	rightPlayerID: number
+	rightPlayerName: string
 	specialGame: boolean
 	mapStyle: string
 	color: string
@@ -68,7 +73,7 @@ type GameProps = {
 class Game extends Component<GameProps> {
 	state: GameState = {
 		client: null,											//userID form waiting room
-		leftPlayerName: "left",									//not needed
+		leftPlayerName: this.props.leftPlayerName,									//not needed
 		leftPlayerX: 10,
 		leftPlayerY: GAME_HEIGHT / 2 - (PLAYER_HEIGHT / 2),
 		leftPlayerMoveSpeed: 7.5,
@@ -76,7 +81,7 @@ class Game extends Component<GameProps> {
 		leftMoveSpeedColor: "red",
 		leftShotSpeedUsesLeft: 3,
 		leftShotSpeedColor: "red",
-		rightPlayerName: "right",								//not needed
+		rightPlayerName: this.props.rightPlayerName,								//not needed
 		rightPlayerX: GAME_WIDTH - 20,
 		rightPlayerY: GAME_HEIGHT / 2 - (PLAYER_HEIGHT / 2),
 		rightPlayerMoveSpeed: 7.5,
@@ -88,7 +93,7 @@ class Game extends Component<GameProps> {
 		ballY: GAME_HEIGHT / 2,
 		velocityX: 4,
 		velocityY: 4,
-		role: "viewer",											//from waiting room
+		role: this.props.role,											//from waiting room
 		leftPlayerScore: 0,
 		rightPlayerScore: 0,
 		gameFinished: false,
@@ -190,24 +195,25 @@ class Game extends Component<GameProps> {
 
 		// THIS NEEDS A GOOD IMPLEMENTATION, NEED TO WORK THIS OUT LATER
 		const updateRoleStateVariable = (id: number) => {
-			if (id === 2) {
-				this.setState({role: "leftPlayer"});
-				if (this.state.client) {
-					this.setState({leftPlayerName: this.state.client.username});
-				}
-
+			// if (id === 2) {
+			// 	this.setState({role: "leftPlayer"});
+			// 	if (this.state.client) {
+			// 		this.setState({leftPlayerName: this.state.client.username});
+			// 	}
+			//
 				this.state.websocket.send(JSON.stringify({event: 'setLeftPlayerName', data: this.state.leftPlayerName})); //SET UP FRONT
-			} else if (id === 4) {
-				this.setState({role: "rightPlayer"});
-				if (this.state.client) {
-					this.setState({rightPlayerName: this.state.client.username});
-				}
+			// } else if (id === 4) {
+			// 	this.setState({role: "rightPlayer"});
+			// 	if (this.state.client) {
+			// 		this.setState({rightPlayerName: this.state.client.username});
+			// 	}
 				this.state.websocket.send(JSON.stringify({event: 'setRightPlayerName', data: this.state.rightPlayerName})); //SET UP FRONT
-				this.state.websocket.send(JSON.stringify({event: 'activateBall'}));
-			} else {
-				this.setState({role: "viewer"}); //DEFAULT ??
-				this.state.websocket.send(JSON.stringify({event: 'activateBall'}));
-			}
+			// 	this.state.websocket.send(JSON.stringify({event: 'activateBall'}));
+			// } else {
+			// 	this.setState({role: "viewer"}); //DEFAULT ??
+			// 	this.state.websocket.send(JSON.stringify({event: 'activateBall'}));
+			// }
+			this.state.websocket.send(JSON.stringify({event: 'activateBall'}));
 		}
 
 		const resetPowerUps = () => {
@@ -257,8 +263,20 @@ class Game extends Component<GameProps> {
 			this.setState({rightShotSpeedColor: data});
 		}
 
-		const finishGame = (data: boolean) => {
+		const finishGame = async (data: boolean) => {
 			this.setState({gameFinished: data});
+
+			const winnerID = (this.state.leftPlayerScore === 10 ? this.props.leftPlayerID : this.props.rightPlayerID);
+			const loserID = (this.state.leftPlayerScore === 10 ? this.props.rightPlayerID : this.props.leftPlayerID);
+
+			await axios.post('/updateGameStats', {
+				gameID: this.props.gameID,
+				playerOneScore: this.state.rightPlayerScore,
+				playerTwoScore: this.state.leftPlayerScore,
+				winner: winnerID,
+				loser: loserID,
+				active: false,
+			});
 		}
 
 		this.state.websocket.addEventListener('message', function (event: { data: string; }) {
@@ -294,7 +312,7 @@ class Game extends Component<GameProps> {
 			}
 		});
 
-		UserAPI.getUserData().then(({data}) => this.setState({client: data}), this.getActiveUserError);
+		// UserAPI.getUserData().then(({data}) => this.setState({client: data}), this.getActiveUserError); //NEEDS TO GO
 	}
 
 	bouncedAgainstTopOrBottom(): boolean {
@@ -499,9 +517,6 @@ class Game extends Component<GameProps> {
 		const winner = (this.state.leftPlayerScore === 10 ? this.state.leftPlayerName : this.state.rightPlayerName);
 
 		if (this.state.gameFinished) {
-
-
-
 			return (
 				<Stats
 					leftPlayerName = { this.state.leftPlayerName }

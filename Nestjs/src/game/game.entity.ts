@@ -10,10 +10,16 @@ export class Game {
     playerOne: number;
 
     @Column()
+    playerOneUsername: string;
+
+    @Column()
     playerOneScore: number;
 
     @Column()
     playerTwo: number;
+
+    @Column()
+    playerTwoUsername: string;
 
     @Column()
     playerTwoScore: number;

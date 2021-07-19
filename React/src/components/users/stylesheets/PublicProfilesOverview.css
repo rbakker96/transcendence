@@ -1,4 +1,4 @@
-.PlayGame_component {
+.PublicProfiles_component {
     color: white;
     display: flex;
     align-items: center;
@@ -8,11 +8,12 @@
     padding-bottom: 40px;
 }
 
-.gameInfo {
+.publicProfiles {
+
     display: flex;
     justify-content: center;
     flex-direction: column;
-    width: 900px;
+    width: 800px;
     text-align: center;
     align-items: center;
 }
@@ -21,6 +22,19 @@
     text-align: center;
 }
 
+.publicProfiles table {
+    width: 100%;
+}
+
+tr.usertable>td {
+    padding-bottom: 15px;
+}
+
+.avatarIMG {
+    width: 50px;
+    height: auto;
+    border-radius: 90px;
+}
 
 
 
