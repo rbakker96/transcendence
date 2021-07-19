@@ -1,23 +1,22 @@
 import React, { SyntheticEvent, useEffect, useState} from "react";
 import axios from 'axios';
-import '../stylesheets/Register.css'
-import {User} from "../../../Models/User.model";
+import './RenderCreateChannel.css'
+import {User} from "../../../models/User.model";
 import {Multiselect} from "multiselect-react-dropdown";
-import {ChannelUser} from "../../../Models/ChannelUser.model";
-
-
+import {Redirect} from "react-router-dom";
 
 function RenderCreateChannel() {
 
     // states for data types
-
     const [channelName, setChannelName] = useState('');
     const [isPrivate, setIsPrivate] = useState(false);
-
+    const [redirect, setRedirect] = useState(false);
+    const [Password, setPassword] = useState('');
     // states for data transfer
     const [users, setUsers] = useState<Array<User>>([]);
-    const [channelUsers, setChannelUsers] = useState<Array<ChannelUser>>([]);
-    const [channelAdmins, setChannelAdmins] = useState<Array<ChannelUser>>([]);
+    const [channelUsers, setChannelUsers] = useState<Array<User>>([]);
+    const [channelAdmins, setChannelAdmins] = useState<Array<User>>([]);
+    const [invalid, setInvalid] = useState(false);
 
     useEffect(() => {
         const getUser = async () => {
@@ -28,15 +27,16 @@ function RenderCreateChannel() {
     }, []);
 
 
-// dit werkt volgens mij
     let submit = async (e: SyntheticEvent) => {
         e.preventDefault();
         await axios.post('channels', {
             Name: channelName,
             IsPrivate: isPrivate,
             Users: channelUsers,
-            Admins: channelAdmins
+            Admins: channelAdmins,
+            Password: Password,
         });
+        setRedirect(true);
     }
 
     function renderChannelName() {
@@ -51,9 +51,12 @@ function RenderCreateChannel() {
 
 
     function renderChooseUsers() {
-
         function OnSelectUser(selectedList: any) {
             setChannelUsers(selectedList);
+            if (selectedList.length < 2)
+                setInvalid(true);
+            else
+                setInvalid(false);
         }
         return (
             <div>
@@ -94,15 +97,22 @@ function RenderCreateChannel() {
                 <label className="form-check-label" htmlFor="defaultCheck1">
                     Private
                 </label>
-
-                <input className="form-check-input" type="checkbox" value="" id="defaultCheck1"
-                       onChange={e => setIsPrivate(false)}
-                />
-                <label className="form-check-label" htmlFor="defaultCheck1">
-                    Public
-                </label>
             </div>
         )
+    }
+
+    function renderPassword() {
+        if (isPrivate === true) {
+            return (
+                <div className="form-floating">
+                    <input required className="form-control" id="floatingInput" placeholder="name@example.com"
+                           onChange={e => setPassword(e.target.value)}/>
+                    <label htmlFor="floatingInput">Password</label>
+                </div>
+            )
+        }
+        else
+            return ;
     }
 
     function renderChannelCreation() {
@@ -112,22 +122,31 @@ function RenderCreateChannel() {
                 {renderChooseAdmin()}
                 {renderChooseUsers()}
                 {renderIsPrivate()}
+                {renderPassword()}
             </div>
         )
     }
+    // console.log("invalid is : ", invalid);
+    if (redirect && invalid !== true)
+        return <Redirect to={'/chat'}/>;
+    else
+    {
+        return (
+            <main className="Register_component">
+                <form onSubmit={submit}>
+                    { invalid?
+                        <p className="registerSubTitle">Choose more than 1 participant</p>
+                        :
+                        <p/>  }
+                    <img className="mb-4" src={"./img/42_logo.svg"} alt="./img/42_logo.svg" width="72" height="57"/>
+                    <h1 className="h3 mb-3 fw-normal">Create new Channel</h1>
+                    {renderChannelCreation()}
+                    <button className="w-100 btn btn-lg btn-primary" type="submit">Submit</button>
+                </form>
+            </main>
+        )
+    }
 
-    return (
-        <main className="Register_component">
-            <form onSubmit={submit}>
-                <img className="mb-4" src={"./img/42_logo.svg"} alt="./img/42_logo.svg" width="72" height="57"/>
-                <h1 className="h3 mb-3 fw-normal">Create new Channel</h1>
-
-                {renderChannelCreation()}
-                <button className="w-100 btn btn-lg btn-primary" type="submit">Submit</button>
-
-            </form>
-        </main>
-    )
 }
 
 export default RenderCreateChannel

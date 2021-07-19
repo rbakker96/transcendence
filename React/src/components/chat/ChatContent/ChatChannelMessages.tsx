@@ -1,10 +1,13 @@
 import EachChatMessage from "./EachChatMessage";
 import { useEffect, useRef, useState } from "react";
-import API from "../../API/API";
+import API from "../../../API/API";
 import ChatInputBar from "./ChatInputBar";
 
 type ChatChannelMessagesProps = {
   activeChannelID: number;
+  IDIsMuted: number[];
+  setIDIsMuted: Function;
+  activeUserID: number;
 };
 
 type DatabaseMessageType = {
@@ -25,30 +28,28 @@ type SocketMessageType = {
 function ChatChannelMessages(props: ChatChannelMessagesProps) {
   const [historicChatMessages, setHistoricChatMessages] = useState([]);
   const [newMessages, setNewMessages] = useState<SocketMessageType[]>([]);
+  const [oneShownPopup, setOneShownPopup] = useState("");
 
   const websocket: any = useRef<WebSocket>(null);
+  const URL = `ws://localhost:8000/chat/${props.activeChannelID}`;
 
   useEffect(() => {
     const getChatMessages = async () => {
-      const { data } = await API.ChatMessage.getChannelMessages(
-        props.activeChannelID
-      );
+      const { data } = await API.ChatMessage.getChannelMessages(props.activeChannelID);
       setHistoricChatMessages(data);
     };
     getChatMessages();
   }, [props.activeChannelID]);
 
-  const URL = `ws://localhost:8000/chat/${props.activeChannelID}`;
-
   useEffect(() => {
     websocket.current = new WebSocket(URL);
 
     websocket.current.onopen = () => {
-      console.log(`ws opened & active channel: ${props.activeChannelID}`);
+      // console.log(`ws opened & active channel: ${props.activeChannelID}`);
     };
 
     websocket.current.onclose = () => {
-      console.log(`ws closed & active channel: ${props.activeChannelID}`);
+      // console.log(`ws closed & active channel: ${props.activeChannelID}`);
       setNewMessages([]);
     };
 
@@ -56,17 +57,16 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
       const object = JSON.parse(event.data);
       if (object.event === "newMessage") {
         console.log("React: newMessage event triggered");
-        const new_message = {
+        const new_message: SocketMessageType = {
           channelID: object.data.channelID,
           senderID: object.data.senderID,
           messageContent: object.data.messageContent,
           messageTimestamp: object.data.messageTimestamp,
         };
         if (object.data.channelID === props.activeChannelID)
-          setNewMessages((prevState) => [...prevState, new_message]);
+          setNewMessages((prevState: SocketMessageType[]) => [...prevState, new_message]);
       }
     });
-
     return () => {
       websocket.current.close();
     };
@@ -75,14 +75,31 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
   return (
     <div>
       {historicChatMessages.map((message: DatabaseMessageType) => (
-        <EachChatMessage key={message.messageID} message={message} />
+        <EachChatMessage
+          key={message.messageID}
+          message={message}
+          IDIsMuted={props.IDIsMuted}
+          setIDIsMuted={props.setIDIsMuted}
+          oneShownPopup={oneShownPopup}
+          setOneShownPopup={setOneShownPopup}
+          activeUserID={props.activeUserID}
+        />
       ))}
       {newMessages.map((message: SocketMessageType) => (
-        <EachChatMessage key={message.messageTimestamp} message={message} />
+        <EachChatMessage
+          key={message.messageTimestamp}
+          message={message}
+          IDIsMuted={props.IDIsMuted}
+          setIDIsMuted={props.setIDIsMuted}
+          oneShownPopup={oneShownPopup}
+          setOneShownPopup={setOneShownPopup}
+          activeUserID={props.activeUserID}
+        />
       ))}
       <ChatInputBar
         websocket={websocket.current}
         activeChannelID={props.activeChannelID}
+        activeUserID={props.activeUserID}
       />
     </div>
   );

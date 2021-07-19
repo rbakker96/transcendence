@@ -25,7 +25,6 @@ export class ChatGateway
   handleConnection(client: Socket, ...args: any[]) {
     if (args[0].url.includes("chat")) {
       console.log("ChatGateway: new client connected");
-      console.log(args[0].url);
       const id = args[0].url.replace(/[^0-9]/g, "");
       if (!chat_sockets[id]) chat_sockets[id] = [];
       chat_sockets[id].push(client);
@@ -50,7 +49,6 @@ export class ChatGateway
   newMessageHandler(client: Socket, data: any) {
     console.log("ChatGateway: newMessageHandler");
     const response = JSON.stringify({ event: "newMessage", data: data });
-    // console.log(data.channelID);
     chat_sockets[data.channelID].forEach((c) => {
       c.send(response);
     });

@@ -1,10 +1,11 @@
 import styles from "./ChatInputBar.module.css";
-import { SyntheticEvent, useEffect, useState } from "react";
-import API from "../../API/API";
+import { SyntheticEvent, useState } from "react";
+import API from "../../../API/API";
 
 type TextBarType = {
   websocket: WebSocket;
   activeChannelID: number;
+  activeUserID: number;
 };
 
 type newMessageType = {
@@ -15,19 +16,10 @@ type newMessageType = {
 };
 
 function ChatInputBar(props: TextBarType) {
-  const [senderID, setSenderID] = useState(0);
   const [message, setMessage] = useState("");
   const [messageTimestamp, setMessageTimeStamp] = useState(
     new Date().toLocaleString()
   );
-
-  useEffect(() => {
-    const setActiveUserID = async () => {
-      const { data } = await API.User.getActiveUser();
-      setSenderID(data.activeUserID);
-    };
-    setActiveUserID();
-  }, []);
 
   async function submitHandler(e: SyntheticEvent) {
     e.preventDefault();
@@ -35,7 +27,7 @@ function ChatInputBar(props: TextBarType) {
     setMessageTimeStamp(new Date().toLocaleString());
     const new_message: newMessageType = {
       channelID: props.activeChannelID,
-      senderID: senderID,
+      senderID: props.activeUserID,
       messageContent: message,
       messageTimestamp: messageTimestamp,
     };

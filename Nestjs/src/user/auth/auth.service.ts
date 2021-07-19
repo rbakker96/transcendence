@@ -1,10 +1,11 @@
-import { Body, Injectable } from '@nestjs/common';
-import { authenticator } from "otplib";
-import { Request } from 'express';
-import { JwtService } from "@nestjs/jwt";
-import { RegisterDto } from "./models/register.dto";
-import { UserService} from "../user.service";
-import { UpdateDto } from "./models/update.dto";
+import {Body, Injectable} from '@nestjs/common';
+import {authenticator} from "otplib";
+import {Request} from 'express';
+import {JwtService} from "@nestjs/jwt";
+import {RegisterDto} from "./models/register.dto";
+import {UserService} from "../user.service";
+import {UpdateDto} from "./models/update.dto";
+import {User} from "../models/user.entity";
 
 @Injectable()
 export class AuthService {

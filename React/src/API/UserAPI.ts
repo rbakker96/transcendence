@@ -9,11 +9,19 @@ export default class UserAPI {
     });
   }
 
-  static async getActiveUser() {
-    return await axios.get("users/getActiveUser");
+  static async getActiveUserID() {
+    return await axios.get("users/getActiveUserID");
   }
 
   static async getUserData() {
     return await axios.get("userData");
+  }
+
+  static async getChannels(userID : number) {
+    return await axios.get("users/getChannels", {
+      params: {
+        userID: userID,
+      }
+    });
   }
 }
