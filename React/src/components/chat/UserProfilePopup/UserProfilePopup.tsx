@@ -1,6 +1,9 @@
 import { Card } from "antd";
-import { UserDeleteOutlined, CloseOutlined } from "@ant-design/icons";
-import { SyntheticEvent } from "react";
+import { UserDeleteOutlined, CloseOutlined, LinkOutlined } from "@ant-design/icons";
+import React, {SyntheticEvent, useEffect, useState} from "react";
+import { Link } from 'react-router-dom';
+import axios from "axios";
+import {User} from "../../../models/User.model";
 
 type UserProfilePopupType = {
   ActiveUserID: number;
@@ -16,6 +19,16 @@ const { Meta } = Card;
 
 function UserProfilePopup(props: UserProfilePopupType) {
 
+  const [usersData, setUsersData] = useState<User>();
+
+  useEffect(() => {
+    const getUser = async () => {
+      const {data} = await axios.post('publicUserData', {id: props.MessageUserID});
+      setUsersData(data);
+    }
+    getUser();
+  }, [props.MessageUserID]);
+
   function onclick(e: SyntheticEvent) {
     e.preventDefault();
     props.setIDIsMuted((prevState: number[]) => [
@@ -26,9 +39,13 @@ function UserProfilePopup(props: UserProfilePopupType) {
 
   let actions: JSX.Element[];
   if (props.ActiveUserID === props.MessageUserID) {
-    actions = [<CloseOutlined onClick={props.handleClose} />];
+    actions = [
+      <Link to={{pathname:"/publicProfile", state: {usersData}}}><LinkOutlined/></Link>,
+      <CloseOutlined onClick={props.handleClose} />
+    ];
   } else {
     actions = [
+      <Link to={{pathname:"/publicProfile", state: {usersData}}}><LinkOutlined/></Link>,
       <UserDeleteOutlined onClick={onclick} />,
       <CloseOutlined onClick={props.handleClose} />,
     ];

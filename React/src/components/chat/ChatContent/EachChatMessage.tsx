@@ -2,6 +2,7 @@ import { Comment } from "antd";
 import { useEffect, useState } from "react";
 import API from "../../../API/API";
 import UserProfilePopup from "../UserProfilePopup/UserProfilePopup";
+import "./ChatContent.css"
 
 type ChatMessageType = {
   channelID: number;

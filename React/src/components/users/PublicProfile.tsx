@@ -32,7 +32,6 @@ const PublicProfile = (props: any) => {
 
     useEffect(() => {
         const getUser = async () => {
-            console.log(props.location.state.usersData.id);
             const {data} = await axios.post('publicUserData', {id: props.location.state.usersData.id});
             setUser(data);
         }
