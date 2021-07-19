@@ -4,7 +4,7 @@ import './stylesheets/Profile.css'
 import axios from "axios";
 import {GameModel} from "../../models/Game.model";
 
-const Profile = () => {
+const PublicProfile = (props: any) => {
     const [games, setGames] = useState([]);
     const [wins, setWins] = useState(0);
     const [loses, setLoses] = useState(0);
@@ -32,11 +32,12 @@ const Profile = () => {
 
     useEffect(() => {
         const getUser = async () => {
-            const {data} = await axios.get('userData')
+            console.log(props.location.state.usersData.id);
+            const {data} = await axios.post('publicUserData', {id: props.location.state.usersData.id});
             setUser(data);
         }
         getUser();
-    }, []);
+    }, [props.location.state.usersData.id]);
 
     useEffect(() => {
         const getGames = async () => {
@@ -62,9 +63,6 @@ const Profile = () => {
         getGames();
     }, [user.id]);
 
-    const logout = async () => {
-        await axios.post('logout', {});
-    }
 
     if (unauthorized)
         return <Redirect to={'/'}/>;
@@ -83,12 +81,7 @@ const Profile = () => {
                         </div>
 
                         <div className="profile-userbuttons">
-                            <Link to={`/PlayGame`} type="button" className="btn btn-success btn-sm">Play game</Link>
-                            <Link to={`/WatchGame`} type="button" className="btn btn-success btn-sm">Watch game</Link>
-                            <Link to={`/chat`} type="button" className="btn btn-success btn-sm">Chat</Link>
-                            <Link to={`/update`} type="button" className="btn btn-success btn-sm">Update profile</Link>
-                            <Link to={`/publicProfilesOverview`} type="button" className="btn btn-success btn-sm">See public profiles</Link>
-                            <Link to="/" onClick={logout} type="button" className="btn btn-danger btn-sm">Log out</Link>
+                            <Link to={`/profile`} type="button" className="btn btn-success btn-sm">Return to own profile</Link>
                         </div>
                     </div>
                 </div>
@@ -118,7 +111,6 @@ const Profile = () => {
                                 <div className="col-md-10 desc"><p>Games played</p></div>
                             </div>
                         </div>
-                        {/*<div className="col-md-"></div>*/}
                         <div className="col-md-1"></div>
                         <div className="col-md-7 ">
                             <div className="row">
@@ -161,4 +153,4 @@ const Profile = () => {
 
 }
 
-export default Profile
+export default PublicProfile

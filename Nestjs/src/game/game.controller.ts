@@ -6,6 +6,7 @@ import { verifyUser } from "../user/auth/strategy/auth.guard";
 import { newGameDto } from "./models/newGame.dto";
 import { GameService } from "./game.service";
 import { gameStatsDto } from "./models/gameStats.dto";
+import { Game } from "./game.entity";
 
 
 @Controller()
@@ -16,6 +17,11 @@ export class GameController {
         private authService: AuthService
     ) {}
 
+    @UseGuards(verifyUser)
+    @Get('allGameData')
+    async all(): Promise<Game[]> {
+        return this.gameService.all();
+    }
 
     @UseGuards(verifyUser)
     @Get('gameData')
@@ -27,6 +33,12 @@ export class GameController {
     @Post('newGame')
     async newGame (@Req() request: Request, @Body() data: newGameDto) : Promise<any> {
         return this.gameService.create(data);
+    }
+
+    @UseGuards(verifyUser)
+    @Post('updateGameURL')
+    async updateGameURL (@Req() request: Request, @Body() data) : Promise<any> {
+        return this.gameService.updateGameURL(data.gameID, data.URL);
     }
 
     @UseGuards(verifyUser)

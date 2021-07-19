@@ -1,6 +1,6 @@
 import axios from "axios";
-import { Channel} from "../models/Channel.model";
-import { ChannelUser} from "../models/ChannelUser.model";
+import { Channel } from "../models/Channel.model";
+import { ChannelUser } from "../models/ChannelUser.model";
 
 export interface ChannelCreate {
   name: string;
@@ -29,11 +29,11 @@ export default class ChannelAPI {
   }
 
   static update(channel: Channel, body: ChannelUpdate): Promise<Channel> {
-    return axios.post(`channels/${channel.ID}`, body);
+    return axios.post(`channels/${channel.Id}`, body);
   }
 
   static destroy(channel: Channel): Promise<void> {
-    return axios.delete(`channels/${channel.ID}`);
+    return axios.delete(`channels/${channel.Id}`);
   }
 
   static findName(channelID: number) {

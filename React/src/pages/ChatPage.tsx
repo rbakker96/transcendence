@@ -9,13 +9,13 @@ import API from "../API/API";
 function ChatPage() {
   const [ActiveChannelID, setActiveChannelID] = useState(0);
   const [ActiveUserID, setActiveUserID] = useState<number>(0);
-  const [UserName, setUserName] = useState("");
+  const [ActiveUserName, setActiveUserName] = useState("");
   const [Avatar, setAvatar] = useState("");
   const [IDIsMuted, setIDIsMuted] = useState<number[]>([]);
 
   useEffect(() => {
     const setActiveID = async () => {
-      const { data } = await API.User.getActiveUser();
+      const { data } = await API.User.getActiveUserID();
       setActiveUserID(data.activeUserID);
     };
     setActiveID();
@@ -24,7 +24,7 @@ function ChatPage() {
   useEffect(() => {
     const getUser = async () => {
       const { data } = await API.User.findName(ActiveUserID);
-      setUserName(data.username);
+      setActiveUserName(data.username);
       setAvatar(data.avatar);
     };
     getUser();
@@ -32,10 +32,13 @@ function ChatPage() {
 
   return (
     <div>
-      <CurrentUserBar Avatar={Avatar} UserName={UserName} />
+      <CurrentUserBar Avatar={Avatar} UserName={ActiveUserName} />
       <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
         <Col className="gutter-row" span={4}>
-          <ChatSidebar setActiveId={setActiveChannelID} />
+          <ChatSidebar
+            setActiveId={setActiveChannelID}
+            ActiveUserName={ActiveUserName}
+          />
         </Col>
         <Col className="gutter-row" span={20}>
           <ChatContent

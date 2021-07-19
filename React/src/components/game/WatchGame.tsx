@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Redirect } from 'react-router-dom';
+import {Link, Redirect} from 'react-router-dom';
 import axios from 'axios';
 
 import logo from "./img/42_logo.svg"
 import './stylesheets/WatchGame.css'
+import {GameModel} from "../../models/Game.model";
 
 const WatchGame = () => {
-
+    const [games, setGames] = useState([]);
     const [unauthorized, setUnauthorized] = useState(false);
 
     useEffect(() => {
@@ -24,6 +25,17 @@ const WatchGame = () => {
     }, []);
 
 
+    useEffect(() => {
+
+        const getGames = async () => {
+            const {data} = await axios.get('/allGameData');
+            setGames(data);
+        }
+        getGames();
+
+    }, []);
+
+
     if (unauthorized)
         return <Redirect to={'/'}/>;
 
@@ -33,44 +45,26 @@ const WatchGame = () => {
                 <img className="mb-4" src={logo} alt="logoGame" width="72" height="57"/>
                 <h1 className="h3 mb-3 fw-normal register_title">Relax and watch a game!</h1>
 
-                <div className="activeGames">
-                    <div className="gameLink">
-                        <p>#1</p>
-                        <p>-gameURL-</p>
-                    </div>
-
-                    <div className="gameLink">
-                        <p>#2</p>
-                        <p>-gameURL-</p>
-                    </div>
-
-                    <div className="gameLink">
-                        <p>#3</p>
-                        <p>-gameURL-</p>
-                    </div>
-
-                    <div className="gameLink">
-                        <p>#4</p>
-                        <p>-gameURL-</p>
-                    </div>
-
-                    <div className="gameLink">
-                        <p>#5</p>
-                        <p>-gameURL-</p>
-                    </div>
-
-                    <div className="gameLink">
-                        <p>#6</p>
-                        <p>-gameURL-</p>
-                    </div>
-
-                    <div className="gameLink">
-                        <p>#7</p>
-                        <p>-gameURL-</p>
-                    </div>
-
-                </div>
-
+                <table>
+                    <thead>
+                        <tr>
+                            <th>GAME ID</th>
+                            <th>Game link</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {games.map((game: GameModel) => {
+                            if (game.active) {
+                                return (
+                                    <tr key={game.gameID}>
+                                        <td>#{game.gameID}</td>
+                                        <td><Link to={game.gameURL}>---- Wacht this game ----</Link></td>
+                                    </tr>
+                                )
+                            }
+                        })}
+                    </tbody>
+                </table>
             </div>
         </main>
     )
