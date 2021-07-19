@@ -111,8 +111,8 @@ const Profile = () => {
                                 <div className="col-md-12 title"><h3>PLAYER STATISTICS</h3></div>
                             </div>
                             <div className="row stat">
-                                <div className="col-md-3 value"><p>{rank}</p></div>
-                                <div className="col-md-9 desc"><p>Rank</p></div>
+                                <div className="col-md-5 value"><p>{rank}</p></div>
+                                <div className="col-md-7 desc"><p>Rank</p></div>
                             </div>
                             <div className="row stat">
                                 <div className="col-md-2 value"><p>{wins}</p></div>
@@ -127,7 +127,6 @@ const Profile = () => {
                                 <div className="col-md-10 desc"><p>Games played</p></div>
                             </div>
                         </div>
-                        {/*<div className="col-md-"></div>*/}
                         <div className="col-md-1"></div>
                         <div className="col-md-7 ">
                             <div className="row">
