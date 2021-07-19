@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Link, Redirect} from "react-router-dom"
 import './stylesheets/Profile.css'
 import axios from "axios";
-import {GameModel} from "../../Models/Game.model";
+import {GameModel} from "../../models/Game.model";
 
 const PublicProfile = (props: any) => {
     const [games, setGames] = useState([]);

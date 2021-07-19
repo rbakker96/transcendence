@@ -4,7 +4,7 @@ import axios from 'axios';
 
 import logo from "./img/42_logo.svg"
 import './stylesheets/PublicProfilesOverview.css'
-import {User} from "../../Models/User.model";
+import {User} from "../../models/User.model";
 
 const PublicProfilesOverview = () => {
     const [users, setUsers] = useState([]);

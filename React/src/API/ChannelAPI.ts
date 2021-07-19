@@ -1,6 +1,6 @@
 import axios from "axios";
-import { Channel} from "../models/Channel.model";
-import { ChannelUser} from "../models/ChannelUser.model";
+import { Channel } from "../models/Channel.model";
+import { ChannelUser } from "../models/ChannelUser.model";
 
 export interface ChannelCreate {
   name: string;

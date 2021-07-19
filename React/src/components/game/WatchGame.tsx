@@ -4,7 +4,7 @@ import axios from 'axios';
 
 import logo from "./img/42_logo.svg"
 import './stylesheets/WatchGame.css'
-import {GameModel} from "../../Models/Game.model";
+import {GameModel} from "../../models/Game.model";
 
 const WatchGame = () => {
     const [games, setGames] = useState([]);
