@@ -10,21 +10,21 @@ type ChatContentProps = {
 
 function RenderGivePassword(props : ChatContentProps) {
     const [givenPassword, setGivenPassword] = useState('');
-    const [dbPassword, setDbPassword] = useState('');
+    const [dbPassword, setDbPassword] = useState(0);
     const [invalid, setInvalid] = useState(false);
 
-    // retrieve password from database
-    useEffect( () => {
-        const getChannelType = async () => {
-            const {data}  = await API.Channels.findName(props.activeChannelID)
-            setDbPassword(data.Password);
-        }
-        getChannelType();
-    })
 
-    function verifyPassword()
+     async function retrievePassword()
+     {
+        const {data} = await API.Channels.login(givenPassword, props.activeChannelID)
+        return data;
+    }
+
+
+    async function verifyPassword()
     {
-        if (givenPassword === dbPassword) {
+        const password = await retrievePassword()
+        if (password === true) {
             props.setPasswordValid(true);
             setInvalid(false);
             return (

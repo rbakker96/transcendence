@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Channel } from "./channel.entity";
 import {getConnection, getRepository, Repository} from "typeorm";
-import {User} from "../../user/models/user.entity";
+
 
 @Injectable()
 export class ChannelService {
