@@ -32,7 +32,6 @@ const WatchGame = () => {
             setGames(data);
         }
         getGames();
-
     }, []);
 
 
@@ -53,12 +52,12 @@ const WatchGame = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {games.map((game: GameModel) => {
-                            if (game.active) {
+                        {games.map((gameData: GameModel) => {
+                            if (gameData.active) {
                                 return (
-                                    <tr key={game.gameID}>
-                                        <td>#{game.gameID}</td>
-                                        <td><Link to={game.gameURL}>---- Wacht this game ----</Link></td>
+                                    <tr key={gameData.gameID}>
+                                        <td>#{gameData.gameID}</td>
+                                        <td><Link to={{pathname:gameData.gameURL, state: {gameData}}}>---- Watch this game ----</Link></td>
                                     </tr>
                                 )
                             }

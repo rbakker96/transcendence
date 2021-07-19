@@ -8,6 +8,7 @@ const Profile = () => {
     const [games, setGames] = useState([]);
     const [wins, setWins] = useState(0);
     const [loses, setLoses] = useState(0);
+    const [rank, setRank] = useState('');
     const [gamesPlayed, setGamesPlayed] = useState(0);
     const [unauthorized, setUnauthorized] = useState(false);
     const [user, setUser] = useState({
@@ -43,6 +44,7 @@ const Profile = () => {
             let winNB = 0;
             let lossNB = 0;
             let playedNB = 0;
+            let rank = 'ROOKIE';
             const {data} = await axios.get('/allGameData');
             setGames(data);
             games.map((game: GameModel) => {
@@ -53,11 +55,18 @@ const Profile = () => {
                         winNB++;
                     if (game.loser === user.id)
                         lossNB++;
+                    if (winNB >= 5)
+                        rank = 'CHALLENGER';
+                    if (winNB >= 10)
+                        rank = 'RISING STAR';
+                    if (winNB >= 15)
+                        rank = 'ENDBOSS';
                 }
             })
             setGamesPlayed(playedNB);
             setWins(winNB);
             setLoses(lossNB);
+            setRank(rank);
         }
         getGames();
     }, [user.id]);
@@ -102,8 +111,8 @@ const Profile = () => {
                                 <div className="col-md-12 title"><h3>PLAYER STATISTICS</h3></div>
                             </div>
                             <div className="row stat">
-                                <div className="col-md-2 value"><p>---</p></div>
-                                <div className="col-md-10 desc"><p>Rank</p></div>
+                                <div className="col-md-3 value"><p>{rank}</p></div>
+                                <div className="col-md-9 desc"><p>Rank</p></div>
                             </div>
                             <div className="row stat">
                                 <div className="col-md-2 value"><p>{wins}</p></div>
