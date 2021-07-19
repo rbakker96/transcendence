@@ -3,6 +3,7 @@ import API from "../../../API/API";
 import RenderGivePassword from "./RenderGivePassword";
 import ChatChannelHeader from "./ChatChannelHeader";
 import ChatChannelMessages from "./ChatChannelMessages";
+import "./ChatContent.css"
 
 type ChatContentProps = {
   activeChannelID: number;
@@ -26,7 +27,7 @@ function ChatContent(props: ChatContentProps) {
   });
 
   return (
-    <div>
+    <div className="chatmessages">
       {isPrivate && !PasswordValid
         ? ( <RenderGivePassword
           activeChannelID={active_channel_ID}

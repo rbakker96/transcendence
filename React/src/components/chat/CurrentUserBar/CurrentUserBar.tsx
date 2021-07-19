@@ -1,4 +1,5 @@
 import Navbar from "react-bootstrap/Navbar";
+import "./CurrentUserBar.css"
 
 type CurrentUserBarType = {
   Avatar: string;
@@ -7,7 +8,7 @@ type CurrentUserBarType = {
 
 function CurrentUserBar(props: CurrentUserBarType) {
   return (
-    <Navbar bg="dark" variant="dark">
+    <Navbar bg="dark" variant="dark" className="navbaruser">
       <Navbar.Brand>
         <img
           alt="Avatar"

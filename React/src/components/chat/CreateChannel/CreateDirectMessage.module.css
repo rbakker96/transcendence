@@ -4,6 +4,7 @@
   justify-content: center;
   padding-top: 40px;
   padding-bottom: 40px;
+  flex-direction: column;
 }
 
 .form_header {
@@ -15,7 +16,7 @@
 
 .registerSubTitle {
   font-weight: bold;
-  color: red;
+  color: #5B8FF9;
   font-size: 15px;
 }
 

@@ -3,6 +3,7 @@ import RenderDirectMessage from "./RenderDirectMessage";
 import React from "react";
 import { Link } from "react-router-dom";
 import { Divider } from "antd";
+import './ChatSidebar.css'
 
 type ChatSidebarType = {
   setActiveId: Function;
@@ -11,7 +12,7 @@ type ChatSidebarType = {
 
 function ChatSidebar(props: ChatSidebarType) {
   return (
-    <div>
+    <div className="chatsidebar">
       <RenderChatChannels setActiveId={props.setActiveId} />
       <RenderDirectMessage
         setActiveChannelId={props.setActiveId}

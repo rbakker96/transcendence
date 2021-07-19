@@ -5,6 +5,7 @@ import { Multiselect } from "multiselect-react-dropdown";
 import { Redirect } from "react-router-dom";
 import styles from "./CreateDirectMessage.module.css";
 import API from "../../../API/API";
+import logo from "./img/42_logo.svg";
 
 function CreateDirectMessage() {
   const [users, setUsers] = useState<Array<User>>([]);
@@ -63,6 +64,7 @@ function CreateDirectMessage() {
       {redirect ? ( <Redirect to={"/chat"} /> )
         : (
         <main className={styles.Register_component}>
+          <img className="mb-4" src={logo} alt="42_logo" width="72" height="57"/>
           <form onSubmit={submit}>
             {!valid &&
               <p className={styles.registerSubTitle}>
