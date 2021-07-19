@@ -13,6 +13,8 @@ import RenderCreateChannel from "./components/chat/CreateChannel/RenderCreateCha
 import PlayGame from "./components/game/PlayGame";
 import WatchGame from "./components/game/WatchGame";
 import WaitingRoom from "./components/game/WaitingRoom";
+import PublicProfile from "./components/users/PublicProfile";
+import PublicProfilesOverview from "./components/users/PublicProfilesOverview";
 
 function App() {
   return (
@@ -30,6 +32,10 @@ function App() {
               <Route exact path={"/createChannel"}><RenderCreateChannel /></Route>
 
               <Route exact path={'/profile'} component={Profile}  />
+
+              <Route exact path={'/publicProfilesOverview'} component={PublicProfilesOverview}  />
+
+              <Route exact path={'/publicProfile'} component={PublicProfile}  />
 
               <Route exact path={'/update'} component={UpdateUser}  />
 

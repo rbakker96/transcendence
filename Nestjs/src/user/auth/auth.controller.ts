@@ -95,6 +95,12 @@ export class AuthController {
     }
 
     @UseGuards(verifyUser)
+    @Post('publicUserData')
+    async getPublicUserData(@Req() request: Request, @Body() data) {
+        return await this.userService.findOne(data.id);
+    }
+
+    @UseGuards(verifyUser)
     @Post('logout')
     async logout(@Res({passthrough: true}) response: Response) {
         response.clearCookie('clientID');

@@ -107,7 +107,7 @@ export class WaitingRoomGateway implements OnGatewayInit, OnGatewayConnection, O
         });
 
         // clear users from waiting users
-        waitingUsers[game.classic] = [];
+        waitingUsers[game.classic] = []; //not working for multiple clients (more then 2)
       }
     }
   }
