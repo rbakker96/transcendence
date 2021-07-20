@@ -3,39 +3,28 @@ import API from "../../../API/API";
 import { useEffect, useState } from "react";
 import { Channel } from "../../../models/Channel.model";
 import EachDirectChannel from "./EachDirectChannel";
-import axios from "axios";
 
 type RenderDirectMessageType = {
   setActiveChannelId: Function;
   ActiveUserName: string;
+  ActiveUserId : number;
 };
 
 function RenderDirectMessage(props: RenderDirectMessageType) {
   const [DirectChannels, setDirectChannels] = useState<Array<Channel>>([]);
-  const [user, setUser] = useState( {
-    id: 60944,
-  })
 
-  function retrieveUser()
-  {
-    const getUser = async () => {
-      const {data} = await axios.get('userData')
-      setUser(data.id);
-    }
-    getUser();
-  };
-
+  console.log("In direct message userid is = ", props.ActiveUserId);
   useEffect(() => {
     const getchannels = async () => {
-      console.log("current user = ", user.id);
-      const { data } = await API.User.getChannels(user.id);
+      const { data } = await API.User.getChannels(props.ActiveUserId);
+      console.log("Data in render direct is ", data);
       let result: Channel[];
       result = data.filter((channel: any) => channel.IsDirect);
       setDirectChannels(result);
+      console.log("Direct channels is",DirectChannels);
     };
-    retrieveUser()
     getchannels();
-  }, [user]);
+  }, [props.ActiveUserId]);
 
   return (
     <div>

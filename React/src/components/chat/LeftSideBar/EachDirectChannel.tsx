@@ -1,6 +1,7 @@
 import { Channel } from "../../../models/Channel.model";
 import { SyntheticEvent, useEffect, useState } from "react";
 import {User} from "../../../models/User.model";
+import API from "../../../API/API";
 
 type EachDirectChannelType = {
   setActiveChannelId: Function;
@@ -11,10 +12,16 @@ type EachDirectChannelType = {
 function EachDirectChannel(props: EachDirectChannelType) {
   const [DirectChannelName, setDirectChannelName] = useState("");
 
+  console.log("props are", props);
   useEffect(() => {
+    let users : User[] = [];
+    const getUsers = async () => {
+      const {data} = await API.Channels.index(props.directChannel.Id)
+      console.log("data is ", data);
+      users = data.users;
+    }
     const setChannelName = () => {
-      const users : User[] = props.directChannel.users;
-      // console.log(users.length, "how many users?");
+      console.log("users is ", users);
       if (users.length === 2) {
         users.forEach((user) => {
           if (user.username !== props.ActiveUserName)
@@ -22,8 +29,9 @@ function EachDirectChannel(props: EachDirectChannelType) {
         });
       }
     };
+    getUsers();
     setChannelName();
-  }, [props.ActiveUserName, props.directChannel.users]);
+  }, [props.ActiveUserName, props.directChannel.users, props.directChannel.Id]);
 
   function onclick(e: SyntheticEvent) {
     e.preventDefault();

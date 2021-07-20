@@ -13,20 +13,21 @@ function ChatPage() {
   const [Avatar, setAvatar] = useState("");
   const [IDIsMuted, setIDIsMuted] = useState<number[]>([]);
 
+
   useEffect(() => {
     const setActiveID = async () => {
       const { data } = await API.User.getActiveUserID();
+      console.log("Data is ", data);
       setActiveUserID(data.activeUserID);
+      console.log("Active user", ActiveUserID);
     };
-    setActiveID();
-  }, []);
 
-  useEffect(() => {
     const getUser = async () => {
       const { data } = await API.User.findName(ActiveUserID);
       setActiveUserName(data.username);
       setAvatar(data.avatar);
     };
+    setActiveID();
     getUser();
   }, [ActiveUserID]);
 
@@ -38,6 +39,7 @@ function ChatPage() {
           <ChatSidebar
             setActiveId={setActiveChannelID}
             ActiveUserName={ActiveUserName}
+            ActiveUserId={ActiveUserID}
           />
         </Col>
         <Col className="gutter-row" span={20}>

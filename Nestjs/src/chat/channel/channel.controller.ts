@@ -13,6 +13,13 @@ export class ChannelController {
   async all(): Promise<Channel[]> {
     return this.channelService.all();
   }
+
+  @Get('one')
+  async one(@Query() query ) : Promise<Channel> {
+    console.log("Query is ", query);
+    return this.channelService.one(query.channelID)
+  }
+
   @Post()
   async addOneChannel(
     @Body('Name') ChannelName:string,
@@ -35,12 +42,14 @@ export class ChannelController {
       channel.IsDirect = false;
 
     const generatedID = await this.channelService.create(channel);
-    return {id: generatedID}
+    return {id: generatedID.Id}
   }
 
   @Get("findName")
   async findUserName(@Query() query): Promise<Channel> {
-    return await this.channelService.findChannelName(query);
+    const res = await this.channelService.findChannelName(query)
+    console.log(res);
+    return res ;
   }
 
   @Post('remove')

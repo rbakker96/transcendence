@@ -7,37 +7,27 @@ import axios from "axios";
 
 type RenderChatChannelsType = {
   setActiveId: Function;
+  ActiveUserId : number;
 };
 
 function RenderChatChannels (props: RenderChatChannelsType) {
   const [channel, setChannel] = useState<Array<Channel>>([]);
-  const [user, setUser] = useState({
-    id: 0,
-  });
+
+  console.log(props.ActiveUserId, "Render chat channels userid");
   function setActiveChannelId(activeChannelId: number) {
     props.setActiveId(activeChannelId);
     console.log("Clicked channelID: " + activeChannelId);
   }
 
-  function retrieveUser()
-  {
-    const getUser = async () => {
-      const {data} = await axios.get('userData')
-      setUser(data.id);
-    }
-    getUser();
-  };
-
   useEffect(() => {
     const getChannels = async () => {
-      const { data } = await API.User.getChannels(user.id);
+      const { data } = await API.User.getChannels(props.ActiveUserId);
       let result: Channel[];
       result = data.filter((channel : any) => channel.IsDirect === false);
       setChannel(result);
     };
-    retrieveUser();
     getChannels();
-  }, [user]);
+  }, [props.ActiveUserId]);
 
   function renderLocks(item : any)
   {

@@ -12,7 +12,12 @@ export class ChannelService {
   ) {}
 
   async one(id : number) : Promise<Channel> {
-    return this.channelRepository.findOne(id)
+    const channelUsers =  await getRepository(Channel)
+        .createQueryBuilder("channel")
+        .leftJoinAndSelect("channel.users", "user")
+        .where("channel.Id = : id", {id : id})
+        .getOne();
+    return channelUsers;
   }
 
   async all() : Promise<Channel[]> {

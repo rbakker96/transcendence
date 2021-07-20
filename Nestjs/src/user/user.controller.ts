@@ -31,10 +31,11 @@ export class UserController {
   }
 
   @Get('channels')
-  async getChannels(@Query() query : number)
+  async getChannels(@Query() query : number) : Promise<Channel[]>
   {
-    const data : User =  await this.userService.channels(query);
-    console.log(data.channels);
+    console.log(query);
+    const data : any =  await this.userService.channels(query);
+    // console.log(data.channels);
     let res : Channel[] = data.channels;
     return(res);
   }
