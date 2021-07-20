@@ -30,6 +30,7 @@ type coordinates = {
 
 type GameState = {
 	client: any
+	gameID: number
 	leftPlayerName: string
 	leftPlayerX: number
 	leftPlayerY: number
@@ -73,7 +74,8 @@ type GameProps = {
 class Game extends Component<GameProps> {
 	state: GameState = {
 		client: null,											//userID form waiting room
-		leftPlayerName: this.props.leftPlayerName,									//not needed
+		gameID: this.props.gameID,
+		leftPlayerName: this.props.leftPlayerName,
 		leftPlayerX: 10,
 		leftPlayerY: GAME_HEIGHT / 2 - (PLAYER_HEIGHT / 2),
 		leftPlayerMoveSpeed: 7.5,
@@ -81,7 +83,7 @@ class Game extends Component<GameProps> {
 		leftMoveSpeedColor: "red",
 		leftShotSpeedUsesLeft: 3,
 		leftShotSpeedColor: "red",
-		rightPlayerName: this.props.rightPlayerName,								//not needed
+		rightPlayerName: this.props.rightPlayerName,
 		rightPlayerX: GAME_WIDTH - 20,
 		rightPlayerY: GAME_HEIGHT / 2 - (PLAYER_HEIGHT / 2),
 		rightPlayerMoveSpeed: 7.5,
@@ -93,12 +95,12 @@ class Game extends Component<GameProps> {
 		ballY: GAME_HEIGHT / 2,
 		velocityX: 4,
 		velocityY: 4,
-		role: this.props.role,											//from waiting room
+		role: this.props.role,
 		leftPlayerScore: 0,
 		rightPlayerScore: 0,
 		gameFinished: false,
 		intervalID: 0,
-		websocket: new WebSocket("ws://localhost:8000/game")
+		websocket: new WebSocket( `ws://localhost:8000/game:${this.props.gameID}`)
 	}
 
 	wKeyPressed: boolean = false;
@@ -113,8 +115,6 @@ class Game extends Component<GameProps> {
 		this.keyUp = this.keyUp.bind(this);
 		this.ballMovement = this.ballMovement.bind(this);
 	}
-
-
 
 	keyDown(event: any) {
 		if (event.keyCode === W_KEYCODE) {
@@ -149,11 +149,11 @@ class Game extends Component<GameProps> {
 		document.addEventListener("keyup", this.keyUp, false);
 
 		this.state.websocket.addEventListener("open", () => {
-			this.state.websocket.send(JSON.stringify({event: 'newConnection'}));
+			this.state.websocket.send(JSON.stringify({event: 'newConnection'})); //discuss this
 		});
 
 		this.state.websocket.addEventListener("close", () => {
-			this.state.websocket.send(JSON.stringify({event: 'closeConnection'}));
+			this.state.websocket.send(JSON.stringify({event: 'closeConnection'})); //discuss this
 		});
 
 		// implement error?
@@ -201,19 +201,20 @@ class Game extends Component<GameProps> {
 			// 		this.setState({leftPlayerName: this.state.client.username});
 			// 	}
 			//
-				this.state.websocket.send(JSON.stringify({event: 'setLeftPlayerName', data: this.state.leftPlayerName})); //SET UP FRONT
+				this.state.websocket.send(JSON.stringify({event: 'setLeftPlayerName', data: [this.state.gameID, this.state.leftPlayerName]}));
 			// } else if (id === 4) {
 			// 	this.setState({role: "rightPlayer"});
 			// 	if (this.state.client) {
 			// 		this.setState({rightPlayerName: this.state.client.username});
 			// 	}
-				this.state.websocket.send(JSON.stringify({event: 'setRightPlayerName', data: this.state.rightPlayerName})); //SET UP FRONT
+				this.state.websocket.send(JSON.stringify({event: 'setRightPlayerName', data: [this.state.gameID, this.state.rightPlayerName]}));
 			// 	this.state.websocket.send(JSON.stringify({event: 'activateBall'}));
 			// } else {
 			// 	this.setState({role: "viewer"}); //DEFAULT ??
 			// 	this.state.websocket.send(JSON.stringify({event: 'activateBall'}));
 			// }
-			this.state.websocket.send(JSON.stringify({event: 'activateBall'}));
+			// this.state.websocket.send(JSON.stringify({event: 'activateBall'}));
+			this.state.websocket.send(JSON.stringify({event: 'activateBall', data: this.state.gameID}));
 		}
 
 		const resetPowerUps = () => {
@@ -403,19 +404,19 @@ class Game extends Component<GameProps> {
 			velocityX = -4;
 			velocityY = -4;
 		}
-		this.state.websocket.send(JSON.stringify({ event: 'updateBall', data: [GAME_WIDTH / 2, GAME_HEIGHT / 2, velocityX, velocityY] }));
+		this.state.websocket.send(JSON.stringify({ event: 'updateBall', data: [this.state.gameID, GAME_WIDTH / 2, GAME_HEIGHT / 2, velocityX, velocityY] }));
 	}
 
 	sendPlayerPositionToServer(eventName: string, playerY: number): void {
-		this.state.websocket.send(JSON.stringify({event: eventName, data: playerY}));
+		this.state.websocket.send(JSON.stringify({event: eventName, data: [this.state.gameID, playerY]}));
 	}
 
 	sendPlayerMoveSpeedToServer(eventName: string, newMoveSpeed: number, newMoveSpeedUsesLeft: number, color: string): void {
-		this.state.websocket.send(JSON.stringify({event: eventName, data: [newMoveSpeed, newMoveSpeedUsesLeft, color]}));
+		this.state.websocket.send(JSON.stringify({event: eventName, data: [this.state.gameID, newMoveSpeed, newMoveSpeedUsesLeft, color]}));
 	}
 
 	sendShotPowerUpToServer(eventName: string, newShotPowerUpUsesLeft: number, color: string): void {
-		this.state.websocket.send(JSON.stringify({event: eventName, data: [newShotPowerUpUsesLeft, color]}));
+		this.state.websocket.send(JSON.stringify({event: eventName, data: [this.state.gameID, newShotPowerUpUsesLeft, color]}));
 	}
 
 	handleLeftPlayerMovement(): void {
@@ -457,9 +458,9 @@ class Game extends Component<GameProps> {
 			newVelocityX = -16;
 		}
 		if (player === "left") {
-			this.state.websocket.send(JSON.stringify({event: 'resetLeftPlayerShotPowerUp', data: "red"}));
+			this.state.websocket.send(JSON.stringify({event: 'resetLeftPlayerShotPowerUp', data: [this.state.gameID, "red"]}));
 		} else if (player === "right") {
-			this.state.websocket.send(JSON.stringify({event: 'resetRightPlayerShotPowerUp', data: "blue"}));
+			this.state.websocket.send(JSON.stringify({event: 'resetRightPlayerShotPowerUp', data: [this.state.gameID, "blue"]}));
 		}
 		return (newVelocityX)
 	}
@@ -475,7 +476,7 @@ class Game extends Component<GameProps> {
 		}
 		if (this.state.leftPlayerScore === 10 || this.state.rightPlayerScore === 10) {
 			clearInterval(this.state.intervalID);
-			this.state.websocket.send(JSON.stringify({ event: 'gameFinished', data: [true] }));
+			this.state.websocket.send(JSON.stringify({ event: 'gameFinished', data: [this.state.gameID, true] }));
 			return ;
 		}
 		if (this.bouncedAgainstTopOrBottom()) {
@@ -497,19 +498,19 @@ class Game extends Component<GameProps> {
 			velocityY = this.changeVelocityY(this.state.rightPlayerY);
 		}
 		if (this.hasScored() === LEFT_PLAYER_SCORED) {
-			this.state.websocket.send(JSON.stringify({ event: 'leftPlayerScored', data: this.state.leftPlayerScore + 1 }));
+			this.state.websocket.send(JSON.stringify({ event: 'leftPlayerScored', data: [this.state.gameID, this.state.leftPlayerScore + 1] }));
 			this.resetBall(LEFT_PLAYER_SCORED);
 			requestAnimationFrame(this.ballMovement);
 			return ;
 		} else if (this.hasScored() === RIGHT_PLAYER_SCORED) {
-			this.state.websocket.send(JSON.stringify({ event: 'rightPlayerScored', data: this.state.rightPlayerScore + 1 }))
+			this.state.websocket.send(JSON.stringify({ event: 'rightPlayerScored', data: [this.state.gameID, this.state.rightPlayerScore + 1] }))
 			this.resetBall(RIGHT_PLAYER_SCORED);
 			requestAnimationFrame(this.ballMovement);
 			return ;
 		}
 		const newBallX = this.state.ballX + velocityX;
 		const newBallY = this.state.ballY + velocityY;
-		this.state.websocket.send(JSON.stringify({ event: 'updateBall', data: [newBallX, newBallY, velocityX, velocityY] }));
+		this.state.websocket.send(JSON.stringify({ event: 'updateBall', data: [this.state.gameID, newBallX, newBallY, velocityX, velocityY] }));
 		requestAnimationFrame(this.ballMovement);
 	}
 

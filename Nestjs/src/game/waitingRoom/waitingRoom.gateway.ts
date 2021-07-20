@@ -16,8 +16,12 @@ enum game {
 }
 
 let waitingRoom_sockets: Socket[][] = [];     //sockets linked to unique gameRooms
+waitingRoom_sockets[game.classic] = [];
+waitingRoom_sockets[game.deluxe] = [];
+
 let waitingUsers: number[][] = [];            //unique users in waitingRoom
-let waitingRoom_IDs: number[] = [];           //unique gamesRooms
+waitingUsers[game.classic] = [];
+waitingUsers[game.deluxe] = [];
 
 @WebSocketGateway()
 export class WaitingRoomGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -33,34 +37,26 @@ export class WaitingRoomGateway implements OnGatewayInit, OnGatewayConnection, O
   }
 
   handleConnection(client: Socket, ...args: any[]) {
-    if (args[0].url.includes("WaitingRoom")) {
-      console.log("Waiting room: new client connected");
-
-      if (!waitingRoom_sockets[game.classic]) {
-        waitingRoom_sockets[game.classic] = [];
-        waitingUsers[game.classic] = [];
-      }
-      waitingRoom_sockets[game.classic].push(client);
-      waitingRoom_IDs.push(game.classic);
+    if (args[0].url.includes("deluxeWaitingRoom")) {
+      console.log("Waiting room: deluxe game client connected");
+      waitingRoom_sockets[game.deluxe].push(client);
     }
-
-    //same routine for deluxe gameType
-
+    else if (args[0].url.includes("classicWaitingRoom")) {
+      console.log("Waiting room: classic game client connected");
+      waitingRoom_sockets[game.classic].push(client);
+    }
   }
 
 
   @SubscribeMessage("newClassicGamePlayer")
   async newClassicGamePlayer(client: Socket, data: any) {
     console.log("waitingRoom: newClassicGamePlayerHandler");
+    console.log(waitingRoom_sockets[game.classic].length);
 
     if (waitingUsers[game.classic].indexOf(data.id) != -1) {
-        //remove socket from duplicate client
-        let index = waitingRoom_sockets.indexOf(client);
-        waitingRoom_sockets[game.classic].splice(index, 1);
-
         //send event for redirection to profile page
         const redirectData = {
-          URL: 'http://localhost/profile',
+          URL: '/profile',
         }
         const newRedirect = JSON.stringify({ event: "duplicateClient", data: redirectData});
         waitingRoom_sockets[game.classic].forEach((c) => {
@@ -119,18 +115,16 @@ export class WaitingRoomGateway implements OnGatewayInit, OnGatewayConnection, O
 
   }
 
-
-
-  handleDisconnect(client: Socket) {
-    waitingRoom_IDs.forEach(function (id) {
-      if (waitingRoom_sockets[id]) {
-        let index = waitingRoom_sockets.indexOf(client);
-        if (index > -1) {
-          console.log("Waiting room: client disconnected");
-          waitingRoom_sockets[game.classic].splice(index, 1); //Does this work for waiting room??
-          // remove active channel id after the array is empty
-        }
-      }
-    });
+  handleDisconnect(client: Socket): any {
+    let leaving_client;
+    if ((leaving_client = waitingRoom_sockets[game.classic].indexOf(client)) != -1) {
+      console.log("Waiting room: classic game client disconnected");
+      waitingRoom_sockets[game.classic].splice(leaving_client, 1);
+    }
+    else if (((leaving_client = waitingRoom_sockets[game.deluxe].indexOf(client)) > -1)) {
+      console.log("Waiting room: deluxe game client disconnected");
+      waitingRoom_sockets[game.classic].splice(leaving_client, 1);
+    }
+    console.log(waitingRoom_sockets[game.classic].length);
   }
 }

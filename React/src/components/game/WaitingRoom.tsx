@@ -5,11 +5,11 @@ import axios from 'axios';
 import logo from "./img/42_logo.svg"
 import './stylesheets/WaitingRoom.css'
 
-
 const WaitingRoom = () => {
     const [gameData, setGameData] = useState('');
     const [redirectURL, setRedirectURL] = useState('');
-    const [redirect, setRedirect] = useState(false);
+    const [startGame, setStartGame] = useState(false);
+    const [profilePage, setProfilePage] = useState(false);
     const [unauthorized, setUnauthorized] = useState(false);
     const [user, setUser] = useState({username: '', id: 0,});
 
@@ -37,7 +37,7 @@ const WaitingRoom = () => {
     }, []);
 
 
-    const URL = "ws://localhost:8000/WaitingRoom";
+    const URL = "ws://localhost:8000/classicWaitingRoom";
     // const URL = `ws://localhost:8000/chat/${props.activeChannelID}`;
     const websocket: any = useRef<WebSocket>(null);
 
@@ -65,7 +65,7 @@ const WaitingRoom = () => {
                 console.log("React: newClassicGamePlayer event triggered");
                 setRedirectURL(object.data.gameURL);
                 setGameData(object.data);
-                setRedirect(true);
+                setStartGame(true);
             }
 
             if (object.event === "newDeluxeGamePlayer") {
@@ -74,7 +74,8 @@ const WaitingRoom = () => {
 
             if (object.event === "duplicateClient") {
                 console.log("React: duplicateClient event triggered");
-
+                setRedirectURL(object.data.URL);
+                setProfilePage(true);
             }
 
         });
@@ -85,14 +86,15 @@ const WaitingRoom = () => {
     }, [user]);
 
 
-
-
     if (unauthorized)
         return <Redirect to={'/'} />;
 
-    if (redirect)
+    if (startGame)
         return <Redirect to={{pathname: redirectURL, state: {gameData} }} />;
         // return <GamePage Object={gameData}/>;
+
+    if (profilePage)
+        return <Redirect to={redirectURL}/>;
 
     return (
         <main className="WaitingRoom_component">
