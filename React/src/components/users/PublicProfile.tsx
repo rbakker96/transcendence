@@ -45,8 +45,11 @@ const PublicProfile = (props: any) => {
             let lossNB = 0;
             let playedNB = 0;
             let rank = 'ROOKIE';
-            const {data} = await axios.get('/allGameData');
-            setGames(data);
+            try {
+                const {data} = await axios.get('/allGameData');
+                setGames(data);
+            }
+            catch (err) {setUnauthorized(true);}
             games.map((game: GameModel) => {
                 if (!game.active) {
                     if (game.playerOne === user.id || game.playerTwo === user.id)

@@ -33,8 +33,11 @@ const Profile = () => {
 
     useEffect(() => {
         const getUser = async () => {
-            const {data} = await axios.get('userData')
-            setUser(data);
+            try {
+                const {data} = await axios.get('userData')
+                setUser(data);
+            }
+            catch (err) {setUnauthorized(true);}
         }
         getUser();
     }, []);
@@ -45,8 +48,11 @@ const Profile = () => {
             let lossNB = 0;
             let playedNB = 0;
             let rank = 'ROOKIE';
-            const {data} = await axios.get('/allGameData');
-            setGames(data);
+            try {
+                const {data} = await axios.get('/allGameData');
+                setGames(data);
+            }
+            catch (err) {setUnauthorized(true);}
             games.map((game: GameModel) => {
                 if (!game.active) {
                     if (game.playerOne === user.id || game.playerTwo === user.id)
