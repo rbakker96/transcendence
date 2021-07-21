@@ -7,6 +7,7 @@ import PowerUpBar from "./PowerUpBar";
 
 import './stylesheets/game.css';
 import axios from "axios";
+import Ruleset from "./Ruleset";
 
 const GAME_WIDTH = 800;
 const GAME_HEIGHT = 600;
@@ -107,6 +108,7 @@ class Game extends Component<GameProps> {
 	sKeyPressed: boolean = false;
 	jKeyPressed: boolean = false;
 	kKeyPressed: boolean = false;
+	isMountedVal: boolean = false;
 
 	constructor(props: any) {
 		super(props);
@@ -114,6 +116,7 @@ class Game extends Component<GameProps> {
 		this.keyDown = this.keyDown.bind(this);
 		this.keyUp = this.keyUp.bind(this);
 		this.ballMovement = this.ballMovement.bind(this);
+		this.isMountedVal = false;
 	}
 
 	keyDown(event: any) {
@@ -140,11 +143,9 @@ class Game extends Component<GameProps> {
 		}
 	}
 
-	getActiveUserError() {
-		console.log("error getting active user");
-	}
-
 	componentDidMount() {
+		this.isMountedVal = true;
+
 		document.addEventListener("keydown", this.keyDown, false);
 		document.addEventListener("keyup", this.keyUp, false);
 
@@ -159,53 +160,61 @@ class Game extends Component<GameProps> {
 		// implement error?
 
 		const updateLeftPlayer = (data: any) => {
-			this.setState({leftPlayerY: data[1]});
+			if (this.isMountedVal)
+				this.setState({leftPlayerY: data[1]});
 		}
 
 		const updateRightPlayer = (data: any) => {
-			this.setState({rightPlayerY: data[1]});
+			if (this.isMountedVal)
+				this.setState({rightPlayerY: data[1]});
 		}
 
 		const activateBall = (data: any) => {
-			this.setState({leftPlayerY: data[0]});
-			this.setState({leftPlayerMoveSpeed: data[1]});
-			this.setState({leftMoveSpeedUsesLeft: data[2]});
-			this.setState({leftMoveSpeedColor: data[3]});
-			this.setState({rightPlayerY: data[4]});
-			this.setState({rightPlayerMoveSpeed: data[5]});
-			this.setState({rightMoveSpeedUsesLeft: data[6]});
-			this.setState({rightMoveSpeedColor: data[7]});
-			this.setState({ballX: data[8]});
-			this.setState({ballY: data[9]});
-			this.setState({velocityX: data[10]});
-			this.setState({velocityY: data[11]});
-			this.setState({leftPlayerScore: data[12]});
-			this.setState({rightPlayerScore: data[13]});
-			this.setState({leftPlayerName: data[14]});
-			this.setState({rightPlayerName: data[15]});
-			this.setState({intervalID: requestAnimationFrame(this.ballMovement)});
+			if (this.isMountedVal) {
+				this.setState({leftPlayerY: data[0]});
+				this.setState({leftPlayerMoveSpeed: data[1]});
+				this.setState({leftMoveSpeedUsesLeft: data[2]});
+				this.setState({leftMoveSpeedColor: data[3]});
+				this.setState({rightPlayerY: data[4]});
+				this.setState({rightPlayerMoveSpeed: data[5]});
+				this.setState({rightMoveSpeedUsesLeft: data[6]});
+				this.setState({rightMoveSpeedColor: data[7]});
+				this.setState({ballX: data[8]});
+				this.setState({ballY: data[9]});
+				this.setState({velocityX: data[10]});
+				this.setState({velocityY: data[11]});
+				this.setState({leftPlayerScore: data[12]});
+				this.setState({rightPlayerScore: data[13]});
+				this.setState({leftPlayerName: data[14]});
+				this.setState({rightPlayerName: data[15]});
+				this.setState({intervalID: requestAnimationFrame(this.ballMovement)});
+			}
 		}
 
 		const updateBall = (data: any) => {
-			this.setState({ ballX: data[1] });
-			this.setState({ ballY: data[2] });
-			this.setState({ velocityX: data[3] });
-			this.setState({ velocityY: data[4] });
+			if (this.isMountedVal) {
+				this.setState({ballX: data[1]});
+				this.setState({ballY: data[2]});
+				this.setState({velocityX: data[3]});
+				this.setState({velocityY: data[4]});
+			}
 		}
 
 		// THIS NEEDS A GOOD IMPLEMENTATION, NEED TO WORK THIS OUT LATER
 		const updateRoleStateVariable = (id: number) => {
 			this.state.websocket.send(JSON.stringify({event: 'setLeftPlayerName', data: [this.state.gameID, this.state.leftPlayerName]}));
 			this.state.websocket.send(JSON.stringify({event: 'setRightPlayerName', data: [this.state.gameID, this.state.rightPlayerName]}));
-			if (id == 4)
+			if (id === 4)
 				this.state.websocket.send(JSON.stringify({event: 'activateBall', data: this.state.gameID}));
 		}
 
 		const resetPowerUps = () => {
-			this.setState({leftPlayerMoveSpeed: 7.5});
-			this.setState({leftMoveSpeedColor: "red"});
-			this.setState({rightPlayerMoveSpeed: 7.5});
-			this.setState({rightMoveSpeedColor: "blue"});
+			if (this.isMountedVal) {
+				this.setState({leftPlayerMoveSpeed: 7.5});
+				this.setState({leftMoveSpeedColor: "red"});
+				this.setState({rightPlayerMoveSpeed: 7.5});
+				this.setState({rightMoveSpeedColor: "blue"});
+			}
 		}
 
 		const updateLeftPlayerScore = (data: any) => {
@@ -214,42 +223,57 @@ class Game extends Component<GameProps> {
 		}
 
 		const updateRightPlayerScore = (data: any) => {
-			this.setState({rightPlayerScore: data[1]});
-			resetPowerUps();
+			if (this.isMountedVal) {
+				this.setState({rightPlayerScore: data[1]});
+				resetPowerUps();
+			}
 		}
 
 		const updateLeftPlayerMoveSpeed = (data: any) => {
-			this.setState({leftPlayerMoveSpeed: data[1]});
-			this.setState({leftMoveSpeedUsesLeft: data[2]});
-			this.setState({leftMoveSpeedColor: data[3]});
+			if (this.isMountedVal) {
+				this.setState({leftPlayerMoveSpeed: data[1]});
+				this.setState({leftMoveSpeedUsesLeft: data[2]});
+				this.setState({leftMoveSpeedColor: data[3]});
+			}
 		}
 
 		const updateLeftPlayerShotPowerUp = (data: any) => {
-			this.setState({leftShotSpeedUsesLeft: data[1]});
-			this.setState({leftShotSpeedColor: data[2]});
+			if (this.isMountedVal) {
+				this.setState({leftShotSpeedUsesLeft: data[1]});
+				this.setState({leftShotSpeedColor: data[2]});
+			}
 		}
 
 		const resetLeftPlayerShotPowerUp = (data: any) => {
-			this.setState({leftShotSpeedColor: data[1]});
+			if (this.isMountedVal) {
+				this.setState({leftShotSpeedColor: data[1]});
+			}
 		}
 
 		const updateRightPlayerMoveSpeed = (data: any) => {
-			this.setState({rightPlayerMoveSpeed: data[1]});
-			this.setState({rightMoveSpeedUsesLeft: data[2]});
-			this.setState({rightMoveSpeedColor: data[3]});
+			if (this.isMountedVal) {
+				this.setState({rightPlayerMoveSpeed: data[1]});
+				this.setState({rightMoveSpeedUsesLeft: data[2]});
+				this.setState({rightMoveSpeedColor: data[3]});
+			}
 		}
 
 		const updateRightPlayerShotPowerUp = (data: any) => {
-			this.setState({rightShotSpeedUsesLeft: data[1]});
-			this.setState({rightShotSpeedColor: data[2]});
+			if (this.isMountedVal) {
+				this.setState({rightShotSpeedUsesLeft: data[1]});
+				this.setState({rightShotSpeedColor: data[2]});
+			}
 		}
 
 		const resetRightPlayerShotPowerUp = (data: any) => {
-			this.setState({rightShotSpeedColor: data[1]});
+			if (this.isMountedVal) {
+				this.setState({rightShotSpeedColor: data[1]});
+			}
 		}
 
 		const finishGame = async (data: any) => {
-			this.setState({gameFinished: data[1]});
+			if (this.isMountedVal)
+				this.setState({gameFinished: data[1]});
 
 			const winnerID = (this.state.leftPlayerScore === 10 ? this.props.leftPlayerID : this.props.rightPlayerID);
 			const loserID = (this.state.leftPlayerScore === 10 ? this.props.rightPlayerID : this.props.leftPlayerID);
@@ -298,6 +322,10 @@ class Game extends Component<GameProps> {
 		});
 
 		// UserAPI.getUserData().then(({data}) => this.setState({client: data}), this.getActiveUserError); //NEEDS TO GO
+	}
+
+	componentWillUnmount(){
+		this.isMountedVal = false;
 	}
 
 	bouncedAgainstTopOrBottom(): boolean {
@@ -514,49 +542,54 @@ class Game extends Component<GameProps> {
 			);
 		} else {
 			return (
-				<div className={this.props.mapStyle}>
-					<Player
-						color = { this.props.color }
-						playerX = { this.state.leftPlayerX }
-						playerY = { this.state.leftPlayerY }
-						playerWidth = { PLAYER_WIDTH }
-						playerHeight = { PLAYER_HEIGHT }
-						gameWidth = { GAME_WIDTH }
-						gameHeight = { GAME_HEIGHT }
-					/>
-					<Player
-						color = { this.props.color }
-						playerX = { this.state.rightPlayerX }
-						playerY = { this.state.rightPlayerY }
-						playerWidth = { PLAYER_WIDTH }
-						playerHeight = { PLAYER_HEIGHT }
-						gameWidth = { GAME_WIDTH }
-						gameHeight = { GAME_HEIGHT }
-					/>
-					<Ball
-						color = { this.props.color }
-						xPosition = { this.state.ballX }
-						yPosition = { this.state.ballY }
-						width = { BALL_WIDTH }
-						height = { BALL_HEIGHT }
-					/>
-					<Scoreboard
-						leftPlayerScore = { this.state.leftPlayerScore }
-						leftPlayerName= { this.state.leftPlayerName }
-						rightPlayerScore = { this.state.rightPlayerScore }
-						rightPlayerName= { this.state.rightPlayerName }
-					/>
-					<PowerUpBar
-						specialGame = {this.props.specialGame}
-						leftMoveSpeedUsesLeft={this.state.leftMoveSpeedUsesLeft}
-						leftMoveSpeedColor={this.state.leftMoveSpeedColor}
-						leftShotSpeedUsesLeft={this.state.leftShotSpeedUsesLeft}
-						leftShotSpeedColor={this.state.leftShotSpeedColor}
-						rightMoveSpeedUsesLeft={this.state.rightMoveSpeedUsesLeft}
-						rightMoveSpeedColor={this.state.rightMoveSpeedColor}
-						rightShotSpeedUsesLeft={this.state.rightShotSpeedUsesLeft}
-						rightShotSpeedColor={this.state.rightShotSpeedColor}
-					/>
+				<div>
+					<div className={this.props.mapStyle}>
+						<Player
+							color = { this.props.color }
+							playerX = { this.state.leftPlayerX }
+							playerY = { this.state.leftPlayerY }
+							playerWidth = { PLAYER_WIDTH }
+							playerHeight = { PLAYER_HEIGHT }
+							gameWidth = { GAME_WIDTH }
+							gameHeight = { GAME_HEIGHT }
+						/>
+						<Player
+							color = { this.props.color }
+							playerX = { this.state.rightPlayerX }
+							playerY = { this.state.rightPlayerY }
+							playerWidth = { PLAYER_WIDTH }
+							playerHeight = { PLAYER_HEIGHT }
+							gameWidth = { GAME_WIDTH }
+							gameHeight = { GAME_HEIGHT }
+						/>
+						<Ball
+							color = { this.props.color }
+							xPosition = { this.state.ballX }
+							yPosition = { this.state.ballY }
+							width = { BALL_WIDTH }
+							height = { BALL_HEIGHT }
+						/>
+						<Scoreboard
+							leftPlayerScore = { this.state.leftPlayerScore }
+							leftPlayerName= { this.state.leftPlayerName }
+							rightPlayerScore = { this.state.rightPlayerScore }
+							rightPlayerName= { this.state.rightPlayerName }
+						/>
+						<PowerUpBar
+							specialGame = {this.props.specialGame}
+							leftMoveSpeedUsesLeft={this.state.leftMoveSpeedUsesLeft}
+							leftMoveSpeedColor={this.state.leftMoveSpeedColor}
+							leftShotSpeedUsesLeft={this.state.leftShotSpeedUsesLeft}
+							leftShotSpeedColor={this.state.leftShotSpeedColor}
+							rightMoveSpeedUsesLeft={this.state.rightMoveSpeedUsesLeft}
+							rightMoveSpeedColor={this.state.rightMoveSpeedColor}
+							rightShotSpeedUsesLeft={this.state.rightShotSpeedUsesLeft}
+							rightShotSpeedColor={this.state.rightShotSpeedColor}
+						/>
+					</div>
+					<div>
+						<Ruleset/>
+					</div>
 				</div>
 			);
 		}

@@ -46,11 +46,6 @@ const PublicProfilesOverview = () => {
 
                 <table>
                     <thead>
-                    <tr>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                    </tr>
                     </thead>
                     <tbody>
                     {users.map((usersData: User) => {

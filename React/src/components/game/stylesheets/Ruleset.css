@@ -1,0 +1,23 @@
+.gameAddOn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.leaveDiv {
+    max-width: 200px;
+}
+
+.leaveButton {
+    margin: 50px;
+    width: 200px;
+}
+
+.ruleSet {
+    border: 2px solid white;
+    color: white;
+    font-weight: bolder;
+    width: 800px;
+    padding: 50px;
+}
