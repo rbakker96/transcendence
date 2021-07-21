@@ -453,9 +453,9 @@ class Game extends Component<GameProps> {
 		let velocityX = this.state.velocityX;
 		let velocityY = this.state.velocityY;
 
-		if (this.state.role === "leftPlayer") {
+		if (this.props.role === "leftPlayer") {
 			this.handleLeftPlayerMovement();
-		} else if (this.state.role === "rightPlayer") {
+		} else if (this.props.role === "rightPlayer") {
 			this.handleRightPlayerMovement();
 		}
 		if (this.state.leftPlayerScore === 10 || this.state.rightPlayerScore === 10) {
@@ -502,6 +502,7 @@ class Game extends Component<GameProps> {
 		const winner = (this.state.leftPlayerScore === 10 ? this.state.leftPlayerName : this.state.rightPlayerName);
 
 		if (this.state.gameFinished) {
+			this.state.websocket.send(JSON.stringify({event: 'finishGame', data: [this.state.gameID]}))
 			return (
 				<Stats
 					leftPlayerName = { this.state.leftPlayerName }

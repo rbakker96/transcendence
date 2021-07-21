@@ -462,4 +462,31 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 		allGameStates[gameID][0].rightPlayerName = data[1];
 	}
+
+	@SubscribeMessage("finishGame")
+	finishGame(client: any, data: any): void {
+		let gameID = data;
+
+		allGameStates[gameID][0].leftPlayerName = "LEFT_PLAYER_NAME";
+		allGameStates[gameID][0].leftPlayerY = 262.5;
+		allGameStates[gameID][0].leftPlayerMoveSpeed = 7.5;
+		allGameStates[gameID][0].leftMoveSpeedUsesLeft = 3;
+		allGameStates[gameID][0].leftMoveSpeedColor = "red";
+		allGameStates[gameID][0].leftShotSpeedUsesLeft = 3;
+		allGameStates[gameID][0].leftShotSpeedColor = "red";
+		allGameStates[gameID][0].rightPlayerName = "RIGHT_PLAYER_NAME";
+		allGameStates[gameID][0].rightPlayerY = 262.5;
+		allGameStates[gameID][0].rightPlayerMoveSpeed = 7.5;
+		allGameStates[gameID][0].rightMoveSpeedUsesLeft = 3;
+		allGameStates[gameID][0].rightMoveSpeedColor = "blue";
+		allGameStates[gameID][0].rightShotSpeedUsesLeft = 3;
+		allGameStates[gameID][0].rightShotSpeedColor = "blue";
+		allGameStates[gameID][0].ballX = 400;
+		allGameStates[gameID][0].ballY = 300;
+		allGameStates[gameID][0].velocityX = 4;
+		allGameStates[gameID][0].velocityY = 4;
+		allGameStates[gameID][0].leftPlayerScore = 0;
+		allGameStates[gameID][0].rightPlayerScore = 0;
+		allGameStates[gameID][0].gameFinished = false;
+	}
 }
