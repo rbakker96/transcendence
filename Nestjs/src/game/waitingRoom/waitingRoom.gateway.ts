@@ -47,34 +47,35 @@ export class WaitingRoomGateway implements OnGatewayInit, OnGatewayConnection, O
     }
   }
 
+  @SubscribeMessage("newPlayer")
+  async newDeluxeGamePlayer(client: Socket, data: any) {
+    console.log("waitingRoom: newPlayerHandler");
+    let gameType = game.classic
 
-  @SubscribeMessage("newClassicGamePlayer")
-  async newClassicGamePlayer(client: Socket, data: any) {
-    console.log("waitingRoom: newClassicGamePlayerHandler");
-    console.log(waitingRoom_sockets[game.classic].length);
+    if (data[1] === "deluxe")
+      gameType = game.deluxe;
 
-    if (waitingUsers[game.classic].indexOf(data.id) != -1) {
-        //send event for redirection to profile page
-        const redirectData = {
-          URL: '/profile',
-        }
-        const newRedirect = JSON.stringify({ event: "duplicateClient", data: redirectData});
-        waitingRoom_sockets[game.classic].forEach((c) => {
-          c.send(newRedirect);
-        });
+    if (waitingUsers[gameType].indexOf(data[0]) != -1) {
+      const redirectData = {
+        URL: '/profile',
+      }
+      const newRedirect = JSON.stringify({ event: "duplicateClient", data: redirectData});
+      waitingRoom_sockets[gameType].forEach((c) => {
+        c.send(newRedirect);
+      });
     }
     else {
-      waitingUsers[game.classic].push(data.id);
-      if (waitingUsers[game.classic].length == 2) {
-        const playerOne = await this.userService.findOne(waitingUsers[game.classic][0]);
-        const playerTwo = await this.userService.findOne(waitingUsers[game.classic][1]);
+      waitingUsers[gameType].push(data[0]);
+      if (waitingUsers[gameType].length == 2) {
+        const playerOne = await this.userService.findOne(waitingUsers[gameType][0]);
+        const playerTwo = await this.userService.findOne(waitingUsers[gameType][1]);
 
         // new database entry
         let newGameDto = {
-          playerOne: waitingUsers[game.classic][0],
+          playerOne: waitingUsers[gameType][0],
           playerOneUsername: playerOne.username,
           playerOneScore: 0,
-          playerTwo: waitingUsers[game.classic][1],
+          playerTwo: waitingUsers[gameType][1],
           playerTwoUsername: playerTwo.username,
           playerTwoScore: 0,
           winner: 0,
@@ -83,7 +84,13 @@ export class WaitingRoomGateway implements OnGatewayInit, OnGatewayConnection, O
           active: true,
         }
         const gameID = await this.gameService.create(newGameDto);
-        const gameURL = `/game:${gameID}`;
+
+        let gameURL;
+        if (data[1] === "classic")
+          gameURL = `/game:${gameID}`;
+        else if (data[1] === "deluxe")
+          gameURL = `/specialGame:${gameID}`;
+
         await this.gameService.updateGameURL(gameID, gameURL);
 
         console.log(await this.gameService.findOne(gameID));
@@ -97,22 +104,15 @@ export class WaitingRoomGateway implements OnGatewayInit, OnGatewayConnection, O
           playerTwo: playerTwo.id,
           playerTwoUsername: playerTwo.username,
         }
-        const newGame = JSON.stringify({ event: "newClassicGamePlayer", data: gameData});
-        waitingRoom_sockets[game.classic].forEach((c) => {
+        const newGame = JSON.stringify({ event: "newPlayer", data: gameData});
+        waitingRoom_sockets[gameType].forEach((c) => {
           c.send(newGame);
         });
 
         // clear users from waiting users
-        waitingUsers[game.classic] = []; //not working for multiple clients (more then 2)
+        waitingUsers[gameType] = []; //not working for multiple clients (more then 2)
       }
     }
-  }
-
-  @SubscribeMessage("newDeluxeGamePlayer")
-  newDeluxeGamePlayer(client: Socket, data: any) {
-    console.log("waitingRoom: newDeluxeGamePlayerHandler");
-
-
   }
 
   handleDisconnect(client: Socket): any {
@@ -123,8 +123,8 @@ export class WaitingRoomGateway implements OnGatewayInit, OnGatewayConnection, O
     }
     else if (((leaving_client = waitingRoom_sockets[game.deluxe].indexOf(client)) > -1)) {
       console.log("Waiting room: deluxe game client disconnected");
-      waitingRoom_sockets[game.classic].splice(leaving_client, 1);
+      waitingRoom_sockets[game.deluxe].splice(leaving_client, 1);
     }
-    console.log(waitingRoom_sockets[game.classic].length);
   }
+
 }

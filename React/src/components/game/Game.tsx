@@ -320,8 +320,6 @@ class Game extends Component<GameProps> {
 				finishGame(object.data);
 			}
 		});
-
-		// UserAPI.getUserData().then(({data}) => this.setState({client: data}), this.getActiveUserError); //NEEDS TO GO
 	}
 
 	componentWillUnmount(){

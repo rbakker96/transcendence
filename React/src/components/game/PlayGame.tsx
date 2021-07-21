@@ -37,11 +37,11 @@ const PlayGame = () => {
 
                 <div className="buttonsDiv">
                     <p className="test">The clasic pong is whitout any powerups. First to 10 wins!</p>
-                    <Link to="/WaitingRoom" type="button" className="w-100 btn btn-lg btn-primary">Play classic pong</Link>
+                    <Link to={{pathname:"/WaitingRoom", state: "classic"}} type="button" className="w-100 btn btn-lg btn-primary">Play classic pong</Link>
                 </div>
                 <div className="buttonsDiv">
                     <p>The deluxe pong is with two powerups, each powerup can be used 3 times. First to 10 wins!</p>
-                    <Link to="/profile" type="button" className="w-100 btn btn-lg btn-primary">Play deluxe pong</Link>
+                    <Link to={{pathname:"/WaitingRoom", state: "deluxe"}} type="button" className="w-100 btn btn-lg btn-primary">Play deluxe pong</Link>
                 </div>
             </div>
         </main>
