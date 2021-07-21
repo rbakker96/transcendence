@@ -14,12 +14,11 @@ function ChatPage() {
   const [IDIsMuted, setIDIsMuted] = useState<number[]>([]);
 
 
+
   useEffect(() => {
     const setActiveID = async () => {
       const { data } = await API.User.getActiveUserID();
-      console.log("Data is ", data);
       setActiveUserID(data.activeUserID);
-      console.log("Active user", ActiveUserID);
     };
 
     const getUser = async () => {

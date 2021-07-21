@@ -12,7 +12,6 @@ type ChatSidebarType = {
 
 function ChatSidebar(props: ChatSidebarType) {
 
-    console.log(props.ActiveUserId, "Active user ID");
   return (
     <div>
       <RenderChatChannels

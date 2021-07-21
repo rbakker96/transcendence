@@ -9,7 +9,7 @@ import API from "../../../API/API";
 function CreateDirectMessage() {
   const [users, setUsers] = useState<Array<User>>([]);
   const [channelUsers, setChannelUsers] = useState<Array<User>>([]);
-  const [channelAdmin, setChannelAdmin] = useState<User>();
+  const [channelAdmin, setChannelAdmin] = useState<Array<User>>([]);
   const [redirect, setRedirect] = useState(false);
   const [valid, setValid] = useState(false);
 
@@ -25,7 +25,7 @@ function CreateDirectMessage() {
     const getActiveUserID = async () => {
       const { data } = await API.User.getActiveUserID();
       users.forEach((user: User) => {
-        if (user.id === data.activeUserID) setChannelAdmin(user);
+        if (user.id === data.activeUserID) setChannelAdmin([user]);
       });
     };
     getActiveUserID();
@@ -75,13 +75,13 @@ function CreateDirectMessage() {
             {channelAdmin && (
               <>
                 <Multiselect
-                  selectedValues={[channelAdmin]}
+                  selectedValues={channelAdmin}
                   displayValue="username"
                   placeholder=""
                 />
                 <Multiselect
                   options={users}
-                  selectedValues={[channelAdmin]}
+                  selectedValues={channelAdmin}
                   displayValue="username"
                   placeholder="Add one user"
                   onSelect={OnSelectUser}

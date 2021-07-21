@@ -14,8 +14,8 @@ export default class ChannelAPI {
   static index(id : number) {
     return axios.get("http://localhost:8000/api/channels/one", {
       params: {
-        channelID: id,
-      }
+        Id : id,
+      },
     });
   }
 

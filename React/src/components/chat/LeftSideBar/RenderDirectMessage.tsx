@@ -13,19 +13,17 @@ type RenderDirectMessageType = {
 function RenderDirectMessage(props: RenderDirectMessageType) {
   const [DirectChannels, setDirectChannels] = useState<Array<Channel>>([]);
 
-  console.log("In direct message userid is = ", props.ActiveUserId);
   useEffect(() => {
     const getchannels = async () => {
       const { data } = await API.User.getChannels(props.ActiveUserId);
-      console.log("Data in render direct is ", data);
       let result: Channel[];
       result = data.filter((channel: any) => channel.IsDirect);
       setDirectChannels(result);
-      console.log("Direct channels is",DirectChannels);
     };
     getchannels();
   }, [props.ActiveUserId]);
 
+  console.log("Hoeveel directchannels should be there", DirectChannels);
   return (
     <div>
       <Divider orientation={"left"} style={{ color: "#5B8FF9" }}>

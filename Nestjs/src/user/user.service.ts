@@ -2,7 +2,6 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import {User} from "./models/user.entity";
 import {getRepository, Repository} from "typeorm";
-import {Channel} from "../chat/channel/channel.entity";
 
 
 @Injectable()

@@ -11,27 +11,27 @@ type EachDirectChannelType = {
 
 function EachDirectChannel(props: EachDirectChannelType) {
   const [DirectChannelName, setDirectChannelName] = useState("");
+  const [Users , setUsers] = useState<Array<User>>([])
 
-  console.log("props are", props);
   useEffect(() => {
-    let users : User[] = [];
-    const getUsers = async () => {
+    const getUsers = async ()  => {
       const {data} = await API.Channels.index(props.directChannel.Id)
-      console.log("data is ", data);
-      users = data.users;
+      setUsers(data.users);
     }
+    getUsers();
+  }, [props.directChannel.Id])
+
+  useEffect(() => {
     const setChannelName = () => {
-      console.log("users is ", users);
-      if (users.length === 2) {
-        users.forEach((user) => {
+      if (Users.length === 2) {
+        Users.forEach((user) => {
           if (user.username !== props.ActiveUserName)
             setDirectChannelName(user.username);
         });
       }
     };
-    getUsers();
     setChannelName();
-  }, [props.ActiveUserName, props.directChannel.users, props.directChannel.Id]);
+  }, [props.ActiveUserName, props.directChannel.users, props.directChannel.Id, Users]);
 
   function onclick(e: SyntheticEvent) {
     e.preventDefault();

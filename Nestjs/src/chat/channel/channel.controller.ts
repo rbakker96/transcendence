@@ -15,9 +15,8 @@ export class ChannelController {
   }
 
   @Get('one')
-  async one(@Query() query ) : Promise<Channel> {
-    console.log("Query is ", query);
-    return this.channelService.one(query.channelID)
+  async one(@Query() query : any ) : Promise<Channel> {
+    return this.channelService.one(query)
   }
 
   @Post()
@@ -48,7 +47,6 @@ export class ChannelController {
   @Get("findName")
   async findUserName(@Query() query): Promise<Channel> {
     const res = await this.channelService.findChannelName(query)
-    console.log(res);
     return res ;
   }
 
