@@ -7,34 +7,27 @@ import axios from "axios";
 
 type RenderChatChannelsType = {
   setActiveId: Function;
+  ActiveUserId : number;
 };
 
 function RenderChatChannels (props: RenderChatChannelsType) {
   const [channel, setChannel] = useState<Array<Channel>>([]);
-  const [user, setUser] = useState(0);
+
+  console.log(props.ActiveUserId, "Render chat channels userid");
   function setActiveChannelId(activeChannelId: number) {
     props.setActiveId(activeChannelId);
     console.log("Clicked channelID: " + activeChannelId);
   }
 
-  // here i need to retrieve the current user
   useEffect(() => {
-    const getUser = async () => {
-      const {data} = await axios.get('userData')
-      setUser(data.id);
-    }
-    getUser();
-  }, []);
-
-  useEffect(() => {
-    const getchannels = async () => {
-      const { data } = await API.Channels.index();
+    const getChannels = async () => {
+      const { data } = await API.User.getChannels(props.ActiveUserId);
       let result: Channel[];
       result = data.filter((channel : any) => channel.IsDirect === false);
       setChannel(result);
     };
-    getchannels();
-  }, []);
+    getChannels();
+  }, [props.ActiveUserId]);
 
   function renderLocks(item : any)
   {
@@ -53,7 +46,7 @@ function RenderChatChannels (props: RenderChatChannelsType) {
       <Divider orientation={"left"} style={{ "color": "#5B8FF9" }}>
         Chat channels
       </Divider>
-      {channel.map((item: any) => (
+      {channel.map((item: Channel) => (
         <ul key={item.Id} onClick={() => setActiveChannelId(item.Id)}>
           {item.ChannelName}
           {renderLocks(item)}

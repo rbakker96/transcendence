@@ -2,7 +2,6 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import {User} from "./models/user.entity";
 import {getRepository, Repository} from "typeorm";
-import {Channel} from "../chat/channel/channel.entity";
 
 
 @Injectable()
@@ -41,6 +40,12 @@ export class UserService {
 
   async findUserName(data: any): Promise<User> {
     return await this.userRepository.findOne({ id: data.userID });
+  }
+
+  async channels(data : number) : Promise<User>{
+    return await this.userRepository.findOne(data, {
+      relations: ['channels']
+    })
   }
 
 }

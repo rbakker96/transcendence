@@ -11,8 +11,14 @@ export class ChannelService {
     private readonly channelRepository: Repository<Channel>
   ) {}
 
-  async one(id : number) : Promise<Channel> {
-    return this.channelRepository.findOne(id)
+  async one(data : any) : Promise<Channel> {
+    const id = +data.Id;
+    const channelUsers =  await getRepository(Channel)
+        .createQueryBuilder("channel")
+        .leftJoinAndSelect("channel.users", "user")
+        .where("channel.Id = :Id", { Id : id})
+        .getOne();
+    return channelUsers;
   }
 
   async all() : Promise<Channel[]> {
@@ -20,6 +26,7 @@ export class ChannelService {
         .createQueryBuilder("channel")
         .leftJoinAndSelect("channel.users", "user")
         .getMany();
+
     return channelUsers;
   }
   async create(channel: Channel): Promise<Channel> {
@@ -31,8 +38,6 @@ export class ChannelService {
   }
 
   async removeUser(userId : number, channelId : number) {
-    console.log("userID = ", userId);
-    console.log("channelID = ", channelId);
     await getConnection()
         .createQueryBuilder()
         .relation(Channel, "users")

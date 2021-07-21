@@ -11,16 +11,19 @@ export interface ChannelCreate {
 export type ChannelUpdate = ChannelCreate;
 
 export default class ChannelAPI {
-  static index() {
-    return axios.get("http://localhost:8000/api/channels");
+  static index(id : number) {
+    return axios.get("http://localhost:8000/api/channels/one", {
+      params: {
+        Id : id,
+      },
+    });
   }
 
-  static show(id: number): Promise<Channel> {
+  static show(id: number) {
     return axios.get(`http://localhost:8000/api/channels`, {
       params: {
         channelID: id,
       }
-
     });
   }
 
