@@ -149,7 +149,7 @@ class Game extends Component<GameProps> {
 		document.addEventListener("keyup", this.keyUp, false);
 
 		this.state.websocket.addEventListener("open", () => {
-			this.state.websocket.send(JSON.stringify({event: 'newConnection'})); //discuss this
+			this.state.websocket.send(JSON.stringify({event: 'newConnection', data: this.props.gameID})); //discuss this
 		});
 
 		this.state.websocket.addEventListener("close", () => {
@@ -158,12 +158,12 @@ class Game extends Component<GameProps> {
 
 		// implement error?
 
-		const updateLeftPlayer = (position: number) => {
-			this.setState({leftPlayerY: position});
+		const updateLeftPlayer = (data: any) => {
+			this.setState({leftPlayerY: data[1]});
 		}
 
-		const updateRightPlayer = (position: number) => {
-			this.setState({rightPlayerY: position});
+		const updateRightPlayer = (data: any) => {
+			this.setState({rightPlayerY: data[1]});
 		}
 
 		const activateBall = (data: any) => {
@@ -187,34 +187,18 @@ class Game extends Component<GameProps> {
 		}
 
 		const updateBall = (data: any) => {
-			this.setState({ ballX: data[0] });
-			this.setState({ ballY: data[1] });
-			this.setState({ velocityX: data[2] });
-			this.setState({ velocityY: data[3] });
+			this.setState({ ballX: data[1] });
+			this.setState({ ballY: data[2] });
+			this.setState({ velocityX: data[3] });
+			this.setState({ velocityY: data[4] });
 		}
 
 		// THIS NEEDS A GOOD IMPLEMENTATION, NEED TO WORK THIS OUT LATER
 		const updateRoleStateVariable = (id: number) => {
-			// if (id === 2) {
-			// 	this.setState({role: "leftPlayer"});
-			// 	if (this.state.client) {
-			// 		this.setState({leftPlayerName: this.state.client.username});
-			// 	}
-			//
-				this.state.websocket.send(JSON.stringify({event: 'setLeftPlayerName', data: [this.state.gameID, this.state.leftPlayerName]}));
-			// } else if (id === 4) {
-			// 	this.setState({role: "rightPlayer"});
-			// 	if (this.state.client) {
-			// 		this.setState({rightPlayerName: this.state.client.username});
-			// 	}
-				this.state.websocket.send(JSON.stringify({event: 'setRightPlayerName', data: [this.state.gameID, this.state.rightPlayerName]}));
-			// 	this.state.websocket.send(JSON.stringify({event: 'activateBall'}));
-			// } else {
-			// 	this.setState({role: "viewer"}); //DEFAULT ??
-			// 	this.state.websocket.send(JSON.stringify({event: 'activateBall'}));
-			// }
-			// this.state.websocket.send(JSON.stringify({event: 'activateBall'}));
-			this.state.websocket.send(JSON.stringify({event: 'activateBall', data: this.state.gameID}));
+			this.state.websocket.send(JSON.stringify({event: 'setLeftPlayerName', data: [this.state.gameID, this.state.leftPlayerName]}));
+			this.state.websocket.send(JSON.stringify({event: 'setRightPlayerName', data: [this.state.gameID, this.state.rightPlayerName]}));
+			if (id == 4)
+				this.state.websocket.send(JSON.stringify({event: 'activateBall', data: this.state.gameID}));
 		}
 
 		const resetPowerUps = () => {
@@ -224,48 +208,48 @@ class Game extends Component<GameProps> {
 			this.setState({rightMoveSpeedColor: "blue"});
 		}
 
-		const updateLeftPlayerScore = (score: number) => {
-			this.setState({leftPlayerScore: score});
+		const updateLeftPlayerScore = (data: any) => {
+			this.setState({leftPlayerScore: data[1]});
 			resetPowerUps();
 		}
 
-		const updateRightPlayerScore = (score: number) => {
-			this.setState({rightPlayerScore: score});
+		const updateRightPlayerScore = (data: any) => {
+			this.setState({rightPlayerScore: data[1]});
 			resetPowerUps();
 		}
 
 		const updateLeftPlayerMoveSpeed = (data: any) => {
-			this.setState({leftPlayerMoveSpeed: data[0]});
-			this.setState({leftMoveSpeedUsesLeft: data[1]});
-			this.setState({leftMoveSpeedColor: data[2]});
+			this.setState({leftPlayerMoveSpeed: data[1]});
+			this.setState({leftMoveSpeedUsesLeft: data[2]});
+			this.setState({leftMoveSpeedColor: data[3]});
 		}
 
 		const updateLeftPlayerShotPowerUp = (data: any) => {
-			this.setState({leftShotSpeedUsesLeft: data[0]});
-			this.setState({leftShotSpeedColor: data[1]});
+			this.setState({leftShotSpeedUsesLeft: data[1]});
+			this.setState({leftShotSpeedColor: data[2]});
 		}
 
 		const resetLeftPlayerShotPowerUp = (data: any) => {
-			this.setState({leftShotSpeedColor: data});
+			this.setState({leftShotSpeedColor: data[1]});
 		}
 
 		const updateRightPlayerMoveSpeed = (data: any) => {
-			this.setState({rightPlayerMoveSpeed: data[0]});
-			this.setState({rightMoveSpeedUsesLeft: data[1]});
-			this.setState({rightMoveSpeedColor: data[2]});
+			this.setState({rightPlayerMoveSpeed: data[1]});
+			this.setState({rightMoveSpeedUsesLeft: data[2]});
+			this.setState({rightMoveSpeedColor: data[3]});
 		}
 
 		const updateRightPlayerShotPowerUp = (data: any) => {
-			this.setState({rightShotSpeedUsesLeft: data[0]});
-			this.setState({rightShotSpeedColor: data[1]});
+			this.setState({rightShotSpeedUsesLeft: data[1]});
+			this.setState({rightShotSpeedColor: data[2]});
 		}
 
 		const resetRightPlayerShotPowerUp = (data: any) => {
-			this.setState({rightShotSpeedColor: data});
+			this.setState({rightShotSpeedColor: data[1]});
 		}
 
-		const finishGame = async (data: boolean) => {
-			this.setState({gameFinished: data});
+		const finishGame = async (data: any) => {
+			this.setState({gameFinished: data[1]});
 
 			const winnerID = (this.state.leftPlayerScore === 10 ? this.props.leftPlayerID : this.props.rightPlayerID);
 			const loserID = (this.state.leftPlayerScore === 10 ? this.props.rightPlayerID : this.props.leftPlayerID);
