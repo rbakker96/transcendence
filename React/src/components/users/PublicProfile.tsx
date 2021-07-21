@@ -8,6 +8,7 @@ const PublicProfile = (props: any) => {
     const [games, setGames] = useState([]);
     const [wins, setWins] = useState(0);
     const [loses, setLoses] = useState(0);
+    const [rank, setRank] = useState('');
     const [gamesPlayed, setGamesPlayed] = useState(0);
     const [unauthorized, setUnauthorized] = useState(false);
     const [user, setUser] = useState({
@@ -32,7 +33,6 @@ const PublicProfile = (props: any) => {
 
     useEffect(() => {
         const getUser = async () => {
-            console.log(props.location.state.usersData.id);
             const {data} = await axios.post('publicUserData', {id: props.location.state.usersData.id});
             setUser(data);
         }
@@ -44,8 +44,12 @@ const PublicProfile = (props: any) => {
             let winNB = 0;
             let lossNB = 0;
             let playedNB = 0;
-            const {data} = await axios.get('/allGameData');
-            setGames(data);
+            let rank = 'ROOKIE';
+            try {
+                const {data} = await axios.get('/allGameData');
+                setGames(data);
+            }
+            catch (err) {setUnauthorized(true);}
             games.map((game: GameModel) => {
                 if (!game.active) {
                     if (game.playerOne === user.id || game.playerTwo === user.id)
@@ -54,11 +58,18 @@ const PublicProfile = (props: any) => {
                         winNB++;
                     if (game.loser === user.id)
                         lossNB++;
+                    if (winNB >= 5)
+                        rank = 'CHALLENGER';
+                    if (winNB >= 10)
+                        rank = 'RISING STAR';
+                    if (winNB >= 15)
+                        rank = 'ENDBOSS';
                 }
             })
             setGamesPlayed(playedNB);
             setWins(winNB);
             setLoses(lossNB);
+            setRank(rank);
         }
         getGames();
     }, [user.id]);
@@ -95,8 +106,8 @@ const PublicProfile = (props: any) => {
                                 <div className="col-md-12 title"><h3>PLAYER STATISTICS</h3></div>
                             </div>
                             <div className="row stat">
-                                <div className="col-md-2 value"><p>---</p></div>
-                                <div className="col-md-10 desc"><p>Rank</p></div>
+                                <div className="col-md-5 value"><p>{rank}</p></div>
+                                <div className="col-md-7 desc"><p>Rank</p></div>
                             </div>
                             <div className="row stat">
                                 <div className="col-md-2 value"><p>{wins}</p></div>

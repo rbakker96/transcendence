@@ -4,6 +4,7 @@ import './RenderCreateChannel.css'
 import {User} from "../../../models/User.model";
 import {Multiselect} from "multiselect-react-dropdown";
 import {Redirect} from "react-router-dom";
+import logo from "./img/42_logo.svg"
 
 function RenderCreateChannel() {
 
@@ -134,11 +135,11 @@ function RenderCreateChannel() {
         return (
             <main className="Register_component">
                 <form onSubmit={submit}>
+                    <img className="mb-4" src={logo} alt="42_logo" width="72" height="57"/>
                     { invalid?
-                        <p className="registerSubTitle">Choose more than 1 participant</p>
+                        <p className="participantSubTitle">Choose more than 1 participant</p>
                         :
                         <p/>  }
-                    <img className="mb-4" src={"./img/42_logo.svg"} alt="./img/42_logo.svg" width="72" height="57"/>
                     <h1 className="h3 mb-3 fw-normal">Create new Channel</h1>
                     {renderChannelCreation()}
                     <button className="w-100 btn btn-lg btn-primary" type="submit">Submit</button>

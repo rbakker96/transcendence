@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import {Link, Redirect} from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import axios from 'axios';
 
 import logo from "./img/42_logo.svg"
 import './stylesheets/PublicProfilesOverview.css'
-import {User} from "../../models/User.model";
+import { User } from "../../models/User.model";
 
 const PublicProfilesOverview = () => {
     const [users, setUsers] = useState([]);
@@ -28,11 +28,13 @@ const PublicProfilesOverview = () => {
     useEffect(() => {
 
         const getUsers = async () => {
-            const {data} = await axios.get('users');
-            setUsers(data);
+            try {
+                const {data} = await axios.get('users');
+                setUsers(data);
+            }
+            catch (err) {setUnauthorized(true);}
         }
         getUsers();
-
     }, []);
 
 

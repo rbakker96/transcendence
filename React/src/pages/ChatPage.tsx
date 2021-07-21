@@ -5,6 +5,7 @@ import ChatContent from "../components/chat/ChatContent/ChatContent";
 import ChatSidebar from "../components/chat/LeftSideBar/ChatSidebar";
 import CurrentUserBar from "../components/chat/CurrentUserBar/CurrentUserBar";
 import API from "../API/API";
+import "./ChatPage.css"
 
 function ChatPage() {
   const [ActiveChannelID, setActiveChannelID] = useState(0);
@@ -31,9 +32,9 @@ function ChatPage() {
   }, [ActiveUserID]);
 
   return (
-    <div>
+    <div className="chatpage">
       <CurrentUserBar Avatar={Avatar} UserName={ActiveUserName} />
-      <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+      <Row >
         <Col className="gutter-row" span={4}>
           <ChatSidebar
             setActiveId={setActiveChannelID}

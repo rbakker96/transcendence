@@ -1,0 +1,12 @@
+.chatmessages {
+    background: lightgray;
+    min-height: 1000px;
+    contain: content;
+    overflow: scroll;
+    overflow-scrolling: auto;
+    padding-left: 40px;
+}
+
+.ant-comment-content-author-time {
+    color: #5B8FF9 !important;
+}
