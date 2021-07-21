@@ -22,9 +22,12 @@ function RenderChatChannels (props: RenderChatChannelsType) {
   useEffect(() => {
     const getChannels = async () => {
       const { data } = await API.User.getChannels(props.ActiveUserId);
-      let result: Channel[];
-      result = data.filter((channel : any) => channel.IsDirect === false);
-      setChannel(result);
+      if (data)
+      {
+        let result: Channel[];
+        result = data.filter((channel : any) => !channel.IsDirect);
+        setChannel(result);
+      }
     };
     getChannels();
   }, [props.ActiveUserId]);

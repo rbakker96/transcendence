@@ -4,7 +4,7 @@ import { User } from "./models/user.entity";
 import { AuthService } from "./auth/auth.service";
 import { Request } from "express";
 import { verifyUser } from "./auth/strategy/auth.guard";
-import {Channel} from "../chat/channel/channel.entity";
+import { Channel } from "../chat/channel/channel.entity";
 
 @Controller("users")
 export class UserController {
@@ -30,12 +30,14 @@ export class UserController {
     return { activeUserID: id };
   }
 
-  @Get('channels')
-  async getChannels(@Query() query : number) : Promise<Channel[]>
-  {
-    const data : any =  await this.userService.channels(query);
-    let res : Channel[] = data.channels;
-    return(res);
+  @Get("channels")
+  async getChannels(@Query() query): Promise<Channel[]> {
+    let res: Channel[] = [];
+    if (query.id === 0) return res;
+    else if (query.id > 0) {
+      const data: any = await this.userService.channels(query);
+      res = data.channels;
+      return res;
+    }
   }
 }
-
