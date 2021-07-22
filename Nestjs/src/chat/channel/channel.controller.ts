@@ -1,4 +1,11 @@
-import { Body, Controller, Get, Post, Query } from "@nestjs/common";
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+} from "@nestjs/common";
 import { ChannelService } from "./channel.service";
 import { Channel } from "./channel.entity";
 import { User } from "../../user/models/user.entity";
@@ -32,9 +39,23 @@ export class ChannelController {
     channel.IsPrivate = Private;
     channel.users = Users;
     channel.admins = Admins;
-
     channel.Password = await bcrypt.hash(Password, 12);
     channel.IsDirect = Users.length === 2;
+
+    if (channel.IsDirect) {
+      const allChannels = await this.channelService.all();
+      const allDirectChannels = allChannels.filter(
+        (channel) => channel.IsDirect
+      );
+      allDirectChannels.forEach((directChannel: Channel) => {
+        if (
+          JSON.stringify(directChannel.users) === JSON.stringify(channel.users)
+        )
+          throw new BadRequestException(
+            "The same direct channel already exists."
+          );
+      });
+    }
 
     const generatedChannel = await this.channelService.create(channel);
     return { id: generatedChannel.Id };
