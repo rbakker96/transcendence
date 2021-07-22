@@ -19,6 +19,22 @@ export class ChannelController {
     return this.channelService.one(query)
   }
 
+  @Get('admins')
+  async getAdmins(@Query() query: any) : Promise<Boolean> {
+    let res : boolean = false;
+    const checkValue : number = +query.userID;
+    const data : any = await this.channelService.getAdmins(query.channelID)
+    data.admins.map((admin : User) => {
+      if (admin.id === checkValue)
+      {
+        res = true;
+        return ;
+      }
+    })
+
+    return res;
+  }
+
   @Post()
   async addOneChannel(
     @Body('Name') ChannelName:string,
@@ -35,11 +51,6 @@ export class ChannelController {
 
     const hashed = await bcrypt.hash(Password, 12);
     channel.Password = hashed;
-    if (Users.length === 2)
-      channel.IsDirect = true;
-    else
-      channel.IsDirect = false;
-
     const generatedID = await this.channelService.create(channel);
     return {id: generatedID.Id}
   }
@@ -62,7 +73,7 @@ export class ChannelController {
   async login(@Body('password') password: string,
               @Body('channelId') channelId: number,)
   {
-    const channel : Channel = await this.channelService.one(channelId);
+    const channel : Channel = await this.channelService.login(channelId);
     if(!await bcrypt.compare(password, channel.Password)) {
       return false;
     }

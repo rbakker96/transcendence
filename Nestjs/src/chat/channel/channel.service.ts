@@ -21,6 +21,15 @@ export class ChannelService {
     return channelUsers;
   }
 
+  async login(id : number) : Promise<Channel> {
+    const channelUsers =  await getRepository(Channel)
+        .createQueryBuilder("channel")
+        .leftJoinAndSelect("channel.users", "user")
+        .where("channel.Id = :Id", { Id : id})
+        .getOne();
+    return channelUsers;
+  }
+
   async all() : Promise<Channel[]> {
     const channelUsers = await getRepository(Channel)
         .createQueryBuilder("channel")
@@ -43,6 +52,12 @@ export class ChannelService {
         .relation(Channel, "users")
         .of(channelId)
         .remove(userId)
+  }
+
+  async getAdmins(id : number) : Promise<Channel> {
+    return await this.channelRepository.findOne(id, {
+      relations: ['admins'],
+    })
   }
 
 }

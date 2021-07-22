@@ -24,6 +24,7 @@ function RenderGivePassword(props : ChatContentProps) {
     {
         const password = await retrievePassword()
         if (password === true) {
+            console.log("Password is ", password);
             props.setPasswordValid(true);
             setInvalid(false);
             return (

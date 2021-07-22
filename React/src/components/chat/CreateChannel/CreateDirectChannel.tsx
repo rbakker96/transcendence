@@ -38,6 +38,7 @@ function CreateDirectMessage() {
       await axios.post("channels", {
         Name: "DirectMessage",
         IsPrivate: false,
+        IsDirect: true,
         Users: channelUsers,
         Admins: channelAdmin,
         Password: "",

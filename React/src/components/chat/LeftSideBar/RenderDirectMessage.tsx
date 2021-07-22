@@ -26,7 +26,6 @@ function RenderDirectMessage(props: RenderDirectMessageType) {
     getchannels();
   }, [props.ActiveUserId]);
 
-  console.log("Hoeveel directchannels should be there", DirectChannels);
   return (
     <div>
       <Divider orientation={"left"} style={{ color: "#5B8FF9" }}>
