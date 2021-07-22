@@ -3,7 +3,6 @@ import API from "../../../API/API";
 import React, { useEffect, useState } from "react";
 import {FaLock} from 'react-icons/fa';
 import {Channel} from "../../../models/Channel.model";
-import axios from "axios";
 
 type RenderChatChannelsType = {
   setActiveId: Function;
@@ -13,7 +12,6 @@ type RenderChatChannelsType = {
 function RenderChatChannels (props: RenderChatChannelsType) {
   const [channel, setChannel] = useState<Array<Channel>>([]);
 
-  console.log(props.ActiveUserId, "Render chat channels userid");
   function setActiveChannelId(activeChannelId: number) {
     props.setActiveId(activeChannelId);
     console.log("Clicked channelID: " + activeChannelId);

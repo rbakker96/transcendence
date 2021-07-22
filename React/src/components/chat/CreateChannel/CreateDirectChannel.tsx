@@ -8,7 +8,7 @@ import API from "../../../API/API";
 import logo from "./img/42_logo.svg";
 
 function CreateDirectMessage() {
-  const [users, setUsers] = useState<Array<User>>([]);
+  const [Users, setUsers] = useState<Array<User>>([]);
   const [channelUsers, setChannelUsers] = useState<Array<User>>([]);
   const [channelAdmin, setChannelAdmin] = useState<Array<User>>([]);
   const [redirect, setRedirect] = useState(false);
@@ -25,12 +25,12 @@ function CreateDirectMessage() {
   useEffect(() => {
     const getActiveUserID = async () => {
       const { data } = await API.User.getActiveUserID();
-      users.forEach((user: User) => {
+      Users.forEach((user: User) => {
         if (user.id === data.activeUserID) setChannelAdmin([user]);
       });
     };
     getActiveUserID();
-  }, [users]);
+  }, [Users]);
 
   let submit = async (e: SyntheticEvent) => {
     e.preventDefault();
@@ -38,6 +38,7 @@ function CreateDirectMessage() {
       await axios.post("channels", {
         Name: "DirectMessage",
         IsPrivate: false,
+        IsDirect: true,
         Users: channelUsers,
         Admins: channelAdmin,
         Password: "",
@@ -82,7 +83,7 @@ function CreateDirectMessage() {
                   placeholder=""
                 />
                 <Multiselect
-                  options={users}
+                  options={Users}
                   selectedValues={channelAdmin}
                   displayValue="username"
                   placeholder="Add one user"
