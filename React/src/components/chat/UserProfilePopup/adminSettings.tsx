@@ -3,9 +3,6 @@ import React, {useEffect, useState} from "react";
 import API from "../../../API/API";
 import {User} from "../../../models/User.model";
 
-
-
-
 function AdminSettings(props: any) {
     console.log("kom ik in admin ?")
     console.log(props.location.state.activeChannelId, "wat is die domme id dan");
@@ -23,28 +20,34 @@ function AdminSettings(props: any) {
         console.log("channel users are", channelUsers);
     },[props.location.state.activeChannelId])
 
-    function renderKickButton()
+    function kickUser(userId : number)
+    {
+        console.log("Hele fijne halo", userId);
+        API.Channels.leaveChannel(userId, props.location.state.activeChannelId)
+    }
+
+    function renderKickButton(userId : number)
     {
         return (
-            <button type="button" className="btn btn-danger">Kick this user</button>
+            <button type="button" className="btn btn-danger" onClick={() => kickUser(userId)}>Kick this user</button>
         )
     }
 
-    function renderMuteButton()
+    function renderMuteButton(userId : number)
     {
         return(
             <button type="button" className="btn btn-warning">Warning</button>
         )
     }
 
-    function renderMakeAdminButton()
+    function renderMakeAdminButton(userId : number)
     {
         return (
             <button type="button" className="btn btn-success">Make admin</button>
         )
     }
 
-    function renderUndoAdmin()
+    function renderUndoAdmin(userId : number)
     {
         return (
             <button type="button" className="btn btn-dark">Undo Admin</button>
@@ -59,10 +62,10 @@ function AdminSettings(props: any) {
             {channelUsers.map((item: User) => (
                 <ul key={item.id} >
                     {item.username}
-                    {renderKickButton()}
-                    {renderMuteButton()}
-                    {renderMakeAdminButton()}
-                    {renderUndoAdmin()}
+                    {renderKickButton(item.id)}
+                    {renderMuteButton(item.id)}
+                    {renderMakeAdminButton(item.id)}
+                    {renderUndoAdmin(item.id)}
                 </ul>
             ))}
         </div>
