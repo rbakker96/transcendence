@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import API from "../../../API/API";
 import { Divider } from "antd";
-import axios from "axios";
+import LeaveChannelButton from "./LeaveChannelButton";
 
 type ChatChannelHeaderProps = {
   activeChannelID: number;
@@ -9,7 +9,6 @@ type ChatChannelHeaderProps = {
 
 function ChatChannelHeader(props: ChatChannelHeaderProps) {
   const [ChannelName, setChannelName] = useState("");
-  const [user, setUser] = useState(0);
 
   useEffect(() => {
     const getChannelName = async () => {
@@ -21,47 +20,16 @@ function ChatChannelHeader(props: ChatChannelHeaderProps) {
     getChannelName();
   }, [props, setChannelName]);
 
-  useEffect(() => {
-    const getUser = async () => {
-      const {data} = await axios.get('userData')
-      setUser(data.id);
-    }
-    getUser();
-  }, []);
-
-  function leaveChannel()
-  {
-    console.log("user id = :", user)
-    console.log("channel id = :", props.activeChannelID)
-    const deleteUser = async () => {
-      await API.Channels.leaveChannel(user, props.activeChannelID)
-    }
-    deleteUser();
-  }
-
-  if(ChannelName !== "Select a channel on the left to view messages")
-  {
-    return (
-        <div>
-          <Divider orientation={"center"} style={{ color: "#5B8FF9" }}>
-            {ChannelName}
-          </Divider>
-          <button type="button" className="btn btn-outline-danger" onClick={leaveChannel}>Leave Channel</button>
-        </div>
-    );
-  }
-  else
-  {
-    return (
-        <div>
-          <Divider orientation={"center"} style={{ color: "#5B8FF9" }}>
-            {ChannelName}
-          </Divider>
-        </div>
-    );
-  }
-
-
+  return (
+    <div>
+      <Divider orientation={"center"} style={{ color: "#5B8FF9" }}>
+        {ChannelName}
+      </Divider>
+      {props.activeChannelID ? (
+        <LeaveChannelButton activeChannelID={props.activeChannelID} />
+      ) : null}
+    </div>
+  );
 }
 
 export default ChatChannelHeader;
