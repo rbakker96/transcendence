@@ -1,16 +1,22 @@
-import React, {Component} from "react";
+import React, {Component, SyntheticEvent} from "react";
 import './stylesheets/Ruleset.css';
-import {Link} from "react-router-dom";
 
+type RulesetProps = {
+    websocket: WebSocket;
+}
 
+class Ruleset extends Component<RulesetProps> {
 
-class Ruleset extends Component {
+    onClick = async (e: SyntheticEvent) => {
+        e.preventDefault();
+        this.props.websocket.send(JSON.stringify({ event: 'leaveGame'}))
+    }
 
     render() {
         return (
             <div className="gameAddOn">
                 <div className="leaveDiv">
-                    <Link to="/profile" type="button" className="w-100 btn btn-lg btn-primary leaveButton">Leave game</Link>
+                    <button onClick={this.onClick} type="button" className="w-100 btn btn-lg btn-primary leaveButton">Leave game</button>
                 </div>
                 <div className="ruleSet">
                     <h3>Rule set</h3>

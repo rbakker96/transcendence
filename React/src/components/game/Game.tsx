@@ -8,6 +8,7 @@ import PowerUpBar from "./PowerUpBar";
 import './stylesheets/game.css';
 import axios from "axios";
 import Ruleset from "./Ruleset";
+import Profile from "../users/Profile";
 
 const GAME_WIDTH = 800;
 const GAME_HEIGHT = 600;
@@ -271,6 +272,12 @@ class Game extends Component<GameProps> {
 			}
 		}
 
+		const leaveGame = (data: any) => {
+			this.state.websocket.close();
+			//let other player win if this happens
+			return <Profile/>
+		}
+
 		const finishGame = async (data: any) => {
 			if (this.isMountedVal)
 				this.setState({gameFinished: data[1]});
@@ -286,6 +293,11 @@ class Game extends Component<GameProps> {
 				loser: loserID,
 				active: false,
 			});
+		}
+
+		const closeGame = (data: any) => {
+			this.state.websocket.close();
+			return <Profile/>
 		}
 
 		this.state.websocket.addEventListener('message', function (event: { data: string; }) {
@@ -316,8 +328,12 @@ class Game extends Component<GameProps> {
 				updateRightPlayerShotPowerUp(object.data);
 			} else if (object.event === 'resetRightPlayerShotPowerUp') {
 				resetRightPlayerShotPowerUp(object.data);
+			} else if (object.event === 'leaveGame') {
+				leaveGame(object.data);
 			} else if (object.event === 'gameFinished') {
 				finishGame(object.data);
+			} else if (object.event === 'closeGame') {
+				closeGame(object.data);
 			}
 		});
 	}
@@ -586,7 +602,9 @@ class Game extends Component<GameProps> {
 						/>
 					</div>
 					<div>
-						<Ruleset/>
+						<Ruleset
+							websocket={this.state.websocket}
+						/>
 					</div>
 				</div>
 			);
