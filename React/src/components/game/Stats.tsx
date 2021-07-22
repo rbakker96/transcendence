@@ -1,4 +1,5 @@
-import React, {Component, SyntheticEvent} from 'react';
+import React, {Component} from 'react';
+import {Link} from "react-router-dom"
 import "./stylesheets/stats.css"
 
 type StatsProps = {
@@ -6,19 +7,10 @@ type StatsProps = {
 	leftPlayerScore: number
 	rightPlayerName: string
 	rightPlayerScore: number
-	websocket: WebSocket
-	gameID: number
-	role: string
 	winner: string
 }
 
 class Stats extends Component<StatsProps> {
-
-	onClick = async (e: SyntheticEvent) => {
-		e.preventDefault();
-		console.log('leaveGame send');
-		this.props.websocket.send(JSON.stringify({ event: 'closeGame', data: [this.props.gameID, this.props.role]}))
-	}
 
 	render() {
 		return (
@@ -37,7 +29,7 @@ class Stats extends Component<StatsProps> {
 					<div className="winner">{this.props.winner} has won the game!</div>
 				</div>
 				<div>
-					<button onClick={this.onClick} type="button" className="w-100 btn btn-lg btn-primary">Close game</button>
+					<Link to={'/profile'} type="button" className="w-100 btn btn-lg btn-primary">Close game</Link>
 				</div>
 			</div>
 

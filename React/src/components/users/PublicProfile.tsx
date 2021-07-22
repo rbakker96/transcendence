@@ -40,13 +40,20 @@ const PublicProfile = (props: any) => {
     }, [props.location.state.usersData.id]);
 
     useEffect(() => {
+        const getGameData = async () => {
+            const {data} = await axios.get('/allGameData');
+            setGames(data);
+        }
+        getGameData();
+    }, []);
+
+    useEffect(() => {
         const getGames = async () => {
             let winNB = 0;
             let lossNB = 0;
             let playedNB = 0;
             let rank = 'ROOKIE';
-            const {data} = await axios.get('/allGameData');
-            setGames(data);
+
             games.map((game: GameModel) => {
                 if (!game.active) {
                     if (game.playerOne === user.id || game.playerTwo === user.id)
@@ -69,7 +76,7 @@ const PublicProfile = (props: any) => {
             setRank(rank);
         }
         getGames();
-    }, [user.id]);
+    }, [user.id, games]);
 
 
     if (unauthorized)
@@ -136,18 +143,14 @@ const PublicProfile = (props: any) => {
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {games.map((game: GameModel) => {
-                                        if (!game.active && (game.playerOne === user.id || game.playerTwo === user.id)) {
-                                            return (
-                                                <tr key={game.gameID}>
-                                                    <td>#{game.gameID}</td>
-                                                    <td>{game.playerOneUsername} - {game.playerOneScore}</td>
-                                                    <td> vs </td>
-                                                    <td>{game.playerTwoScore} - {game.playerTwoUsername}</td>
-                                                </tr>
-                                            )
-                                        }
-                                    })}
+                                    {games.filter((game: GameModel) => !game.active && (game.playerOne === user.id || game.playerTwo === user.id)).map((gameData: GameModel) =>
+                                        <tr key={gameData.gameID}>
+                                            <td>#{gameData.gameID}</td>
+                                            <td>{gameData.playerOneUsername} - {gameData.playerOneScore}</td>
+                                            <td> vs </td>
+                                            <td>{gameData.playerTwoScore} - {gameData.playerTwoUsername}</td>
+                                        </tr>
+                                    )}
                                     </tbody>
                                 </table>
 

@@ -82,14 +82,14 @@ const WaitingRoom = (props: any) => {
                 websocket.current.close();
                 setRedirectURL(object.data.URL);
                 setProfilePage(true);
-            } 
+            }
 
         });
 
         return () => {
             websocket.current.close();
         };
-    }, [user]);
+    }, [user, props.location.state]);
 
 
     if (unauthorized)

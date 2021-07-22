@@ -8,7 +8,7 @@ import PowerUpBar from "./PowerUpBar";
 import './stylesheets/game.css';
 import axios from "axios";
 import Ruleset from "./Ruleset";
-import Profile from "../users/Profile";
+import {Redirect} from "react-router-dom";
 
 const GAME_WIDTH = 800;
 const GAME_HEIGHT = 600;
@@ -275,7 +275,7 @@ class Game extends Component<GameProps> {
 		}
 
 		const leaveGame = (data: any) => {
-			console.log(data[1]);
+			console.log(data);
 
 			if (data[1] === 'leftPlayer') {
 				this.state.websocket.send(JSON.stringify({ event: 'rightPlayerScored', data: [this.state.gameID, 10] }))
@@ -304,13 +304,6 @@ class Game extends Component<GameProps> {
 				loser: loserID,
 				active: false,
 			});
-		}
-
-		const closeGame = (data: any) => {
-			if (data[1] === this.state.role) {
-				this.state.websocket.close();
-				this.setState({rightMoveSpeedColor: true});
-			}
 		}
 
 		this.state.websocket.addEventListener('message', function (event: { data: string; }) {
@@ -345,8 +338,6 @@ class Game extends Component<GameProps> {
 				leaveGame(object.data);
 			} else if (object.event === 'gameFinished') {
 				finishGame(object.data);
-			} else if (object.event === 'closeGame') {
-				closeGame(object.data);
 			}
 		});
 	}
@@ -554,7 +545,7 @@ class Game extends Component<GameProps> {
 		const winner = (this.state.leftPlayerScore === 10 ? this.state.leftPlayerName : this.state.rightPlayerName);
 
 		if (this.state.closeGame) {
-			return <Profile/>
+			return <Redirect to={'/profile'}/>;
 		}
 		else if (this.state.gameFinished) {
 			this.state.websocket.send(JSON.stringify({event: 'finishGame', data: [this.state.gameID]}))
@@ -564,9 +555,6 @@ class Game extends Component<GameProps> {
 					leftPlayerScore = { this.state.leftPlayerScore }
 					rightPlayerName = { this.state.rightPlayerName}
 					rightPlayerScore = { this.state.rightPlayerScore }
-					websocket={this.state.websocket}
-					gameID={this.state.gameID}
-					role={this.state.role}
 					winner = { winner }
 				/>
 			);
@@ -621,7 +609,7 @@ class Game extends Component<GameProps> {
 						<Ruleset
 							websocket={this.state.websocket}
 							gameID={this.state.gameID}
-							role={this.state.role}
+							role={this.props.role}
 						/>
 					</div>
 				</div>
