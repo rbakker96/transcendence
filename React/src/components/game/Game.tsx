@@ -188,7 +188,7 @@ class Game extends Component<GameProps> {
 				this.setState({rightPlayerScore: data[13]});
 				this.setState({leftPlayerName: data[14]});
 				this.setState({rightPlayerName: data[15]});
-				this.setState({intervalID: requestAnimationFrame(this.ballMovement)});
+				this.setState({intervalID: setInterval(this.ballMovement, 20)});
 			}
 		}
 
@@ -391,9 +391,9 @@ class Game extends Component<GameProps> {
 	}
 
 	hasScored(): number {
-		if (this.state.ballX + this.state.velocityX > GAME_WIDTH) {
+		if (this.state.ballX + (this.state.velocityX * 2) > GAME_WIDTH) {
 			return (LEFT_PLAYER_SCORED);
-		} else if (this.state.ballX + this.state.velocityX < 0) {
+		} else if (this.state.ballX + (this.state.velocityX * 2) < 0) {
 			return (RIGHT_PLAYER_SCORED);
 		}
 		return (0);
@@ -526,18 +526,15 @@ class Game extends Component<GameProps> {
 		if (this.hasScored() === LEFT_PLAYER_SCORED) {
 			this.state.websocket.send(JSON.stringify({ event: 'leftPlayerScored', data: [this.state.gameID, this.state.leftPlayerScore + 1] }));
 			this.resetBall(LEFT_PLAYER_SCORED);
-			requestAnimationFrame(this.ballMovement);
 			return ;
 		} else if (this.hasScored() === RIGHT_PLAYER_SCORED) {
 			this.state.websocket.send(JSON.stringify({ event: 'rightPlayerScored', data: [this.state.gameID, this.state.rightPlayerScore + 1] }))
 			this.resetBall(RIGHT_PLAYER_SCORED);
-			requestAnimationFrame(this.ballMovement);
 			return ;
 		}
 		const newBallX = this.state.ballX + velocityX;
 		const newBallY = this.state.ballY + velocityY;
 		this.state.websocket.send(JSON.stringify({ event: 'updateBall', data: [this.state.gameID, newBallX, newBallY, velocityX, velocityY] }));
-		requestAnimationFrame(this.ballMovement);
 	}
 
 	render() {
