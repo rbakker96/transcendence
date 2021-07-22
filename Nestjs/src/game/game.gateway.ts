@@ -463,6 +463,28 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		allGameStates[gameID][0].rightPlayerName = data[1];
 	}
 
+	@SubscribeMessage("leaveGame")
+	leaveGame(client: any, data: any): void {
+		let gameID = data[0];
+		console.log('leaveGame event triggerd');
+
+		const response = JSON.stringify({event: 'leaveGame', data: data})
+		connectedClients[gameID].forEach(c => {
+			c.send(response);
+		});
+	}
+
+	@SubscribeMessage("closeGame")
+	closeGame(client: any, data: any): void {
+		let gameID = data[0];
+		console.log('closeGame event triggerd');
+
+		const response = JSON.stringify({event: 'closeGame', data: data})
+		connectedClients[gameID].forEach(c => {
+			c.send(response);
+		});
+	}
+
 	@SubscribeMessage("finishGame")
 	finishGame(client: any, data: any): void {
 		let gameID = data;
