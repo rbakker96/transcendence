@@ -1,11 +1,10 @@
-import {Body, Controller, Get, Post, Query} from "@nestjs/common";
-import {ChannelService} from "./channel.service";
-import {Channel} from "./channel.entity";
-import {User} from "../../user/models/user.entity";
-import * as bcrypt from 'bcryptjs'
+import { Body, Controller, Get, Post, Query } from "@nestjs/common";
+import { ChannelService } from "./channel.service";
+import { Channel } from "./channel.entity";
+import { User } from "../../user/models/user.entity";
+import * as bcrypt from "bcryptjs";
 
-
-@Controller('channels/')
+@Controller("channels/")
 export class ChannelController {
   constructor(private channelService: ChannelService) {}
 
@@ -14,19 +13,20 @@ export class ChannelController {
     return this.channelService.all();
   }
 
-  @Get('one')
-  async one(@Query() query : any ) : Promise<Channel> {
-    return this.channelService.one(query)
+  @Get("one")
+  async one(@Query() query: any): Promise<Channel> {
+    return this.channelService.one(query);
   }
 
   @Post()
   async addOneChannel(
-    @Body('Name') ChannelName:string,
-    @Body("IsPrivate") Private:boolean,
-    @Body('Users') Users: User[],
-    @Body('Admins') Admins: User[],
-    @Body('IsDirect') IsDirect:boolean,
-    @Body('Password') Password:string){
+    @Body("Name") ChannelName: string,
+    @Body("IsPrivate") Private: boolean,
+    @Body("Users") Users: User[],
+    @Body("Admins") Admins: User[],
+    @Body("IsDirect") IsDirect: boolean,
+    @Body("Password") Password: string
+  ) {
     const channel = new Channel();
     channel.ChannelName = ChannelName;
     channel.IsPrivate = Private;
@@ -36,31 +36,29 @@ export class ChannelController {
     channel.Password = await bcrypt.hash(Password, 12);
     channel.IsDirect = Users.length === 2;
 
-
-
     const generatedChannel = await this.channelService.create(channel);
-    return {id: generatedChannel.Id}
+    return { id: generatedChannel.Id };
   }
 
   @Get("findName")
   async findUserName(@Query() query): Promise<Channel> {
-    return await this.channelService.findChannelName(query) ;
+    return await this.channelService.findChannelName(query);
   }
 
-  @Post('remove')
+  @Post("remove")
   async removeUser(
-      @Body('userId') userId: number,
-      @Body('channelId') channelId: number)
-  {
+    @Body("userId") userId: number,
+    @Body("channelId") channelId: number
+  ) {
     await this.channelService.removeUser(userId, channelId);
   }
 
-  @Post('login')
-  async login(@Body('password') password: string,
-              @Body('channelId') channelId: number,)
-  {
-    const channel : Channel = await this.channelService.one(channelId);
+  @Post("login")
+  async login(
+    @Body("password") password: string,
+    @Body("channelId") channelId: number
+  ) {
+    const channel: Channel = await this.channelService.one(channelId);
     return await bcrypt.compare(password, channel.Password);
-
   }
 }

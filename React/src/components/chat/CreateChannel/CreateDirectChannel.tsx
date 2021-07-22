@@ -47,17 +47,16 @@ function CreateDirectMessage() {
     }
   };
 
-  function OnSelectUser(selectedList: User[]) {
+  function OnUserChange(selectedList: User[]) {
     setChannelUsers(selectedList);
     if (selectedList.length === 2) setValid(true);
     else if (selectedList.length === 1 || selectedList.length > 2)
       setValid(false);
   }
 
-  function OnRemove(selectedList: User[]) {
-    if (selectedList.length === 2) setValid(true);
-    else if (selectedList.length === 1 || selectedList.length > 2)
-      setValid(false);
+  function OnAdminChange(selectedList: User[]) {
+    setChannelAdmin(selectedList);
+    if (selectedList.length > 2) setValid(false);
   }
 
   return (
@@ -79,16 +78,19 @@ function CreateDirectMessage() {
               <>
                 <Multiselect
                   selectedValues={channelAdmin}
+                  options={Users}
                   displayValue="username"
                   placeholder=""
+                  onSelect={OnAdminChange}
+                  onRemove={OnAdminChange}
                 />
                 <Multiselect
                   options={Users}
                   selectedValues={channelAdmin}
                   displayValue="username"
                   placeholder="Add one user"
-                  onSelect={OnSelectUser}
-                  onRemove={OnRemove}
+                  onSelect={OnUserChange}
+                  onRemove={OnUserChange}
                 />
               </>
             )}
