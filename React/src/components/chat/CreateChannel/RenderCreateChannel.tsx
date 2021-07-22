@@ -117,7 +117,7 @@ function RenderCreateChannel() {
           type="checkbox"
           value=""
           id="defaultCheck1"
-          onChange={() => setIsPrivate(true)}
+          onClick={() => setIsPrivate(!isPrivate)}
         />
         <label className="form-check-label" htmlFor="defaultCheck1">
           Private
