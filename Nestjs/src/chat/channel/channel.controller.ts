@@ -1,11 +1,17 @@
-import {BadRequestException, Body, Controller, Get, Param, Post, Query} from "@nestjs/common";
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+} from "@nestjs/common";
 import { ChannelService } from "./channel.service";
 import { Channel } from "./channel.entity";
-import {User} from "../../user/models/user.entity";
-import * as bcrypt from 'bcryptjs'
+import { User } from "../../user/models/user.entity";
+import * as bcrypt from "bcryptjs";
 
-
-@Controller('channels/')
+@Controller("channels/")
 export class ChannelController {
   constructor(private channelService: ChannelService) {}
 
@@ -14,60 +20,66 @@ export class ChannelController {
     return this.channelService.all();
   }
 
-  @Get('one')
-  async one(@Query() query : any ) : Promise<Channel> {
-    return this.channelService.one(query)
+  @Get("one")
+  async one(@Query() query: any): Promise<Channel> {
+    return this.channelService.one(query);
   }
 
   @Post()
   async addOneChannel(
-    @Body('Name') ChannelName:string,
-    @Body("IsPrivate") Private:boolean,
-    @Body('Users') Users: User[],
-    @Body('Admins') Admins: User[],
-    @Body('IsDirect') IsDirect:boolean,
-    @Body('Password') Password:string){
+    @Body("Name") ChannelName: string,
+    @Body("IsPrivate") Private: boolean,
+    @Body("Users") Users: User[],
+    @Body("Admins") Admins: User[],
+    @Body("IsDirect") IsDirect: boolean,
+    @Body("Password") Password: string
+  ) {
     const channel = new Channel();
     channel.ChannelName = ChannelName;
     channel.IsPrivate = Private;
     channel.users = Users;
     channel.admins = Admins;
+    channel.Password = await bcrypt.hash(Password, 12);
+    channel.IsDirect = Users.length === 2;
 
-    const hashed = await bcrypt.hash(Password, 12);
-    channel.Password = hashed;
-    if (Users.length === 2)
-      channel.IsDirect = true;
-    else
-      channel.IsDirect = false;
+    if (channel.IsDirect) {
+      const allChannels = await this.channelService.all();
+      const allDirectChannels = allChannels.filter(
+        (channel) => channel.IsDirect
+      );
+      allDirectChannels.forEach((directChannel: Channel) => {
+        if (
+          JSON.stringify(directChannel.users) === JSON.stringify(channel.users)
+        )
+          throw new BadRequestException(
+            "The same direct channel already exists."
+          );
+      });
+    }
 
-    const generatedID = await this.channelService.create(channel);
-    return {id: generatedID.Id}
+    const generatedChannel = await this.channelService.create(channel);
+    return { id: generatedChannel.Id };
   }
 
   @Get("findName")
   async findUserName(@Query() query): Promise<Channel> {
-    const res = await this.channelService.findChannelName(query)
-    return res ;
+    return await this.channelService.findChannelName(query);
   }
 
-  @Post('remove')
+  @Post("remove")
   async removeUser(
-      @Body('userId') userId: number,
-      @Body('channelId') channelId: number)
-  {
+    @Body("userId") userId: number,
+    @Body("channelId") channelId: number
+  ) {
     await this.channelService.removeUser(userId, channelId);
   }
 
-  @Post('login')
-  async login(@Body('password') password: string,
-              @Body('channelId') channelId: number,)
-  {
-    const channel : Channel = await this.channelService.one(channelId);
-    if(!await bcrypt.compare(password, channel.Password)) {
-      return false;
-    }
-    else
-      return true;
-
+  @Post("login")
+  async login(
+    @Body("password") password: string,
+    @Body("channelId") channelId: number
+  ) {
+    const channel: Channel = await this.channelService.one(channelId);
+    return await bcrypt.compare(password, channel.Password);
   }
 }
