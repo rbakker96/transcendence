@@ -395,9 +395,12 @@ class Game extends Component<GameProps> {
 	}
 
 	hasScored(): number {
-		if (this.state.ballX + (this.state.velocityX * 2) > GAME_WIDTH) {
+		let position = this.state.ballX;
+		if (position + this.state.velocityX > GAME_WIDTH) {
+			this.resetBall(LEFT_PLAYER_SCORED);
 			return (LEFT_PLAYER_SCORED);
-		} else if (this.state.ballX + (this.state.velocityX * 2) < 0) {
+		} else if (position < 0) {
+			this.resetBall(RIGHT_PLAYER_SCORED);
 			return (RIGHT_PLAYER_SCORED);
 		}
 		return (0);
@@ -529,11 +532,9 @@ class Game extends Component<GameProps> {
 		}
 		if (this.hasScored() === LEFT_PLAYER_SCORED) {
 			this.state.websocket.send(JSON.stringify({ event: 'leftPlayerScored', data: [this.state.gameID, this.state.leftPlayerScore + 1] }));
-			this.resetBall(LEFT_PLAYER_SCORED);
 			return ;
 		} else if (this.hasScored() === RIGHT_PLAYER_SCORED) {
 			this.state.websocket.send(JSON.stringify({ event: 'rightPlayerScored', data: [this.state.gameID, this.state.rightPlayerScore + 1] }))
-			this.resetBall(RIGHT_PLAYER_SCORED);
 			return ;
 		}
 		const newBallX = this.state.ballX + velocityX;
