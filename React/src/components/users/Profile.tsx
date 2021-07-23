@@ -1,20 +1,23 @@
-import React, {useEffect, useState} from "react";
+import React, {SyntheticEvent, useEffect, useState} from "react";
 import {Link, Redirect} from "react-router-dom"
 import './stylesheets/Profile.css'
 import axios from "axios";
 import {GameModel} from "../../models/Game.model";
 
 const Profile = () => {
+    const [privateGame, setprivateGame] = useState(false);
     const [games, setGames] = useState([]);
     const [wins, setWins] = useState(0);
     const [loses, setLoses] = useState(0);
     const [rank, setRank] = useState('');
     const [gamesPlayed, setGamesPlayed] = useState(0);
     const [unauthorized, setUnauthorized] = useState(false);
+    const [pendingInvite, setPendingInvite] = useState(false);
     const [user, setUser] = useState({
         username: '',
         avatar: '',
         id: 0,
+        pendingInvite: false,
     });
 
     useEffect(() => {
@@ -41,6 +44,13 @@ const Profile = () => {
         }
         getUser();
     }, []);
+
+    useEffect(() => {
+        const getPendingInvite = async () => {
+            setPendingInvite(user.pendingInvite);
+        }
+        getPendingInvite();
+    }, [user]);
 
     useEffect(() => {
         const getGameData = async () => {
@@ -101,6 +111,16 @@ const Profile = () => {
         getRank();
     }, [user.id, games, wins]);
 
+    const acceptGameInvite = async (e: SyntheticEvent) => {
+        e.preventDefault();
+
+        try {
+
+            setprivateGame(true);
+        }
+        catch (err) { }
+    }
+
 
     const logout = async () => {
         await axios.post('logout', {});
@@ -108,6 +128,9 @@ const Profile = () => {
 
     if (unauthorized)
         return <Redirect to={'/'}/>;
+
+    if (privateGame)
+        return <Redirect to={{pathname:"/WaitingRoom", state: "private"}}/>;
 
     return (
         <div className="container profilepage">
@@ -121,6 +144,14 @@ const Profile = () => {
                         <div className="profile-usertitle">
                             <div className="profile-usertitle-job">{user?.username}</div>
                         </div>
+
+
+                        {   !pendingInvite?
+                            <div>
+                                <button onClick={acceptGameInvite} type="button" className="btn btn-sm inviteButton">Accept Game invite</button>
+                            </div>
+                            :
+                            <p/>  }
 
                         <div className="profile-userbuttons">
                             <Link to={`/PlayGame`} type="button" className="btn btn-success btn-sm">Play game</Link>
