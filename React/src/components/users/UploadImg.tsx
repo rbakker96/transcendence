@@ -11,9 +11,11 @@ const UploadImg = (props: {uploaded: (url: string) => void}) => {
         const formData = new FormData();
         formData.append('image', files[0]);
 
-        const {data} = await axios.post('upload', formData);
-
-        props.uploaded(data.url);
+        try {
+            const {data} = await axios.post('upload', formData);
+            props.uploaded(data.url);
+        }
+        catch (err) {props.uploaded('http://localhost:8000/api/uploads/egg.jpeg')}
     }
 
     return (

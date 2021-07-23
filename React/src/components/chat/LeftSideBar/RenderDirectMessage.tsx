@@ -7,20 +7,24 @@ import EachDirectChannel from "./EachDirectChannel";
 type RenderDirectMessageType = {
   setActiveChannelId: Function;
   ActiveUserName: string;
+  ActiveUserId : number;
 };
 
 function RenderDirectMessage(props: RenderDirectMessageType) {
-  const [DirectChannels, setDirectChannels] = useState<Channel[]>([]);
+  const [DirectChannels, setDirectChannels] = useState<Array<Channel>>([]);
 
   useEffect(() => {
     const getchannels = async () => {
-      const { data } = await API.Channels.index();
-      let result: Channel[];
-      result = data.filter((channel: any) => channel.IsDirect);
-      setDirectChannels(result);
+      const { data } = await API.User.getChannels(props.ActiveUserId);
+      if (data)
+      {
+        let result: Channel[];
+        result = data.filter((channel: any) => channel.IsDirect);
+        setDirectChannels(result);
+      }
     };
     getchannels();
-  }, []);
+  }, [props.ActiveUserId]);
 
   return (
     <div>

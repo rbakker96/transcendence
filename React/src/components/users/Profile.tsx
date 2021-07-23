@@ -33,8 +33,11 @@ const Profile = () => {
 
     useEffect(() => {
         const getUser = async () => {
-            const {data} = await axios.get('userData')
-            setUser(data);
+            try {
+                const {data} = await axios.get('userData')
+                setUser(data);
+            }
+            catch (err) {setUnauthorized(true);}
         }
         getUser();
     }, []);

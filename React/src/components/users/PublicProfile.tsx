@@ -40,6 +40,7 @@ const PublicProfile = (props: any) => {
     }, [props.location.state.usersData.id]);
 
     useEffect(() => {
+
         const getGameData = async () => {
             const {data} = await axios.get('/allGameData');
             setGames(data);
