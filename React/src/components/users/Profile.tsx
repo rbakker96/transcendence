@@ -47,37 +47,57 @@ const Profile = () => {
         getGameData();
     }, []);
 
+    useEffect(() => {
+        let counter = 0;
+
+        const getPlayedGames = async () => {
+            games.filter((game: GameModel) => !game.active && (game.playerOne === user.id || game.playerTwo === user.id)).map((gameData: GameModel) =>
+                counter++
+            )
+            setGamesPlayed(counter);
+        }
+        getPlayedGames();
+    }, [user.id, games]);
 
     useEffect(() => {
-        const getGames = async () => {
-            let winNB = 0;
-            let lossNB = 0;
-            let playedNB = 0;
-            let rank = 'ROOKIE';
+        let counter = 0;
 
-            games.map((game: GameModel) => {
-                if (!game.active) {
-                    if (game.playerOne === user.id || game.playerTwo === user.id)
-                        playedNB++;
-                    if (game.winner === user.id)
-                        winNB++;
-                    if (game.loser === user.id)
-                        lossNB++;
-                    if (winNB >= 5)
-                        rank = 'CHALLENGER';
-                    if (winNB >= 10)
-                        rank = 'RISING STAR';
-                    if (winNB >= 15)
-                        rank = 'ENDBOSS';
-                }
-            })
-            setGamesPlayed(playedNB);
-            setWins(winNB);
-            setLoses(lossNB);
+        const getGamesWon = async () => {
+            games.filter((game: GameModel) => !game.active && game.winner === user.id ).map((gameData: GameModel) =>
+                counter++
+            )
+            setWins(counter);
+        }
+        getGamesWon();
+    }, [user.id, games]);
+
+    useEffect(() => {
+        let counter = 0;
+
+        const getGamesLost = async () => {
+            games.filter((game: GameModel) => !game.active && game.loser === user.id ).map((gameData: GameModel) =>
+                counter++
+            )
+            setLoses(counter);
+        }
+        getGamesLost();
+    }, [user.id, games]);
+
+    useEffect(() => {
+        let rank = 'ROOKIE'
+
+        const getRank = async () => {
+            if (wins >= 5)
+                rank = 'CHALLENGER';
+            if (wins >= 10)
+                rank = 'RISING STAR';
+            if (wins >= 15)
+                rank = 'ENDBOSS';
             setRank(rank);
         }
-        getGames();
-    }, [user.id, games]);
+        getRank();
+    }, [user.id, games, wins]);
+
 
     const logout = async () => {
         await axios.post('logout', {});
