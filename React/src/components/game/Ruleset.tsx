@@ -3,13 +3,16 @@ import './stylesheets/Ruleset.css';
 
 type RulesetProps = {
     websocket: WebSocket;
+    gameID: number;
+    role: string;
 }
 
 class Ruleset extends Component<RulesetProps> {
 
     onClick = async (e: SyntheticEvent) => {
         e.preventDefault();
-        this.props.websocket.send(JSON.stringify({ event: 'leaveGame'}))
+        console.log('leaveGame send');
+        this.props.websocket.send(JSON.stringify({ event: 'leaveGame', data: [this.props.gameID, this.props.role]}))
     }
 
     render() {

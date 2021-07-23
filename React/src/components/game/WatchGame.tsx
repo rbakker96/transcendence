@@ -52,16 +52,12 @@ const WatchGame = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {games.map((gameData: GameModel) => {
-                            if (gameData.active) {
-                                return (
-                                    <tr key={gameData.gameID}>
-                                        <td>#{gameData.gameID}</td>
-                                        <td><Link to={{pathname:gameData.gameURL, state: {gameData}}}>---- Watch this game ----</Link></td>
-                                    </tr>
-                                )
-                            }
-                        })}
+                    {games.filter((game: GameModel) => game.active).map((gameData: GameModel) =>
+                        <tr key={gameData.gameID}>
+                            <td>#{gameData.gameID}</td>
+                            <td><Link to={{pathname:gameData.gameURL, state: {gameData}}}>---- Watch this game ----</Link></td>
+                        </tr>)
+                    }
                     </tbody>
                 </table>
             </div>

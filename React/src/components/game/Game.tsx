@@ -8,7 +8,7 @@ import PowerUpBar from "./PowerUpBar";
 import './stylesheets/game.css';
 import axios from "axios";
 import Ruleset from "./Ruleset";
-import Profile from "../users/Profile";
+import {Redirect} from "react-router-dom";
 
 const GAME_WIDTH = 800;
 const GAME_HEIGHT = 600;
@@ -58,6 +58,7 @@ type GameState = {
 	rightPlayerScore: number
 	gameFinished: boolean
 	intervalID: any
+	closeGame: boolean
 	websocket: any
 }
 
@@ -102,7 +103,8 @@ class Game extends Component<GameProps> {
 		rightPlayerScore: 0,
 		gameFinished: false,
 		intervalID: 0,
-		websocket: new WebSocket( `ws://localhost:8000/game:${this.props.gameID}`),
+		closeGame: false,
+		websocket: new WebSocket( `ws://localhost:8000/game:${this.props.gameID}`)
 	}
 
 	wKeyPressed: boolean = false;
@@ -273,9 +275,18 @@ class Game extends Component<GameProps> {
 		}
 
 		const leaveGame = (data: any) => {
-			this.state.websocket.close();
-			//let other player win if this happens
-			return <Profile/>
+			console.log(data);
+
+			if (data[1] === 'leftPlayer') {
+				this.state.websocket.send(JSON.stringify({ event: 'rightPlayerScored', data: [this.state.gameID, 10] }))
+				this.resetBall(RIGHT_PLAYER_SCORED);
+				return ;
+			}
+			else {
+				this.state.websocket.send(JSON.stringify({ event: 'leftPlayerScored', data: [this.state.gameID, 10] }));
+				this.resetBall(LEFT_PLAYER_SCORED);
+				return ;
+			}
 		}
 
 		const finishGame = async (data: any) => {
@@ -287,17 +298,12 @@ class Game extends Component<GameProps> {
 
 			await axios.post('/updateGameStats', {
 				gameID: this.props.gameID,
-				playerOneScore: this.state.rightPlayerScore,
-				playerTwoScore: this.state.leftPlayerScore,
+				playerOneScore: this.state.leftPlayerScore,
+				playerTwoScore: this.state.rightPlayerScore,
 				winner: winnerID,
 				loser: loserID,
 				active: false,
 			});
-		}
-
-		const closeGame = (data: any) => {
-			this.state.websocket.close();
-			return <Profile/>
 		}
 
 		this.state.websocket.addEventListener('message', function (event: { data: string; }) {
@@ -332,8 +338,6 @@ class Game extends Component<GameProps> {
 				leaveGame(object.data);
 			} else if (object.event === 'gameFinished') {
 				finishGame(object.data);
-			} else if (object.event === 'closeGame') {
-				closeGame(object.data);
 			}
 		});
 	}
@@ -541,7 +545,10 @@ class Game extends Component<GameProps> {
 	render() {
 		const winner = (this.state.leftPlayerScore === 10 ? this.state.leftPlayerName : this.state.rightPlayerName);
 
-		if (this.state.gameFinished) {
+		if (this.state.closeGame) {
+			return <Redirect to={'/profile'}/>;
+		}
+		else if (this.state.gameFinished) {
 			this.state.websocket.send(JSON.stringify({event: 'finishGame', data: [this.state.gameID]}))
 			return (
 				<Stats
@@ -602,6 +609,8 @@ class Game extends Component<GameProps> {
 					<div>
 						<Ruleset
 							websocket={this.state.websocket}
+							gameID={this.state.gameID}
+							role={this.props.role}
 						/>
 					</div>
 				</div>
