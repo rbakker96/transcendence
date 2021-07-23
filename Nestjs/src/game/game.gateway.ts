@@ -91,13 +91,15 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 		activeGameIDs.forEach(function (gameID) {
 			if (connectedClients[gameID]) {
-				if ((index = connectedClients[gameID].indexOf(client)) != -1)
+				if ((index = connectedClients[gameID].indexOf(client)) != -1) {
 					connectedClients[gameID].splice(index, 1);
+					console.log('returnkey captured');
+				}
 				if (!connectedClients[gameID].length) {
+					console.log('end of game');
 					connectedClients.splice(gameID, 1);
 					activeGameIDs.splice(gameID, 1);
 				}
-				// console.log('game', gameID, ' has ', connectedClients[gameID].length, ' clients');
 			}
 		});
 
