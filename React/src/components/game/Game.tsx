@@ -568,6 +568,7 @@ class Game extends Component<GameProps> {
 		}
 		else if (this.state.gameFinished) {
 			this.state.websocket.send(JSON.stringify({event: 'finishGame', data: [this.state.gameID]}))
+			this.state.websocket.close();
 			return (
 				<Stats
 					leftPlayerName = { this.state.leftPlayerName }
