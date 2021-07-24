@@ -10,8 +10,8 @@ export class ChannelController {
   constructor(private channelService: ChannelService) {}
 
   @Get()
-  async all(): Promise<Channel[]> {
-    return this.channelService.all();
+  async all(@Query() query : number): Promise<Channel[]> {
+    return this.channelService.getAll(query);
   }
 
   @Get('one')

@@ -36,14 +36,17 @@ export class ChannelService {
     return channelUsers;
   }
 
-  async all() : Promise<Channel[]> {
-    const channelUsers = await getRepository(Channel)
-        .createQueryBuilder("channel")
-        .leftJoinAndSelect("channel.users", "user")
+  public getAll = async (userId: number): Promise<Channel[]> => {
+    return await this.channelRepository
+        .createQueryBuilder('channel')
+        .leftJoinAndMapOne('channel.userLinks',
+            ChannelUser,
+            'userLink',
+            'userLink.user.id = :userId AND userLink.channel.id = channel.id', {
+              userId: userId,
+            })
         .getMany();
-
-    return channelUsers;
-  }
+  };
   async create(channel: Channel): Promise<Channel> {
     return this.channelRepository.save(channel);
   }

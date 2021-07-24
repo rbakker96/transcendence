@@ -71,4 +71,12 @@ export default class ChannelAPI {
         }
       })
   }
+
+  static getAll(userId : number)
+  {
+    return axios.get('channels', {
+      params: {userId : userId}
+    })
+  }
 }
+
