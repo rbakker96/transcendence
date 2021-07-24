@@ -16,6 +16,9 @@ export class Channel {
   @Column()
   IsPrivate: boolean;
 
+  @Column()
+  public ownerId: number;
+
   @Column({default : false})
   IsDirect: boolean;
 
@@ -24,5 +27,7 @@ export class Channel {
 
   @PrimaryGeneratedColumn()
   Id: number;
+
+
 
 }

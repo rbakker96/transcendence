@@ -39,18 +39,33 @@ export class ChannelController {
   async addOneChannel(
     @Body('Name') ChannelName:string,
     @Body("IsPrivate") Private:boolean,
-    @Body('Users') Users: User[],
-    @Body('Admins') Admins: User[],
     @Body('IsDirect') IsDirect:boolean,
+    @Body('ownerId') ownerId : number,
     @Body('Password') Password:string){
     const channel = new Channel();
     channel.ChannelName = ChannelName;
     channel.IsPrivate = Private;
-
+    channel.ownerId = ownerId;
     const hashed = await bcrypt.hash(Password, 12);
     channel.Password = hashed;
     const generatedID = await this.channelService.create(channel);
+    if(!generatedID)
+        return;
+    else
+      this.createChannelUser(generatedID.Id, generatedID.ownerId)
     return {id: generatedID.Id}
+  }
+
+  @Post('/channel-user')
+  async createChannelUser(
+      @Query('channelId') channelId: number,
+      @Query('userId') userId: number) {
+    const channelUser = await this.channelService.getUserLink(channelId, userId);
+    if (!channelUser) {
+      const newUserChannel = await this.channelService.createChannelUser(channelId, userId);
+      return newUserChannel;
+    }
+    return channelUser;
   }
 
   @Get("findName")
