@@ -46,8 +46,6 @@ export class ChannelController {
     const channel = new Channel();
     channel.ChannelName = ChannelName;
     channel.IsPrivate = Private;
-    channel.users = Users;
-    channel.admins = Admins;
 
     const hashed = await bcrypt.hash(Password, 12);
     channel.Password = hashed;

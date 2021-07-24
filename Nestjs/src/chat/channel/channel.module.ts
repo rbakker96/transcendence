@@ -4,10 +4,11 @@ import {Channel} from "./channel.entity";
 import {ChannelService} from './channel.service';
 import {ChannelController} from "./channel.controller";
 import {User} from "../../user/models/user.entity";
+import {ChannelUser} from "./channelUsers.entity";
 
 @Module({
   imports: [TypeOrmModule.forFeature([Channel,
-    User])],
+    User, ChannelUser])],
   controllers: [ChannelController],
   providers: [ChannelService],
   exports: [ChannelService],
