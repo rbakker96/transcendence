@@ -13,7 +13,7 @@ function CreateDirectMessage() {
   const [channelAdmin, setChannelAdmin] = useState<Array<User>>([]);
   const [redirect, setRedirect] = useState(false);
   const [valid, setValid] = useState(false);
-
+  const [activeUserID, setActiveUserID] = useState<User>();
   useEffect(() => {
     const getUser = async () => {
       const { data } = await axios.get("users");
@@ -25,6 +25,7 @@ function CreateDirectMessage() {
   useEffect(() => {
     const getActiveUserID = async () => {
       const { data } = await API.User.getActiveUserID();
+      setActiveUserID(data.activeUserID);
       users.forEach((user: User) => {
         if (user.id === data.activeUserID) setChannelAdmin([user]);
       });
@@ -40,7 +41,7 @@ function CreateDirectMessage() {
         IsPrivate: false,
         IsDirect: true,
         Users: channelUsers,
-        Admins: channelAdmin,
+        ownerId: activeUserID,
         Password: "",
       });
       setRedirect(true);

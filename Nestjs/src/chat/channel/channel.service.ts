@@ -64,7 +64,7 @@ export class ChannelService {
     const channel = await this.channelRepository
         .createQueryBuilder('channel')
         .leftJoinAndSelect('channel.userLinks', 'userLinks')
-        .where('channel.id = :channelId AND userLinks.user.id = :userId', {
+        .where('channel.Id = :channelId AND userLinks.user.id = :userId', {
           channelId: channelId,
           userId: userId
         })

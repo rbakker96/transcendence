@@ -40,26 +40,35 @@ export class ChannelController {
     @Body('Name') ChannelName:string,
     @Body("IsPrivate") Private:boolean,
     @Body('IsDirect') IsDirect:boolean,
+    @Body("Users") Users: User[],
     @Body('ownerId') ownerId : number,
     @Body('Password') Password:string){
     const channel = new Channel();
     channel.ChannelName = ChannelName;
     channel.IsPrivate = Private;
     channel.ownerId = ownerId;
+    console.log("HIER heb je de lijst", Users);
     const hashed = await bcrypt.hash(Password, 12);
     channel.Password = hashed;
     const generatedID = await this.channelService.create(channel);
     if(!generatedID)
         return;
     else
-      this.createChannelUser(generatedID.Id, generatedID.ownerId)
+    {
+      // this.createChannelUser(generatedID.Id, ownerId);
+        Users.forEach((user : User) => {
+          this.createChannelUser(generatedID.Id, user.id);
+      })
+    }
+
     return {id: generatedID.Id}
   }
 
   @Post('/channel-user')
-  async createChannelUser(
-      @Query('channelId') channelId: number,
-      @Query('userId') userId: number) {
+  async createChannelUser(channelId: number, userId : number)
+{
+  console.log("channelID =",channelId);
+  console.log("userID = ", userId);
     const channelUser = await this.channelService.getUserLink(channelId, userId);
     if (!channelUser) {
       const newUserChannel = await this.channelService.createChannelUser(channelId, userId);

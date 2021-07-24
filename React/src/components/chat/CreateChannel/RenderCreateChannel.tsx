@@ -5,6 +5,7 @@ import {User} from "../../../models/User.model";
 import {Multiselect} from "multiselect-react-dropdown";
 import {Redirect} from "react-router-dom";
 import logo from "./img/42_logo.svg"
+import API from "../../../API/API";
 
 function RenderCreateChannel() {
 
@@ -16,8 +17,8 @@ function RenderCreateChannel() {
     // states for data transfer
     const [users, setUsers] = useState<Array<User>>([]);
     const [channelUsers, setChannelUsers] = useState<Array<User>>([]);
-    const [channelAdmins, setChannelAdmins] = useState<Array<User>>([]);
     const [invalid, setInvalid] = useState(false);
+    const [activeUserID, setActiveUserID] = useState<User>();
 
     useEffect(() => {
         const getUser = async () => {
@@ -27,6 +28,14 @@ function RenderCreateChannel() {
         getUser();
     }, []);
 
+    useEffect(() => {
+        const setActiveID = async () => {
+            const {data} = await API.User.getActiveUserID();
+            setActiveUserID(data.activeUserID);
+        };
+        setActiveID();
+    },[]);
+
 
     let submit = async (e: SyntheticEvent) => {
         e.preventDefault();
@@ -35,7 +44,7 @@ function RenderCreateChannel() {
             IsPrivate: isPrivate,
             IsDirect: true,
             Users: channelUsers,
-            Admins: channelAdmins,
+            ownerId : activeUserID,
             Password: Password,
         });
         setRedirect(true);
@@ -73,22 +82,6 @@ function RenderCreateChannel() {
         )
     }
 
-    function renderChooseAdmin() {
-        function OnSelectAdmin(selectedList: any) {
-            setChannelAdmins(selectedList);
-        }
-
-        return (
-            <div>
-                <Multiselect
-                    options={users}
-                    displayValue="username"
-                    placeholder="Choose Admins"
-                    onSelect={OnSelectAdmin}
-                />
-            </div>
-        )
-    }
 
     function renderIsPrivate() {
         return (
@@ -121,14 +114,12 @@ function RenderCreateChannel() {
         return (
             <div>
                 {renderChannelName()}
-                {renderChooseAdmin()}
                 {renderChooseUsers()}
                 {renderIsPrivate()}
                 {renderPassword()}
             </div>
         )
     }
-    // console.log("invalid is : ", invalid);
     if (redirect && invalid !== true)
         return <Redirect to={'/chat'}/>;
     else

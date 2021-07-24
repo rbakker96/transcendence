@@ -26,13 +26,13 @@ function ChatChannelHeader(props: ChatChannelHeaderProps) {
   }, [props, setChannelName]);
 
 
-  useEffect(() => {
-    const getAdmins = async () => {
-      const {data} = await API.Channels.getAdmins(props.activeChannelID, props.activeUserID);
-      setAdmins(data);
-    }
-    getAdmins()
-  }, [props, setAdmins])
+  // useEffect(() => {
+  //   const getAdmins = async () => {
+  //     const {data} = await API.Channels.getAdmins(props.activeChannelID, props.activeUserID);
+  //     setAdmins(data);
+  //   }
+  //   getAdmins()
+  // }, [props, setAdmins])
 
   function leaveChannel()
   {
