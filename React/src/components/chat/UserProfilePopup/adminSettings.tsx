@@ -17,12 +17,10 @@ function AdminSettings(props: any) {
             }
         }
         getChannelUsers()
-        console.log("channel users are", channelUsers);
     },[props.location.state.activeChannelId])
 
     function kickUser(userId : number)
     {
-        console.log("Hele fijne halo", userId);
         API.Channels.leaveChannel(userId, props.location.state.activeChannelId)
     }
 

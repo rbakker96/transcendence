@@ -1,4 +1,4 @@
-import {Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {User} from "../../user/models/user.entity";
 
 
@@ -13,6 +13,8 @@ export class Channel {
   @JoinTable()
   users: User[];
 
+  // @OneToMany(() => ChannelUser, (channelUser) => channelUser.channel)
+  // userLinks: Promise<ChannelUser[]>; // dit moet ik nog even onderzoeken weet niet of dit de beste manier is
   @ManyToMany(type => User, admin => admin.channels )
   @JoinTable()
   admins: User[];
