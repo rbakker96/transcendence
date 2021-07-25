@@ -81,5 +81,14 @@ export default class ChannelAPI {
       params: {id : userID}
     })
   }
+
+  static getIsAdmin(userID : number, activeChannelID : number)
+  {
+    return axios.get('channels/is-admin', {
+      params: {
+        userId : userID,
+        channelId: activeChannelID}
+    })
+  }
 }
 

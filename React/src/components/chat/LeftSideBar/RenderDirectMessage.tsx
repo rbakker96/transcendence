@@ -25,7 +25,6 @@ function RenderDirectMessage(props: RenderDirectMessageType) {
       }
     };
     getChannels();
-    console.log(DirectChannels, " dit zijn de channels mien jong");
   }, [props.ActiveUserId, props.ActiveChannelID]);
 
   return (

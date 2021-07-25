@@ -26,6 +26,14 @@ function ChatChannelHeader(props: ChatChannelHeaderProps) {
     getChannelName();
   }, [props, setChannelName]);
 
+    useEffect(() => {
+        const getAdmins = async () => {
+            const {data} = await API.Channels.getIsAdmin(props.activeUserID, props.activeChannelID);
+            setAdmins(data);
+        }
+        getAdmins()
+    }, [props, setAdmins])
+
   function leaveChannel()
   {
     const deleteUser = async () => {
@@ -54,7 +62,6 @@ function ChatChannelHeader(props: ChatChannelHeaderProps) {
 
   if (admins === true)
   {
-      console.log("kom ik hier nog wel")
     return(
         <div>
           <Divider orientation={"center"} style={{ color: "#5B8FF9" }}>

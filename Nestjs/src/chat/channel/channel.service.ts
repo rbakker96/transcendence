@@ -37,8 +37,6 @@ export class ChannelService {
   }
 
   public getAll = async (userId: any): Promise<Channel[]> => {
-    console.log("waarom is hij zo vaak nul ?", userId)
-
     return await this.channelRepository
         .createQueryBuilder('channel')
         .leftJoinAndMapOne('channel.userLinks',
@@ -143,8 +141,27 @@ export class ChannelService {
     return await this.channelUserRepository.findOne(channelId);
   };
 
-  deleteChannel = async (id: number) => {
+  public deleteChannel = async (id: number) => {
     return await this.channelRepository.delete(id);
+  }
+
+  public getIsAdmin = async (userId: number, channelId : number) => {
+    console.log("channelID = ", channelId);
+   const channelUserType : ChannelUser = await this.channelUserRepository
+       .createQueryBuilder('channelUsers')
+       .where('channelUsers.userId = :userId',
+           {
+             userId: userId
+       })
+       .andWhere('channelUsers.channelId = :channelId',
+           {
+             channelId: channelId
+           })
+       .getOne();
+   if (channelUserType.userType === 2)
+     return true;
+   else
+     return false
   }
 
 }

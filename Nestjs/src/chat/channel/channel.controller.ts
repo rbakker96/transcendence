@@ -30,6 +30,13 @@ export class ChannelController {
     return await this.channelService.test(userId);
   }
 
+  @Get('/is-admin')
+  async getIsAdmin(@Query() query: any)
+  {
+    console.log("Query is: ", query);
+    return await this.channelService.getIsAdmin(query.userId, query.channelId);
+  }
+
 
   @Post()
   async addOneChannel(
@@ -51,7 +58,6 @@ export class ChannelController {
         return;
     else
     {
-      // this.createChannelUser(generatedID.Id, ownerId);
         Users.forEach((user : User) => {
           this.createChannelUser(generatedID.Id, user.id);
       })
