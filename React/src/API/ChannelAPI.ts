@@ -74,5 +74,12 @@ export default class ChannelAPI {
       params: {id : userID}
     })
   }
+
+  static getWithUser(userID : number)
+  {
+    return axios.get('channels/test', {
+      params: {id : userID}
+    })
+  }
 }
 

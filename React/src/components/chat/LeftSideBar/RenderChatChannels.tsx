@@ -21,7 +21,8 @@ function RenderChatChannels (props: RenderChatChannelsType) {
 
   useEffect(() => {
     const getChannels = async () => {
-      const { data } = await API.Channels.getAll(props.ActiveUserId);
+      const { data } = await API.Channels.getWithUser(props.ActiveUserId);
+      console.log("data in chat channel is", data);
       if (data)
       {
         let result: Channel[];

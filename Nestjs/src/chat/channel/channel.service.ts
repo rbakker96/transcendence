@@ -1,7 +1,7 @@
 import {BadRequestException, Injectable} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Channel } from "./channel.entity";
-import {getConnection, getRepository, Repository} from "typeorm";
+import {DeleteResult, getConnection, getRepository, Repository} from "typeorm";
 import {ChannelUser, ChannelUserType} from "./channelUsers.entity";
 import {User} from "../../user/models/user.entity";
 
@@ -37,7 +37,8 @@ export class ChannelService {
   }
 
   public getAll = async (userId: any): Promise<Channel[]> => {
-    console.log(userId)
+    console.log("waarom is hij zo vaak nul ?", userId)
+
     return await this.channelRepository
         .createQueryBuilder('channel')
         .leftJoinAndMapOne('channel.userLinks',
@@ -56,13 +57,22 @@ export class ChannelService {
     return await this.channelRepository.findOne({ Id: data.channelID });
   }
 
-  async removeUser(userId : number, channelId : number) {
-    await getConnection()
-        .createQueryBuilder()
-        .relation(Channel, "users")
-        .of(channelId)
-        .remove(userId)
+  deleteChannelUser = async (userId: number, channelId : number): Promise<DeleteResult> => {
+    const channel = await this.getOne(channelId);
+    const user = await this.usersRepository.findOne(userId);
+
+    if (channel && user) {
+      return await this.channelUserRepository.delete({
+        channel: channel,
+        user: user
+      });
+    }
+    // check if exists in channel users, if it doenst exists remove channel
+    if (!await this.ExistsInChannelUsers(channelId))
+      await this.deleteChannel(channelId);
+    return null;
   }
+
 
   getUserLink = async (channelId: number, userId: number): Promise<ChannelUser | null> => {
     const channel = await this.channelRepository
@@ -112,9 +122,29 @@ export class ChannelService {
     return null;
   }
 
+  test = async (userId: number): Promise<Channel[]> => {
+    const channel = await this.channelRepository
+        .createQueryBuilder('channel')
+        .innerJoinAndSelect('channel.userLinks', 'userLinks')
+        .innerJoinAndSelect('userLinks.user', 'user')
+        .where('user.id = :userId', {userId: userId})
+        .getMany() as any;
+    if (channel) {
+      return channel;
+    }
+    return null;
+  }
 
   public getOne = async (id: number): Promise<Channel> => {
     return await this.channelRepository.findOne(id);
   };
+
+  public ExistsInChannelUsers = async (channelId: number): Promise<ChannelUser> => {
+    return await this.channelUserRepository.findOne(channelId);
+  };
+
+  deleteChannel = async (id: number) => {
+    return await this.channelRepository.delete(id);
+  }
 
 }

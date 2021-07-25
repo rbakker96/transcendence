@@ -42,7 +42,7 @@ function RenderCreateChannel() {
         await axios.post('channels', {
             Name: channelName,
             IsPrivate: isPrivate,
-            IsDirect: true,
+            IsDirect: false,
             Users: channelUsers,
             ownerId : activeUserID,
             Password: Password,

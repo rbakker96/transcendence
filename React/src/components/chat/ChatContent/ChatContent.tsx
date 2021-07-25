@@ -35,8 +35,10 @@ function ChatContent(props: ChatContentProps) {
           passwordValid={PasswordValid} />)
         : (
           <>
-          <ChatChannelHeader activeChannelID={props.activeChannelID}
-          activeUserID={props.activeUserID}/>
+          <ChatChannelHeader
+              activeChannelID={props.activeChannelID}
+              activeUserID={props.activeUserID}
+              setActiveChannelID={props.setActiveChannelID}/>
           {props.activeChannelID
             ? ( <ChatChannelMessages
               activeChannelID={props.activeChannelID}

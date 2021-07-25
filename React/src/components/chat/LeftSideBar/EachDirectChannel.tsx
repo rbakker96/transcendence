@@ -22,13 +22,15 @@ function EachDirectChannel(props: EachDirectChannelType) {
 
   useEffect(() => {
     const setChannelName = () => {
+      console.log("length = ", Users.length)
       if (Users.length === 2) {
         Users.forEach((channelUser: any ) => {
+          console.log("active username = ", props.ActiveUserName);
           if (channelUser.user.username !== props.ActiveUserName)
           {
             setDirectChannelName(channelUser.user.username);
+            console.log("HALLOO", DirectChannelName);
           }
-
         });
       }
     };

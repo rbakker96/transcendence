@@ -8,6 +8,7 @@ type RenderDirectMessageType = {
   setActiveChannelId: Function;
   ActiveUserName: string;
   ActiveUserId : number;
+  ActiveChannelID : number;
 };
 
 function RenderDirectMessage(props: RenderDirectMessageType) {
@@ -15,7 +16,7 @@ function RenderDirectMessage(props: RenderDirectMessageType) {
 
   useEffect(() => {
     const getChannels = async () => {
-      const { data } = await API.Channels.getAll(props.ActiveUserId);
+      const { data } = await API.Channels.getWithUser(props.ActiveUserId);
       if (data)
       {
         let result: Channel[];
@@ -25,7 +26,7 @@ function RenderDirectMessage(props: RenderDirectMessageType) {
     };
     getChannels();
     console.log(DirectChannels, " dit zijn de channels mien jong");
-  }, [props.ActiveUserId]);
+  }, [props.ActiveUserId, props.ActiveChannelID]);
 
   return (
     <div>

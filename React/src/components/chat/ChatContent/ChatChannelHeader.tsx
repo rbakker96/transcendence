@@ -5,8 +5,9 @@ import {Redirect} from "react-router-dom";
 
 
 type ChatChannelHeaderProps = {
-  activeChannelID: number;
-  activeUserID : number
+    activeChannelID: number;
+    activeUserID : number;
+    setActiveChannelID: Function;
 };
 
 function ChatChannelHeader(props: ChatChannelHeaderProps) {
@@ -25,21 +26,13 @@ function ChatChannelHeader(props: ChatChannelHeaderProps) {
     getChannelName();
   }, [props, setChannelName]);
 
-
-  // useEffect(() => {
-  //   const getAdmins = async () => {
-  //     const {data} = await API.Channels.getAdmins(props.activeChannelID, props.activeUserID);
-  //     setAdmins(data);
-  //   }
-  //   getAdmins()
-  // }, [props, setAdmins])
-
   function leaveChannel()
   {
     const deleteUser = async () => {
       await API.Channels.leaveChannel(props.activeUserID, props.activeChannelID)
     }
     deleteUser();
+    props.setActiveChannelID(0);
   }
 
   function goToAdminSettings()

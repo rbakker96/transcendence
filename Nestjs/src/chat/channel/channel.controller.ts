@@ -10,7 +10,7 @@ export class ChannelController {
   constructor(private channelService: ChannelService) {}
 
   @Get()
-  async all(@Query() query : number): Promise<Channel[]> {
+  async all(@Query() query): Promise<Channel[]> {
     return this.channelService.getAll(query);
   }
 
@@ -22,10 +22,14 @@ export class ChannelController {
 
   @Get('/channel-users')
   async getChannelUsers(@Query('id') id: any) {
-    console.log("id =", id);
-
     return await this.channelService.getChannelUsers(id);
   }
+
+  @Get('/test')
+  async gettest(@Query('id') userId: any) {
+    return await this.channelService.test(userId);
+  }
+
 
   @Post()
   async addOneChannel(
@@ -79,8 +83,9 @@ export class ChannelController {
       @Body('userId') userId: number,
       @Body('channelId') channelId: number)
   {
-    await this.channelService.removeUser(userId, channelId);
+    await this.channelService.deleteChannelUser(userId, channelId);
   }
+
 
   @Post('login')
   async login(@Body('password') password: string,
