@@ -11,13 +11,7 @@ export interface ChannelCreate {
 export type ChannelUpdate = ChannelCreate;
 
 export default class ChannelAPI {
-  static index(id : number) {
-    return axios.get("http://localhost:8000/api/channels/one", {
-      params: {
-        Id : id,
-      },
-    });
-  }
+
 
   static show(id: number) {
     return axios.get(`http://localhost:8000/api/channels`, {
@@ -68,10 +62,10 @@ export default class ChannelAPI {
     })
   }
 
-  static getChannelUsers(userID : number)
+  static getChannelUsers(channelID : number)
   {
     return axios.get('channels/channel-users', {
-      params: {id : userID}
+      params: {id : channelID}
     })
   }
 
@@ -88,6 +82,19 @@ export default class ChannelAPI {
       params: {
         userId : userID,
         channelId: activeChannelID}
+    })
+  }
+
+  static changeState(newState : number, channelId : number, userId: number)
+  {
+    console.log("newState", newState)
+    console.log("channelID", channelId)
+    console.log("userId", userId)
+    console.log("hier kom ik wel");
+    return axios.patch('channels/change-state', {
+        newState: newState,
+        channelId: channelId,
+        userId: userId
     })
   }
 }

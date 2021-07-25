@@ -4,6 +4,7 @@ import { Channel } from "./channel.entity";
 import {DeleteResult, getConnection, getRepository, Repository} from "typeorm";
 import {ChannelUser, ChannelUserType} from "./channelUsers.entity";
 import {User} from "../../user/models/user.entity";
+import {UpdateChannelUserDto} from "./channel.controller";
 
 
 @Injectable()
@@ -17,15 +18,6 @@ export class ChannelService {
       private usersRepository: Repository<User>,
   ) {}
 
-  async one(data : any) : Promise<Channel> {
-    const id = +data.Id;
-    const channelUsers =  await getRepository(Channel)
-        .createQueryBuilder("channel")
-        .leftJoinAndSelect("channel.users", "user")
-        .where("channel.Id = :Id", { Id : id})
-        .getOne();
-    return channelUsers;
-  }
 
   async login(id : number) : Promise<Channel> {
     const channelUsers =  await getRepository(Channel)
@@ -65,7 +57,6 @@ export class ChannelService {
         user: user
       });
     }
-    // check if exists in channel users, if it doenst exists remove channel
     if (!await this.ExistsInChannelUsers(channelId))
       await this.deleteChannel(channelId);
     return null;
@@ -162,6 +153,21 @@ export class ChannelService {
      return true;
    else
      return false
+  }
+
+  updateChannelUser = async (newstate : number, channelId : number, userId : number) => {
+    const channelUserType : ChannelUser = await this.channelUserRepository
+        .createQueryBuilder('channelUsers')
+        .where('channelUsers.userId = :userId',
+            {
+              userId: userId
+            })
+        .andWhere('channelUsers.channelId = :channelId',
+            {
+              channelId: channelId
+            })
+        .getOne();
+    return this.channelUserRepository.update(channelUserType, {userType: newstate})
   }
 
 }

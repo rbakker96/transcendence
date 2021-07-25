@@ -1,8 +1,21 @@
-import {BadRequestException, Body, Controller, Get, Param, Post, Query} from "@nestjs/common";
+import {BadRequestException, Body, Controller, Get, Param, Patch, Post, Query} from "@nestjs/common";
 import { ChannelService } from "./channel.service";
 import { Channel } from "./channel.entity";
 import {User} from "../../user/models/user.entity";
 import * as bcrypt from 'bcryptjs'
+import { IsDefined, IsOptional } from "class-validator";
+import { ChannelUserType } from "./channelUsers.entity";
+
+export class UpdateChannelUserDto {
+  @IsDefined()
+  userType: ChannelUserType
+
+  @IsOptional()
+  userId?: number
+
+  @IsOptional()
+  channelId?: string
+};
 
 
 @Controller('channels/')
@@ -14,15 +27,9 @@ export class ChannelController {
     return this.channelService.getAll(query);
   }
 
-  @Get('one')
-  async one(@Query() query : any ) : Promise<Channel> {
-    return this.channelService.one(query)
-  }
-
-
   @Get('/channel-users')
-  async getChannelUsers(@Query('id') id: any) {
-    return await this.channelService.getChannelUsers(id);
+  async getChannelUsers(@Query('id') channelId: any) {
+    return await this.channelService.getChannelUsers(channelId);
   }
 
   @Get('/test')
@@ -84,6 +91,7 @@ export class ChannelController {
     return res ;
   }
 
+
   @Post('remove')
   async removeUser(
       @Body('userId') userId: number,
@@ -104,5 +112,17 @@ export class ChannelController {
     else
       return true;
 
+  }
+
+  @Patch('change-state')
+  async patchState(
+      @Body('newState') newState : number,
+      @Body('channelId') channelId : number,
+      @Body('userId') userId : number)
+  {
+    console.log("new state;", newState)
+    console.log("new state;", channelId)
+    console.log("new state;", userId)
+    await this.channelService.updateChannelUser(newState, channelId, userId)
   }
 }
