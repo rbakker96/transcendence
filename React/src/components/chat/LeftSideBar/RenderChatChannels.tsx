@@ -3,7 +3,6 @@ import API from "../../../API/API";
 import React, { useEffect, useState } from "react";
 import {FaLock} from 'react-icons/fa';
 import {Channel} from "../../../models/Channel.model";
-import axios from "axios";
 
 type RenderChatChannelsType = {
   setActiveId: Function;

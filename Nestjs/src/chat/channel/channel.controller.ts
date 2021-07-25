@@ -40,7 +40,6 @@ export class ChannelController {
   @Get('/is-admin')
   async getIsAdmin(@Query() query: any)
   {
-    console.log("Query is: ", query);
     return await this.channelService.getIsAdmin(query.userId, query.channelId);
   }
 
@@ -120,9 +119,6 @@ export class ChannelController {
       @Body('channelId') channelId : number,
       @Body('userId') userId : number)
   {
-    console.log("new state;", newState)
-    console.log("new state;", channelId)
-    console.log("new state;", userId)
     await this.channelService.updateChannelUser(newState, channelId, userId)
   }
 }

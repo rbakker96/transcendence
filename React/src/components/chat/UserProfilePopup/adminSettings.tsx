@@ -33,7 +33,7 @@ function AdminSettings(props: any) {
 
     function changeStatus(userId: number, newStatus: number)
     {
-        API.Channels.changeState(3, props.location.state.activeChannelId, userId);
+        API.Channels.changeState(newStatus, props.location.state.activeChannelId, userId);
     }
 
     function renderMuteButton(userId : number)

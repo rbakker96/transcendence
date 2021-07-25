@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import API from "../../../API/API";
 import {Redirect} from "react-router-dom";
 
@@ -12,13 +12,11 @@ function RenderGivePassword(props : ChatContentProps) {
     const [givenPassword, setGivenPassword] = useState('');
     const [invalid, setInvalid] = useState(false);
 
-
      async function retrievePassword()
      {
         const {data} = await API.Channels.login(givenPassword, props.activeChannelID)
         return data;
     }
-
 
     async function verifyPassword()
     {
@@ -54,6 +52,6 @@ function RenderGivePassword(props : ChatContentProps) {
                 <p/>  }
         </div>
         )
-};
+}
 
 export default RenderGivePassword;

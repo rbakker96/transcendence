@@ -1,10 +1,9 @@
 import {BadRequestException, Injectable} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Channel } from "./channel.entity";
-import {DeleteResult, getConnection, getRepository, Repository} from "typeorm";
+import {DeleteResult,  getRepository, Repository} from "typeorm";
 import {ChannelUser, ChannelUserType} from "./channelUsers.entity";
 import {User} from "../../user/models/user.entity";
-import {UpdateChannelUserDto} from "./channel.controller";
 
 
 @Injectable()
@@ -137,7 +136,6 @@ export class ChannelService {
   }
 
   public getIsAdmin = async (userId: number, channelId : number) => {
-    console.log("channelID = ", channelId);
    const channelUserType : ChannelUser = await this.channelUserRepository
        .createQueryBuilder('channelUsers')
        .where('channelUsers.userId = :userId',
@@ -149,10 +147,13 @@ export class ChannelService {
              channelId: channelId
            })
        .getOne();
-   if (channelUserType.userType === 2)
-     return true;
-   else
-     return false
+   if (channelUserType)
+   {
+     if (channelUserType.userType === 2)
+       return true;
+     else
+       return false
+   }
   }
 
   updateChannelUser = async (newstate : number, channelId : number, userId : number) => {
