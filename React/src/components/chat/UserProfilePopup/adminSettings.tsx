@@ -2,6 +2,7 @@ import {Divider} from "antd";
 import React, {useEffect, useState} from "react";
 import API from "../../../API/API";
 import {User} from "../../../models/User.model";
+import RenderChangePassword from "../ChatContent/RenderChangePassword";
 
 function AdminSettings(props: any) {
     console.log(props.location.state.activeChannelId, "wat is die domme id dan");
@@ -71,6 +72,11 @@ function AdminSettings(props: any) {
                     {renderUndoAdmin(item.user.id)}
                 </ul>
             ))}
+            <Divider orientation={"left" }style={{ "color": "#5B8FF9"}}>
+               Change Password
+                <RenderChangePassword
+                ActivaChannel={props.location.state.activeChannelId}/>
+            </Divider>
         </div>
     )
 }
