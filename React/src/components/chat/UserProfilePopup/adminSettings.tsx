@@ -31,32 +31,29 @@ function AdminSettings(props: any) {
         )
     }
 
-    function muteUser(userId: number)
+    function changeStatus(userId: number, newStatus: number)
     {
-        console.log("active channelId", props.location.state.activeChannelId)
-        console.log("User Id", userId)
         API.Channels.changeState(3, props.location.state.activeChannelId, userId);
-        console.log("deze beste man is gemute");
     }
 
     function renderMuteButton(userId : number)
     {
         return(
-            <button type="button" className="btn btn-warning" onClick={() => muteUser(userId)}>Mute this user</button>
+            <button type="button" className="btn btn-warning" onClick={() => changeStatus(userId, 3)}>Mute this user</button>
         )
     }
 
     function renderMakeAdminButton(userId : number)
     {
         return (
-            <button type="button" className="btn btn-success">Make admin</button>
+            <button type="button" className="btn btn-success" onClick={() => changeStatus(userId, 2)}>Make admin</button>
         )
     }
 
     function renderUndoAdmin(userId : number)
     {
         return (
-            <button type="button" className="btn btn-dark">Undo Admin</button>
+            <button type="button" className="btn btn-dark" onClick={() => changeStatus(userId, 0)}>Undo Admin</button>
         )
     }
 

@@ -87,10 +87,6 @@ export default class ChannelAPI {
 
   static changeState(newState : number, channelId : number, userId: number)
   {
-    console.log("newState", newState)
-    console.log("channelID", channelId)
-    console.log("userId", userId)
-    console.log("hier kom ik wel");
     return axios.patch('channels/change-state', {
         newState: newState,
         channelId: channelId,
