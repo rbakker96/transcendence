@@ -61,21 +61,17 @@ export default class ChannelAPI {
     })
   }
 
-  static getAdmins(channelID : number, userID: number) {
-    console.log("ChannelID in api", channelID);
-    console.log("userID in api", userID);
-      return axios.get("channels/admins", {
-        params: {
-          channelID: channelID,
-          userID: userID,
-        }
-      })
-  }
-
   static getAll(userId : number)
   {
     return axios.get('channels', {
       params: {userId : userId}
+    })
+  }
+
+  static getChannelUsers(userID : number)
+  {
+    return axios.get('channels/channel-users', {
+      params: {id : userID}
     })
   }
 }

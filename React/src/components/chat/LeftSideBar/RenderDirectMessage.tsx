@@ -14,16 +14,17 @@ function RenderDirectMessage(props: RenderDirectMessageType) {
   const [DirectChannels, setDirectChannels] = useState<Array<Channel>>([]);
 
   useEffect(() => {
-    const getchannels = async () => {
-      const { data } = await API.User.getChannels(props.ActiveUserId);
+    const getChannels = async () => {
+      const { data } = await API.Channels.getAll(props.ActiveUserId);
       if (data)
       {
         let result: Channel[];
-        result = data.filter((channel: any) => channel.IsDirect);
+        result = data.filter((channel : any) => channel.IsDirect);
         setDirectChannels(result);
       }
     };
-    getchannels();
+    getChannels();
+    console.log(DirectChannels, " dit zijn de channels mien jong");
   }, [props.ActiveUserId]);
 
   return (

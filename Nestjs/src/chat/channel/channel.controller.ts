@@ -19,20 +19,12 @@ export class ChannelController {
     return this.channelService.one(query)
   }
 
-  @Get('admins')
-  async getAdmins(@Query() query: any) : Promise<Boolean> {
-    let res : boolean = false;
-    const checkValue : number = +query.userID;
-    const data : any = await this.channelService.getAdmins(query.channelID)
-    data.admins.map((admin : User) => {
-      if (admin.id === checkValue)
-      {
-        res = true;
-        return ;
-      }
-    })
 
-    return res;
+  @Get('/channel-users')
+  async getChannelUsers(@Query('id') id: any) {
+    console.log("id =", id);
+
+    return await this.channelService.getChannelUsers(id);
   }
 
   @Post()
@@ -47,7 +39,7 @@ export class ChannelController {
     channel.ChannelName = ChannelName;
     channel.IsPrivate = Private;
     channel.ownerId = ownerId;
-    console.log("HIER heb je de lijst", Users);
+    channel.IsDirect = IsDirect;
     const hashed = await bcrypt.hash(Password, 12);
     channel.Password = hashed;
     const generatedID = await this.channelService.create(channel);
@@ -67,8 +59,7 @@ export class ChannelController {
   @Post('/channel-user')
   async createChannelUser(channelId: number, userId : number)
 {
-  console.log("channelID =",channelId);
-  console.log("userID = ", userId);
+
     const channelUser = await this.channelService.getUserLink(channelId, userId);
     if (!channelUser) {
       const newUserChannel = await this.channelService.createChannelUser(channelId, userId);

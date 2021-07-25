@@ -36,14 +36,15 @@ export class ChannelService {
     return channelUsers;
   }
 
-  public getAll = async (userId: number): Promise<Channel[]> => {
+  public getAll = async (userId: any): Promise<Channel[]> => {
+    console.log(userId)
     return await this.channelRepository
         .createQueryBuilder('channel')
         .leftJoinAndMapOne('channel.userLinks',
             ChannelUser,
             'userLink',
-            'userLink.user.id = :userId AND userLink.channel.id = channel.id', {
-              userId: userId,
+            'userLink.user.id = :userId AND userLink.channel.Id = channel.Id', {
+              userId: userId.userId,
             })
         .getMany();
   };
@@ -98,11 +99,19 @@ export class ChannelService {
     }
   }
 
-  async getAdmins(id : number) : Promise<Channel> {
-    return await this.channelRepository.findOne(id, {
-      relations: ['admins'],
-    })
+  getChannelUsers = async (channelId: number): Promise<ChannelUser[]> => {
+    const channel = await this.channelRepository
+        .createQueryBuilder('channel')
+        .innerJoinAndSelect('channel.userLinks', 'userLinks')
+        .innerJoinAndSelect('userLinks.user', 'user')
+        .where('channel.Id = :channelId', {channelId: channelId})
+        .getOne() as any;
+    if (channel) {
+      return channel.__userLinks__;
+    }
+    return null;
   }
+
 
   public getOne = async (id: number): Promise<Channel> => {
     return await this.channelRepository.findOne(id);
