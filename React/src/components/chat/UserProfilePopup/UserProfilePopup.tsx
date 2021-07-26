@@ -1,5 +1,5 @@
 import { Card } from "antd";
-import { UserDeleteOutlined, CloseOutlined, LinkOutlined } from "@ant-design/icons";
+import { UserDeleteOutlined, CloseOutlined, LinkOutlined, HeartOutlined } from "@ant-design/icons";
 import React, {SyntheticEvent, useEffect, useState} from "react";
 import { Link } from 'react-router-dom';
 import axios from "axios";
@@ -40,6 +40,11 @@ function UserProfilePopup(props: UserProfilePopupType) {
     ]);
   }
 
+  function handleLikeFriend() {
+    console.log(props.ActiveUserID);
+    console.log(props.MessageUserID);
+  }
+
   let actions: JSX.Element[];
   if (props.ActiveUserID === props.MessageUserID) {
     actions = [
@@ -49,6 +54,7 @@ function UserProfilePopup(props: UserProfilePopupType) {
   } else {
     actions = [
       <Link to={{pathname:"/publicProfile", state: {usersData}}}><LinkOutlined/></Link>,
+      <HeartOutlined onClick={handleLikeFriend}/>,
       <UserDeleteOutlined onClick={onclick} />,
       <CloseOutlined onClick={props.handleClose} />,
     ];
@@ -61,7 +67,7 @@ function UserProfilePopup(props: UserProfilePopupType) {
       cover={<img alt="userAvatar" src={props.Avatar} />}
       actions={actions}
     >
-      <Meta title={props.UserName} description={props.ProfileLink} />
+      <Meta title={props.UserName} />
     </Card>
   );
 }
