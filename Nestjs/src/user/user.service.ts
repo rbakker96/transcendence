@@ -60,6 +60,11 @@ export class UserService {
   }
 
   //for testing
+
+  async findUserWithFriends(userID: number): Promise<User> {
+   return await this.userRepository.findOne(userID,{ relations: ["friends"] });
+  }
+
   async findAllUserFriends(): Promise<User[]> {
     return await this.userRepository.find({ relations: ["friends"] });
   }

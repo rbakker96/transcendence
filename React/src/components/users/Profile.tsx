@@ -3,6 +3,7 @@ import {Link, Redirect} from "react-router-dom"
 import './stylesheets/Profile.css'
 import axios from "axios";
 import {GameModel} from "../../models/Game.model";
+import {User} from "../../models/User.model";
 
 const Profile = () => {
     const [privateGame, setprivateGame] = useState(false);
@@ -13,6 +14,7 @@ const Profile = () => {
     const [gamesPlayed, setGamesPlayed] = useState(0);
     const [unauthorized, setUnauthorized] = useState(false);
     const [pendingInvite, setPendingInvite] = useState(false);
+    const [userFriends, setUserFriends] = useState([]);
     const [user, setUser] = useState({
         username: '',
         avatar: '',
@@ -44,6 +46,17 @@ const Profile = () => {
         }
         getUser();
     }, []);
+
+    useEffect(() => {
+        const getUserFriends = async () => {
+            try {
+                const {data} = await axios.get('users/userWithFriends')
+                setUserFriends(data.friends);
+            }
+            catch (err) {setUnauthorized(true);}
+        }
+        getUserFriends();
+    }, [user]);
 
     useEffect(() => {
         const getPendingInvite = async () => {
@@ -223,6 +236,36 @@ const Profile = () => {
                     </div>
                 </div>
             </div>
+
+            <div className="row">
+                <div className="col-md-3"></div>
+                <div className="col-md-6 ">
+                    <div className="row">
+                        <div className="col-md-12 title"><h3>FRIENDS</h3></div>
+                    </div>
+                    <div className="row ranking">
+
+                        <table>
+                            <thead>
+                            </thead>
+                            <tbody>
+                            {userFriends.map((friend: User) =>
+                                <tr key={friend.id}>
+                                    <td>{friend.username}</td>
+                                    {/*<td>{gameData.playerOneUsername} - {gameData.playerOneScore}</td>*/}
+                                    {/*<td> vs </td>*/}
+                                    {/*<td>{gameData.playerTwoScore} - {gameData.playerTwoUsername}</td>*/}
+                                </tr>
+                            )}
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+                <div className="col-md-3"></div>
+            </div>
+
+
         </div>
     )
 

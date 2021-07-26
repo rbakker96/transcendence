@@ -46,6 +46,13 @@ export class UserController {
     return await this.userService.findAllUserFriends();
   }
 
+  @Get("userWithFriends")
+  async getUserWithFriends(@Req() request: Request): Promise<User> {
+    const id = await this.authService.clientID(request);
+
+    return await this.userService.findUserWithFriends(id);
+  }
+
   @Post("saveFriendToUser")
   async saveFriendToUser(@Body() message): Promise<User[]> {
     return await this.userService.saveFriendToUser(message.userID, message.friendID);
