@@ -3,11 +3,12 @@ import React, {useEffect, useState} from "react";
 import API from "../../../API/API";
 import {User} from "../../../models/User.model";
 import RenderChangePassword from "../ChatContent/RenderChangePassword";
+import {Redirect} from "react-router-dom";
 
 function AdminSettings(props: any) {
     console.log(props.location.state.activeChannelId, "wat is die domme id dan");
     const [channelUsers, setChannelUser] = useState<User[]>([])
-
+    const [redirect, setRedirect] = useState(false)
     useEffect(() => {
         const getChannelUsers = async () => {
             console.log("active channel is ", props.location.state.activeChannelId);
@@ -58,6 +59,10 @@ function AdminSettings(props: any) {
         )
     }
 
+    if (redirect === true)
+    {
+        return <Redirect to={'/chat'}/>;
+    }
     return (
         <div>
             <Divider orientation={"left"} style={{ "color": "#5B8FF9" }}>
@@ -75,8 +80,12 @@ function AdminSettings(props: any) {
             <Divider orientation={"left" }style={{ "color": "#5B8FF9"}}>
                Change Password
                 <RenderChangePassword
-                ActivaChannel={props.location.state.activeChannelId}/>
+                    activeChannelID={props.location.state.activeChannelId}/>
             </Divider>
+            <Divider orientation={"left" }style={{ "color": "#5B8FF9"}}>
+                <button type="submit" className="btn btn-primary" onClick={e => setRedirect(true)}>Go back to Chat</button>
+            </Divider>
+
         </div>
     )
 }

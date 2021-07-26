@@ -21,6 +21,13 @@ export default class ChannelAPI {
     });
   }
 
+  static getOne(channelId : number) {
+    return axios.get(`http://localhost:8000/api/channels/one` , {
+      params: {
+        channelID: channelId,
+      }
+    });
+  }
   static create(body: ChannelCreate): Promise<Channel> {
     return axios.post("channels", body);
   }
@@ -91,6 +98,15 @@ export default class ChannelAPI {
         newState: newState,
         channelId: channelId,
         userId: userId
+    })
+  }
+
+  static changePassword(newPassword : string, channelId: number)
+  {
+    console.log("newPassword in apichannel", newPassword);
+    return axios.patch('channels/change-password', {
+        newPassword: newPassword,
+        channelId: channelId
     })
   }
 }

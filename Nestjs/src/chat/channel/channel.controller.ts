@@ -27,6 +27,12 @@ export class ChannelController {
     return this.channelService.getAll(query);
   }
 
+  @Get('/one')
+  async getOne(@Query() query): Promise<Channel> {
+    console.log('channelId', query.channelID)
+    return this.channelService.getOne(query.channelID);
+  }
+
   @Get('/channel-users')
   async getChannelUsers(@Query('id') channelId: any) {
     return await this.channelService.getChannelUsers(channelId);
@@ -42,7 +48,6 @@ export class ChannelController {
   {
     return await this.channelService.getIsAdmin(query.userId, query.channelId);
   }
-
 
   @Post()
   async addOneChannel(
@@ -120,5 +125,17 @@ export class ChannelController {
       @Body('userId') userId : number)
   {
     await this.channelService.updateChannelUser(newState, channelId, userId)
+  }
+
+  @Patch('change-password')
+  async patchPassword(
+      @Body('newPassword') newPassword : string,
+      @Body('channelId') channelId : number)
+  {
+    console.log("new password controller =", newPassword);
+    console.log("channelID controller = ", channelId);
+    const hashed = await bcrypt.hash(newPassword, 12);
+
+    await this.channelService.updatePassword(hashed, channelId)
   }
 }

@@ -25,13 +25,6 @@ function RenderGivePassword(props : ChatContentProps) {
             console.log("Password is ", password);
             props.setPasswordValid(true);
             setInvalid(false);
-            return (
-                <Redirect to={{
-                    pathname: "/renderChatContent",
-                    state: {activeChannelId: props.activeChannelID}
-                }}
-                />
-            )
         }
         else
         {

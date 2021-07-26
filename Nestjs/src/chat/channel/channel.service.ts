@@ -4,6 +4,7 @@ import { Channel } from "./channel.entity";
 import {DeleteResult,  getRepository, Repository} from "typeorm";
 import {ChannelUser, ChannelUserType} from "./channelUsers.entity";
 import {User} from "../../user/models/user.entity";
+import passport from "passport";
 
 
 @Injectable()
@@ -21,7 +22,6 @@ export class ChannelService {
   async login(id : number) : Promise<Channel> {
     const channelUsers =  await getRepository(Channel)
         .createQueryBuilder("channel")
-        .leftJoinAndSelect("channel.users", "user")
         .where("channel.Id = :Id", { Id : id})
         .getOne();
     return channelUsers;
@@ -169,6 +169,19 @@ export class ChannelService {
             })
         .getOne();
     return this.channelUserRepository.update(channelUserType, {userType: newstate})
+  }
+
+  updatePassword = async (newPassword: string, channelId : number) => {
+    console.log("new password =", newPassword);
+    console.log("channelID = ", channelId);
+    const channel : Channel = await this.channelRepository
+        .createQueryBuilder('channel')
+        .where('channel.Id = :channelId',
+            {
+              channelId: channelId
+            })
+        .getOne();
+    return this.channelRepository.update(channel, {Password: newPassword, IsPrivate: true})
   }
 
 }
