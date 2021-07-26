@@ -76,7 +76,7 @@ type GameProps = {
 
 class Game extends Component<GameProps> {
 	state: GameState = {
-		client: null,											//userID form waiting room
+		client: null,											//userID from waiting room
 		gameID: this.props.gameID,
 		leftPlayerName: this.props.leftPlayerName,
 		leftPlayerX: 10,
@@ -159,8 +159,6 @@ class Game extends Component<GameProps> {
 		this.state.websocket.addEventListener("close", () => {
 			this.state.websocket.send(JSON.stringify({event: 'closeConnection'})); //discuss this
 		});
-
-		// implement error?
 
 		const updateLeftPlayer = (data: any) => {
 			if (this.isMountedVal)
@@ -275,8 +273,6 @@ class Game extends Component<GameProps> {
 		}
 
 		const leaveGame = (data: any) => {
-			console.log(data);
-
 			if (data[1] === 'leftPlayer') {
 				this.state.websocket.send(JSON.stringify({ event: 'rightPlayerScored', data: [this.state.gameID, 10] }))
 				this.resetBall(RIGHT_PLAYER_SCORED);

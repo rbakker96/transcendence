@@ -110,8 +110,10 @@ export class WaitingRoomGateway implements OnGatewayInit, OnGatewayConnection, O
         });
 
         // clear users from waiting users
+        console.log("ARRAY LENGTH BEFORE = ", waitingUsers[gameType].length);
         waitingUsers[gameType].splice(0, 2);
         // waitingUsers[gameType] = []; //not working for multiple clients (more then 2)
+        console.log("ARRAY LENGTH AFTER = ", waitingUsers[gameType].length);
       }
     }
   }

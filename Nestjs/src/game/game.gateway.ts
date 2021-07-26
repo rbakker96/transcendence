@@ -80,9 +80,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			connectedClients[gameID].push(client);				//Add client to gameID
 			activeGameIDs.push(gameID);							//Add gameID to active IDs
 
-			console.log('game ', gameID, ' has ', connectedClients[gameID].length, 'users');
-			// this.numberOfPlayers++;
-			// console.log('new client connected');
+			console.log('game ', gameID, ' has ', connectedClients[gameID].length / 2, 'users');
 		}
 	}
 
@@ -102,33 +100,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 				}
 			}
 		});
-
-		// this.numberOfPlayers--;
-		// if (this.numberOfPlayers === 2) {
-		// 	this.gameState = {
-		// 		leftPlayerName: "LEFT_PLAYER_NAME",
-		// 		leftPlayerY: 262.5,
-		// 		leftPlayerMoveSpeed: 7.5,
-		// 		leftMoveSpeedUsesLeft: 3,
-		// 		leftMoveSpeedColor: "red",
-		// 		leftShotSpeedUsesLeft: 3,
-		// 		leftShotSpeedColor: "red",
-		// 		rightPlayerName: "RIGHT_PLAYER_NAME",
-		// 		rightPlayerY: 262.5,
-		// 		rightPlayerMoveSpeed: 7.5,
-		// 		rightMoveSpeedUsesLeft: 3,
-		// 		rightMoveSpeedColor: "blue",
-		// 		rightShotSpeedUsesLeft: 3,
-		// 		rightShotSpeedColor: "blue",
-		// 		ballX: 400,
-		// 		ballY: 300,
-		// 		velocityX: 4,
-		// 		velocityY: 4,
-		// 		leftPlayerScore: 0,
-		// 		rightPlayerScore: 0,
-		// 		gameFinished: false
-		// 	}
-		// }
 		console.log('Game: client disconnected');
 
 	}
@@ -145,18 +116,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			return ({ event: 'newConnection', data: connectedClients[gameID].length });
 		else
 			return ({ event: 'newConnection', data: 0 });
-
-		// return ({ event: 'newConnection', data: this.numberOfPlayers });
 	}
-
-	// @SubscribeMessage("updateLeftPlayer")
-	// updateLeftPlayer(client: any, data: any): void {
-	// 	this.gameState.leftPlayerY = data[1];
-	// 	const response = JSON.stringify({ event: 'updateLeftPlayer', data: data });
-	// 	this.server.clients.forEach(c => {
-	// 		c.send(response);
-	// 	});
-	// }
 
 	@SubscribeMessage("updateLeftPlayer")
 	updateLeftPlayer(client: any, data: any): void {
@@ -169,15 +129,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		});
 	}
 
-	// @SubscribeMessage("updateRightPlayer")
-	// updateRightPlayer(client: any, data: any): void {
-	// 	this.gameState.rightPlayerY = data[1];
-	// 	const response = JSON.stringify({ event: 'updateRightPlayer', data: data });
-	// 	this.server.clients.forEach(c => {
-	// 		c.send(response);
-	// 	});
-	// }
-
 	@SubscribeMessage("updateRightPlayer")
 	updateRightPlayer(client: any, data: any): void {
 		let gameID = data[0]
@@ -188,21 +139,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			c.send(response);
 		});
 	}
-
-	// @SubscribeMessage("activateBall")
-	// activateBall(client: any, data: any): void {
-	// 	const response = JSON.stringify({
-	// 		event: 'activateBall',
-	// 		data: [ this.gameState.leftPlayerY, this.gameState.leftPlayerMoveSpeed, this.gameState.leftMoveSpeedUsesLeft,
-	// 				this.gameState.leftMoveSpeedColor, this.gameState.rightPlayerY, this.gameState.rightPlayerMoveSpeed,
-	// 				this.gameState.rightMoveSpeedUsesLeft, this.gameState.rightMoveSpeedColor, this.gameState.ballX,
-	// 				this.gameState.ballY, this.gameState.velocityX, this.gameState.velocityY, this.gameState.leftPlayerScore,
-	// 				this.gameState.rightPlayerScore, this.gameState.leftPlayerName, this.gameState.rightPlayerName]
-	// 	});
-	// 	this.server.clients.forEach(c => {
-	// 		c.send(response);
-	// 	});
-	// }
 
 	@SubscribeMessage("activateBall")
 	activateBall(client: any, data: any): void {
@@ -221,18 +157,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		});
 	}
 
-	// @SubscribeMessage("updateBall")
-	// updateBall(client: any, data: any): void {
-	// 	this.gameState.ballX = data[1];
-	// 	this.gameState.ballY = data[2];
-	// 	this.gameState.velocityX = data[3];
-	// 	this.gameState.velocityY = data[4];
-	// 	const response = JSON.stringify({ event: 'updateBall', data: data });
-	// 	this.server.clients.forEach(c => {
-	// 		c.send(response);
-	// 	});
-	// }
-
 	@SubscribeMessage("updateBall")
 	updateBall(client: any, data: any): void {
 		let gameID = data[0];
@@ -247,15 +171,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		});
 	}
 
-	// @SubscribeMessage("leftPlayerScored")
-	// leftPlayerScored(client: any, data: any): void {
-	// 	this.gameState.leftPlayerScore = data[1];
-	// 	const response = JSON.stringify({ event: 'leftPlayerScored', data: data });
-	// 	this.server.clients.forEach(c => {
-	// 		c.send(response);
-	// 	});
-	// }
-
 	@SubscribeMessage("leftPlayerScored")
 	leftPlayerScored(client: any, data: any): void {
 		let gameID = data[0];
@@ -266,15 +181,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			c.send(response);
 		});
 	}
-
-	// @SubscribeMessage("rightPlayerScored")
-	// rightPlayerScored(client: any, data: any): void {
-	// 	this.gameState.rightPlayerScore = data[1];
-	// 	const response = JSON.stringify({ event: 'rightPlayerScored', data: data });
-	// 	this.server.clients.forEach(c => {
-	// 		c.send(response);
-	// 	});
-	// }
 
 	@SubscribeMessage("rightPlayerScored")
 	rightPlayerScored(client: any, data: any): void {
@@ -287,15 +193,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		});
 	}
 
-	// @SubscribeMessage("gameFinished")
-	// gameFinished(client: any, data: any): void {
-	// 	this.gameState.gameFinished = data[1];
-	// 	const response = JSON.stringify({event: 'gameFinished', data: data});
-	// 	this.server.clients.forEach(c => {
-	// 		c.send(response);
-	// 	});
-	// }
-
 	@SubscribeMessage("gameFinished")
 	gameFinished(client: any, data: any): void {
 		let gameID = data[0];
@@ -306,17 +203,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			c.send(response);
 		});
 	}
-
-	// @SubscribeMessage("leftPlayerSpeedPowerUp")
-	// leftPlayerSpeedPowerUp(client: any, data: any): void {
-	// 	this.gameState.leftPlayerMoveSpeed = data[1];
-	// 	this.gameState.leftMoveSpeedUsesLeft = data[2];
-	// 	this.gameState.leftMoveSpeedColor = data[3];
-	// 	const response = JSON.stringify({event: 'leftPlayerSpeedPowerUp', data: data})
-	// 	this.server.clients.forEach(c => {
-	// 		c.send(response);
-	// 	})
-	// }
 
 	@SubscribeMessage("leftPlayerSpeedPowerUp")
 	leftPlayerSpeedPowerUp(client: any, data: any): void {
@@ -331,17 +217,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		})
 	}
 
-	// @SubscribeMessage("rightPlayerSpeedPowerUp")
-	// rightPlayerSpeedPowerUp(client: any, data: any): void {
-	// 	this.gameState.rightPlayerMoveSpeed = data[1];
-	// 	this.gameState.rightMoveSpeedUsesLeft = data[2];
-	// 	this.gameState.rightMoveSpeedColor = data[3];
-	// 	const response = JSON.stringify({event: 'rightPlayerSpeedPowerUp', data: data})
-	// 	this.server.clients.forEach(c => {
-	// 		c.send(response);
-	// 	});
-	// }
-
 	@SubscribeMessage("rightPlayerSpeedPowerUp")
 	rightPlayerSpeedPowerUp(client: any, data: any): void {
 		let gameID = data[0];
@@ -355,16 +230,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		});
 	}
 
-	// @SubscribeMessage("leftPlayerShotPowerUp")
-	// leftPlayerShotPowerUp(client: any, data: any): void {
-	// 	this.gameState.leftShotSpeedUsesLeft = data[1];
-	// 	this.gameState.leftShotSpeedColor = data[2];
-	// 	const response = JSON.stringify({event: 'leftPlayerShotPowerUp', data: data})
-	// 	this.server.clients.forEach(c => {
-	// 		c.send(response);
-	// 	});
-	// }
-
 	@SubscribeMessage("leftPlayerShotPowerUp")
 	leftPlayerShotPowerUp(client: any, data: any): void {
 		let gameID = data[0];
@@ -376,16 +241,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			c.send(response);
 		});
 	}
-
-	// @SubscribeMessage("rightPlayerShotPowerUp")
-	// rightPlayerShotPowerUp(client: any, data: any): void {
-	// 	this.gameState.rightShotSpeedUsesLeft = data[1];
-	// 	this.gameState.rightShotSpeedColor = data[2];
-	// 	const response = JSON.stringify({event: 'rightPlayerShotPowerUp', data: data})
-	// 	this.server.clients.forEach(c => {
-	// 		c.send(response);
-	// 	});
-	// }
 
 	@SubscribeMessage("rightPlayerShotPowerUp")
 	rightPlayerShotPowerUp(client: any, data: any): void {
@@ -399,15 +254,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		});
 	}
 
-	// @SubscribeMessage("resetLeftPlayerShotPowerUp")
-	// resetLeftPlayerShotPowerUp(client: any, data: any): void {
-	// 	this.gameState.leftShotSpeedColor = data[1];
-	// 	const response = JSON.stringify({event: 'resetLeftPlayerShotPowerUp', data: data})
-	// 	this.server.clients.forEach(c => {
-	// 		c.send(response);
-	// 	});
-	// }
-
 	@SubscribeMessage("resetLeftPlayerShotPowerUp")
 	resetLeftPlayerShotPowerUp(client: any, data: any): void {
 		let gameID = data[0];
@@ -418,15 +264,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			c.send(response);
 		});
 	}
-
-	// @SubscribeMessage("resetRightPlayerShotPowerUp")
-	// resetRightPlayerShotPowerUp(client: any, data: any): void {
-	// 	this.gameState.rightShotSpeedColor = data[1];
-	// 	const response = JSON.stringify({event: 'resetRightPlayerShotPowerUp', data: data})
-	// 	this.server.clients.forEach(c => {
-	// 		c.send(response);
-	// 	});
-	// }
 
 	@SubscribeMessage("resetRightPlayerShotPowerUp")
 	resetRightPlayerShotPowerUp(client: any, data: any): void {
@@ -439,11 +276,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		});
 	}
 
-	// @SubscribeMessage("setLeftPlayerName")
-	// setLeftPlayerName(client: any, data: any): void {
-	// 	this.gameState.leftPlayerName = data[1];
-	// }
-
 	@SubscribeMessage("setLeftPlayerName")
 	setLeftPlayerName(client: any, data: any): void {
 		console.log(data);
@@ -452,11 +284,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 		allGameStates[gameID][0].leftPlayerName = data[1];
 	}
-
-	// @SubscribeMessage("setRightPlayerName")
-	// setRightPlayerName(client: any, data: any): void {
-	// 	this.gameState.rightPlayerName = data[1];
-	// }
 
 	@SubscribeMessage("setRightPlayerName")
 	setRightPlayerName(client: any, data: any): void {
@@ -468,7 +295,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	@SubscribeMessage("leaveGame")
 	leaveGame(client: any, data: any): void {
 		let gameID = data[0];
-		console.log('leaveGame event triggerd');
 
 		const response = JSON.stringify({event: 'leaveGame', data: data})
 		connectedClients[gameID].forEach(c => {
