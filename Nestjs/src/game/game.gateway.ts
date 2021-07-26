@@ -129,7 +129,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 		// 		gameFinished: false
 		// 	}
 		// }
-		console.log('Game: client disconnected');
+		// console.log('Game: client disconnected');
 
 	}
 

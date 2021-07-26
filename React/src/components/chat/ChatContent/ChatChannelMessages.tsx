@@ -56,7 +56,6 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
     websocket.current.addEventListener("message", function (event: any) {
       const object = JSON.parse(event.data);
       if (object.event === "newMessage") {
-        console.log("React: newMessage event triggered");
         const new_message: SocketMessageType = {
           channelID: object.data.channelID,
           senderID: object.data.senderID,
