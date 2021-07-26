@@ -28,6 +28,4 @@ export class Channel {
   @PrimaryGeneratedColumn()
   Id: number;
 
-
-
 }

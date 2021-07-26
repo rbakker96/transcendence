@@ -4,6 +4,7 @@ import API from "../../../API/API";
 import {User} from "../../../models/User.model";
 import RenderChangePassword from "../ChatContent/RenderChangePassword";
 import {Redirect} from "react-router-dom";
+import "./adminSettings.css"
 
 function AdminSettings(props: any) {
     console.log(props.location.state.activeChannelId, "wat is die domme id dan");
@@ -64,7 +65,7 @@ function AdminSettings(props: any) {
         return <Redirect to={'/chat'}/>;
     }
     return (
-        <div>
+        <div className="usersInChat">
             <Divider orientation={"left"} style={{ "color": "#5B8FF9" }}>
                 Users in chat
             </Divider>

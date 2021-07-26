@@ -4,7 +4,6 @@ import { Channel } from "./channel.entity";
 import {DeleteResult,  getRepository, Repository} from "typeorm";
 import {ChannelUser, ChannelUserType} from "./channelUsers.entity";
 import {User} from "../../user/models/user.entity";
-import passport from "passport";
 
 
 @Injectable()
@@ -183,5 +182,4 @@ export class ChannelService {
         .getOne();
     return this.channelRepository.update(channel, {Password: newPassword, IsPrivate: true})
   }
-
 }
