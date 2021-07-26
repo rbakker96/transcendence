@@ -38,7 +38,6 @@ const PublicProfilesOverview = () => {
     }, []);
 
     useEffect(() => {
-
         const getUsers = async () => {
             try {
                 const {data} = await axios.get('users');

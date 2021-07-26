@@ -5,17 +5,16 @@ import {User} from "../../../models/User.model";
 import RenderChangePassword from "../ChatContent/RenderChangePassword";
 import {Redirect} from "react-router-dom";
 import "./adminSettings.css"
+import logo from "./img/42_logo.svg";
 
 function AdminSettings(props: any) {
-    console.log(props.location.state.activeChannelId, "wat is die domme id dan");
+
     const [channelUsers, setChannelUser] = useState<User[]>([])
     const [redirect, setRedirect] = useState(false)
     useEffect(() => {
         const getChannelUsers = async () => {
-            console.log("active channel is ", props.location.state.activeChannelId);
             if (props.location.state.activeChannelId) {
                 const {data} = await API.Channels.getChannelUsers(props.location.state.activeChannelId);
-                console.log("data is ", data);
                 setChannelUser(data);
             }
         }
@@ -65,25 +64,32 @@ function AdminSettings(props: any) {
         return <Redirect to={'/chat'}/>;
     }
     return (
-        <div className="usersInChat">
-            <Divider orientation={"left"} style={{ "color": "#5B8FF9" }}>
-                Users in chat
-            </Divider>
-            {channelUsers.map((item: any) => (
-                <ul key={item.user.id} >
-                    {item.user.username}
-                    {renderKickButton(item.user.id)}
-                    {renderMuteButton(item.user.id)}
-                    {renderMakeAdminButton(item.user.id)}
-                    {renderUndoAdmin(item.user.id)}
-                </ul>
-            ))}
-            <Divider orientation={"left" }style={{ "color": "#5B8FF9"}}>
-               Change Password
+        <div className="adminPage">
+            <img className="mb-4" src={logo} alt="./img/42_logo.svg" width="72" height="57"/>
+            <h1 className="h3 mb-3 fw-normal register_title">Admin panel</h1>
+
+            <table>
+                <thead>
+                </thead>
+                <tbody>
+                    {channelUsers.map((item: any) =>
+                        <tr key={item.user.id}>
+                            <td className="userNameCol">{item.user.username}</td>
+                            <td>{renderKickButton(item.user.id)}</td>
+                            <td>{renderMuteButton(item.user.id)}</td>
+                            <td>{renderMakeAdminButton(item.user.id)}</td>
+                            <td>{renderUndoAdmin(item.user.id)}</td>
+                        </tr>
+                    )}
+                </tbody>
+            </table>
+
+            <Divider >
+                <h1 className="h3 mb-3 fw-normal register_title">Change Password</h1>
                 <RenderChangePassword
                     activeChannelID={props.location.state.activeChannelId}/>
             </Divider>
-            <Divider orientation={"left" }style={{ "color": "#5B8FF9"}}>
+            <Divider>
                 <button type="submit" className="btn btn-primary" onClick={e => setRedirect(true)}>Go back to Chat</button>
             </Divider>
 
