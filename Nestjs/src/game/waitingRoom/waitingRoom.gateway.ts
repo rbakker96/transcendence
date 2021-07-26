@@ -13,15 +13,19 @@ import { UserService } from "../../user/user.service";
 enum game {
   classic = 0,
   deluxe = 1,
+  private = 2,
 }
 
 let waitingRoom_sockets: Socket[][] = [];     //sockets linked to unique gameRooms
 waitingRoom_sockets[game.classic] = [];
 waitingRoom_sockets[game.deluxe] = [];
+waitingRoom_sockets[game.private] = [];
 
 let waitingUsers: number[][] = [];            //unique users in waitingRoom
 waitingUsers[game.classic] = [];
 waitingUsers[game.deluxe] = [];
+waitingUsers[game.private] = [];
+
 
 @WebSocketGateway()
 export class WaitingRoomGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -45,6 +49,10 @@ export class WaitingRoomGateway implements OnGatewayInit, OnGatewayConnection, O
       console.log("Waiting room: classic game client connected");
       waitingRoom_sockets[game.classic].push(client);
     }
+    else if (args[0].url.includes("privateWaitingRoom")) {
+      console.log("Waiting room: private game client connected");
+      waitingRoom_sockets[game.private].push(client);
+    }
   }
 
   @SubscribeMessage("newPlayer")
@@ -54,6 +62,8 @@ export class WaitingRoomGateway implements OnGatewayInit, OnGatewayConnection, O
 
     if (data[1] === "deluxe")
       gameType = game.deluxe;
+    else if (data[1] === "private")
+      gameType = game.private;
 
     if (waitingUsers[gameType].indexOf(data[0]) != -1) {
       const redirectData = {
@@ -86,7 +96,7 @@ export class WaitingRoomGateway implements OnGatewayInit, OnGatewayConnection, O
         const gameID = await this.gameService.create(newGameDto);
 
         let gameURL;
-        if (data[1] === "classic")
+        if (data[1] === "classic" || data[1] === "private")
           gameURL = `/game:${gameID}`;
         else if (data[1] === "deluxe")
           gameURL = `/specialGame:${gameID}`;
@@ -124,6 +134,10 @@ export class WaitingRoomGateway implements OnGatewayInit, OnGatewayConnection, O
     else if (((leaving_client = waitingRoom_sockets[game.deluxe].indexOf(client)) > -1)) {
       console.log("Waiting room: deluxe game client disconnected");
       waitingRoom_sockets[game.deluxe].splice(leaving_client, 1);
+    }
+    else if (((leaving_client = waitingRoom_sockets[game.private].indexOf(client)) > -1)) {
+      console.log("Waiting room: private game client disconnected");
+      waitingRoom_sockets[game.private].splice(leaving_client, 1);
     }
   }
 

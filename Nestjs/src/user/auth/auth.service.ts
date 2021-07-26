@@ -53,5 +53,4 @@ export class AuthService {
     async updateUser(@Body() data: UpdateDto) {
         await this.userService.update(data.id, data);
     }
-
 }

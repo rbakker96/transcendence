@@ -115,12 +115,11 @@ const Profile = () => {
         e.preventDefault();
 
         try {
-
+            await axios.put('acceptGameInvite');
             setprivateGame(true);
         }
-        catch (err) { }
+        catch (err) {setUnauthorized(true);}
     }
-
 
     const logout = async () => {
         await axios.post('logout', {});
@@ -146,7 +145,7 @@ const Profile = () => {
                         </div>
 
 
-                        {   !pendingInvite?
+                        {   pendingInvite?
                             <div>
                                 <button onClick={acceptGameInvite} type="button" className="btn btn-sm inviteButton">Accept Game invite</button>
                             </div>
