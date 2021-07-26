@@ -36,12 +36,12 @@ const PlayGame = () => {
                 <p className="gameDesc">Pong is a two-dimensional sports game that simulates table tennis. The player controls an in-game paddle by moving it vertically across the left or right side of the screen. They can compete against another player controlling a second paddle on the opposing side. Players use the paddles to hit a ball back and forth.</p>
 
                 <div className="buttonsDiv">
-                    <p className="test">The clasic pong is whitout any powerups. First to 10 wins!</p>
-                    <Link to="/WaitingRoom" type="button" className="w-100 btn btn-lg btn-primary">Play classic pong</Link>
+                    <p className="test">The classic pong is without any powerups. First to 10 wins!</p>
+                    <Link to={{pathname:"/WaitingRoom", state: "classic"}} type="button" className="w-100 btn btn-lg btn-primary">Play classic pong</Link>
                 </div>
                 <div className="buttonsDiv">
                     <p>The deluxe pong is with two powerups, each powerup can be used 3 times. First to 10 wins!</p>
-                    <Link to="/profile" type="button" className="w-100 btn btn-lg btn-primary">Play deluxe pong</Link>
+                    <Link to={{pathname:"/WaitingRoom", state: "deluxe"}} type="button" className="w-100 btn btn-lg btn-primary">Play deluxe pong</Link>
                 </div>
             </div>
         </main>

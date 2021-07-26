@@ -14,8 +14,6 @@ function ChatPage() {
   const [Avatar, setAvatar] = useState("");
   const [IDIsMuted, setIDIsMuted] = useState<number[]>([]);
 
-
-
   useEffect(() => {
     const setActiveID = async () => {
       const { data } = await API.User.getActiveUserID();

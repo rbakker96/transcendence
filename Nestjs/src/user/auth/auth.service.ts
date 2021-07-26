@@ -5,7 +5,6 @@ import {JwtService} from "@nestjs/jwt";
 import {RegisterDto} from "./models/register.dto";
 import {UserService} from "../user.service";
 import {UpdateDto} from "./models/update.dto";
-import {User} from "../models/user.entity";
 
 @Injectable()
 export class AuthService {
@@ -46,6 +45,7 @@ export class AuthService {
         data.avatar = 'http://localhost:8000/api/uploads/egg.jpeg';
         data.id = clientID;
         data.authentication = false;
+        data.pendingInvite = false;
 
         await this.userService.create(data);
     }
@@ -53,5 +53,4 @@ export class AuthService {
     async updateUser(@Body() data: UpdateDto) {
         await this.userService.update(data.id, data);
     }
-
 }

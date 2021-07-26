@@ -18,6 +18,10 @@ export class UserService {
     return this.userRepository.findOne(id);
   }
 
+  async findPrivateGame(): Promise<User> {
+    return this.userRepository.findOne({pendingInvite: true});
+  }
+
   async create(data): Promise<User> {
     return this.userRepository.save(data);
   }
@@ -36,6 +40,14 @@ export class UserService {
 
   async disableTwoFactor(clientID: number): Promise<any> {
     return this.userRepository.update(clientID, {authentication: false});
+  }
+
+  async sendGameInvite(clientID: number): Promise<any> {
+    return this.userRepository.update(clientID, {pendingInvite: true});
+  }
+
+  async acceptGameInvite(clientID: number): Promise<any> {
+    return this.userRepository.update(clientID, {pendingInvite: false});
   }
 
   async findUserName(data: any): Promise<User> {

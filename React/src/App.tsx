@@ -42,7 +42,7 @@ function App() {
         <Route exact path={"/WatchGame"} component={WatchGame} />
         <Route exact path={"/WaitingRoom"} component={WaitingRoom} />
         <Route exact path={'/game:gameID'} component={GamePage}  />
-        <Route exact path={"/specialGame"} component={SpecialGame} />
+        <Route exact path={"/specialGame:gameID"} component={SpecialGame} />
       </main>
     </BrowserRouter>
   );

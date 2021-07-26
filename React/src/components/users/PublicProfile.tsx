@@ -1,10 +1,12 @@
-import React, {useEffect, useState} from "react";
+import React, {SyntheticEvent, useEffect, useState} from "react";
 import {Link, Redirect} from "react-router-dom"
 import './stylesheets/Profile.css'
 import axios from "axios";
 import {GameModel} from "../../models/Game.model";
 
 const PublicProfile = (props: any) => {
+    const [notAvailable, setNotAvailable] = useState(false);
+    const [privateGame, setprivateGame] = useState(false);
     const [games, setGames] = useState([]);
     const [wins, setWins] = useState(0);
     const [loses, setLoses] = useState(0);
@@ -33,50 +35,94 @@ const PublicProfile = (props: any) => {
 
     useEffect(() => {
         const getUser = async () => {
-            const {data} = await axios.post('publicUserData', {id: props.location.state.usersData.id});
-            setUser(data);
+            try {
+                const {data} = await axios.post('publicUserData', {id: props.location.state.usersData.id});
+                setUser(data);
+            }
+            catch (err) {setUnauthorized(true);}
         }
         getUser();
     }, [props.location.state.usersData.id]);
 
     useEffect(() => {
-        const getGames = async () => {
-            let winNB = 0;
-            let lossNB = 0;
-            let playedNB = 0;
-            let rank = 'ROOKIE';
+        const getGameData = async () => {
             try {
                 const {data} = await axios.get('/allGameData');
                 setGames(data);
             }
             catch (err) {setUnauthorized(true);}
-            games.map((game: GameModel) => {
-                if (!game.active) {
-                    if (game.playerOne === user.id || game.playerTwo === user.id)
-                        playedNB++;
-                    if (game.winner === user.id)
-                        winNB++;
-                    if (game.loser === user.id)
-                        lossNB++;
-                    if (winNB >= 5)
-                        rank = 'CHALLENGER';
-                    if (winNB >= 10)
-                        rank = 'RISING STAR';
-                    if (winNB >= 15)
-                        rank = 'ENDBOSS';
-                }
-            })
-            setGamesPlayed(playedNB);
-            setWins(winNB);
-            setLoses(lossNB);
+        }
+        getGameData();
+    }, []);
+
+    useEffect(() => {
+        let counter = 0;
+
+        const getPlayedGames = async () => {
+            games.filter((game: GameModel) => !game.active && (game.playerOne === user.id || game.playerTwo === user.id)).map((gameData: GameModel) =>
+                counter++
+            )
+            setGamesPlayed(counter);
+        }
+        getPlayedGames();
+    }, [user.id, games]);
+
+    useEffect(() => {
+        let counter = 0;
+
+        const getGamesWon = async () => {
+            games.filter((game: GameModel) => !game.active && game.winner === user.id ).map((gameData: GameModel) =>
+                counter++
+            )
+            setWins(counter);
+        }
+        getGamesWon();
+    }, [user.id, games]);
+
+    useEffect(() => {
+        let counter = 0;
+
+        const getGamesLost = async () => {
+            games.filter((game: GameModel) => !game.active && game.loser === user.id ).map((gameData: GameModel) =>
+                counter++
+            )
+            setLoses(counter);
+        }
+        getGamesLost();
+    }, [user.id, games]);
+
+    useEffect(() => {
+        let rank = 'ROOKIE'
+
+        const getRank = async () => {
+            if (wins >= 5)
+                rank = 'CHALLENGER';
+            if (wins >= 10)
+                rank = 'RISING STAR';
+            if (wins >= 15)
+                rank = 'ENDBOSS';
             setRank(rank);
         }
-        getGames();
-    }, [user.id]);
+        getRank();
+    }, [user.id, games, wins]);
+
+
+    const sendGameInvite = async (e: SyntheticEvent, id: number) => {
+        e.preventDefault();
+
+        try {
+            await axios.put('sendGameInvite', {id});
+            setprivateGame(true);
+        }
+        catch (err) { setNotAvailable(true); }
+    }
 
 
     if (unauthorized)
         return <Redirect to={'/'}/>;
+
+    if (privateGame)
+        return <Redirect to={{pathname:"/WaitingRoom", state: "private"}}/>;
 
     return (
         <div className="container profilepage">
@@ -91,8 +137,17 @@ const PublicProfile = (props: any) => {
                             <div className="profile-usertitle-job">{user?.username}</div>
                         </div>
 
+                        {   notAvailable?
+                            <div>
+                                <p className="notAvailable" >Sorry the private game room is full, please try again later.</p>
+                            </div>
+                            :
+                            <p/>  }
+
+
                         <div className="profile-userbuttons">
                             <Link to={`/profile`} type="button" className="btn btn-success btn-sm">Return to own profile</Link>
+                            <button onClick={(e) => {sendGameInvite(e, user.id)}} type="button" className="btn btn-success btn-sm">Invite for private game</button>
                         </div>
                     </div>
                 </div>
@@ -139,18 +194,14 @@ const PublicProfile = (props: any) => {
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {games.map((game: GameModel) => {
-                                        if (!game.active && (game.playerOne === user.id || game.playerTwo === user.id)) {
-                                            return (
-                                                <tr key={game.gameID}>
-                                                    <td>#{game.gameID}</td>
-                                                    <td>{game.playerOneUsername} - {game.playerOneScore}</td>
-                                                    <td> vs </td>
-                                                    <td>{game.playerTwoScore} - {game.playerTwoUsername}</td>
-                                                </tr>
-                                            )
-                                        }
-                                    })}
+                                    {games.filter((game: GameModel) => !game.active && (game.playerOne === user.id || game.playerTwo === user.id)).map((gameData: GameModel) =>
+                                        <tr key={gameData.gameID}>
+                                            <td>#{gameData.gameID}</td>
+                                            <td>{gameData.playerOneUsername} - {gameData.playerOneScore}</td>
+                                            <td> vs </td>
+                                            <td>{gameData.playerTwoScore} - {gameData.playerTwoUsername}</td>
+                                        </tr>
+                                    )}
                                     </tbody>
                                 </table>
 

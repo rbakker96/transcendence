@@ -9,6 +9,7 @@ import { User } from "../../models/User.model";
 const PublicProfilesOverview = () => {
     const [users, setUsers] = useState([]);
     const [unauthorized, setUnauthorized] = useState(false);
+    const [user, setUser] = useState({id: 0,});
 
     useEffect(() => {
         let mounted = true;
@@ -24,6 +25,17 @@ const PublicProfilesOverview = () => {
         return () => {mounted = false;}
     }, []);
 
+
+    useEffect(() => {
+        const getUser = async () => {
+            try {
+                const {data} = await axios.get('userData')
+                setUser(data);
+            }
+            catch (err) {setUnauthorized(true);}
+        }
+        getUser();
+    }, []);
 
     useEffect(() => {
 
@@ -45,28 +57,19 @@ const PublicProfilesOverview = () => {
         <main className="PublicProfiles_component">
             <div className="publicProfiles">
                 <img className="mb-4" src={logo} alt="logoGame" width="72" height="57"/>
-
                 <table>
                     <thead>
-                    <tr>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                    </tr>
                     </thead>
                     <tbody>
-                    {users.map((usersData: User) => {
-                        return (
+                        {users.filter((users: User) => users.id !== user.id).map((usersData: User) =>
                             <tr key={usersData.id} className="usertable">
-                                <td><img src={`${usersData?.avatar}`} className="img-responsive avatarIMG" alt=""/></td>
-                                <td>{usersData.username}</td>
-                                <td><Link to={{pathname:"/publicProfile", state: {usersData}}} type="button" className="btn btn-success">See profile</Link></td>
+                            <td><img src={`${usersData?.avatar}`} className="img-responsive avatarIMG" alt=""/></td>
+                            <td>{usersData.username}</td>
+                            <td><Link to={{pathname:"/publicProfile", state: {usersData}}} type="button" className="btn btn-success">See profile</Link></td>
                             </tr>
-                        )
-                    })}
+                        )}
                     </tbody>
                 </table>
-
             </div>
         </main>
     )

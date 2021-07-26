@@ -29,8 +29,11 @@ const EnableTwoFactor = () => {
 
     useEffect(() => {
         const getQRcode = async () => {
-            const {data} = await axios.get('2fa/generate')
-            setQRCode(data.url);
+            try {
+                const {data} = await axios.get('2fa/generate')
+                setQRCode(data.url);
+            }
+            catch (err) {setUnauthorized(true);}
         }
         getQRcode();
     }, []);

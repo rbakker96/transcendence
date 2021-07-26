@@ -88,6 +88,21 @@ export class AuthController {
     }
 
     @UseGuards(verifyUser)
+    @Put('sendGameInvite')
+    async sendGameInvite(@Req() request: Request, @Body() data): Promise<any> {
+        if (await this.userService.findPrivateGame())
+            throw new UnauthorizedException('Only one private game possible');
+        else
+            return await this.userService.sendGameInvite(data);
+    }
+
+    @UseGuards(verifyUser)
+    @Put('acceptGameInvite')
+    async acceptGameInvite(@Req() request: Request, @Body() data): Promise<any> {
+        return await this.userService.acceptGameInvite(data);
+    }
+
+    @UseGuards(verifyUser)
     @Get('userData')
     async getUserData(@Req() request: Request) {
         const clientID = await this.authService.clientID(request);

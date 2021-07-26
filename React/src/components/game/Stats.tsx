@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Link} from "react-router-dom";
+import {Link} from "react-router-dom"
 import "./stylesheets/stats.css"
 
 type StatsProps = {
@@ -29,7 +29,7 @@ class Stats extends Component<StatsProps> {
 					<div className="winner">{this.props.winner} has won the game!</div>
 				</div>
 				<div>
-					<Link to="/profile" type="button" className="w-100 btn btn-lg btn-primary">Close game</Link>
+					<Link to={'/profile'} type="button" className="w-100 btn btn-lg btn-primary">Close game</Link>
 				</div>
 			</div>
 

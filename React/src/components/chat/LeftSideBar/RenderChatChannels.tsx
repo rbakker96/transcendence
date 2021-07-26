@@ -12,7 +12,6 @@ type RenderChatChannelsType = {
 function RenderChatChannels (props: RenderChatChannelsType) {
   const [channel, setChannel] = useState<Array<Channel>>([]);
 
-  console.log(props.ActiveUserId, "Render chat channels userid");
   function setActiveChannelId(activeChannelId: number) {
     props.setActiveId(activeChannelId);
     console.log("Clicked channelID: " + activeChannelId);
