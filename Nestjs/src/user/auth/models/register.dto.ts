@@ -20,5 +20,7 @@ export class RegisterDto {
 
     pendingInvite: boolean;
 
+    status: string;
+
     twoFactorSecret?: string;
 }

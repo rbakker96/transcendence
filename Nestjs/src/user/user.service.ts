@@ -45,6 +45,18 @@ export class UserService {
     return this.userRepository.update(clientID, { pendingInvite: true });
   }
 
+  async setOffline(clientID: number): Promise<any> {
+    return this.userRepository.update(clientID, { status: 'OFFLINE' });
+  }
+
+  async setOnline(clientID: number): Promise<any> {
+    return this.userRepository.update(clientID, { status: 'ONLINE' });
+  }
+
+  async setInGame(clientID: number): Promise<any> {
+    return this.userRepository.update(clientID, { status: 'IN GAME' });
+  }
+
   async acceptGameInvite(clientID: number): Promise<any> {
     return this.userRepository.update(clientID, { pendingInvite: false });
   }
@@ -60,6 +72,11 @@ export class UserService {
   }
 
   //for testing
+
+  async findUserWithFriends(userID: number): Promise<User> {
+   return await this.userRepository.findOne(userID,{ relations: ["friends"] });
+  }
+
   async findAllUserFriends(): Promise<User[]> {
     return await this.userRepository.find({ relations: ["friends"] });
   }

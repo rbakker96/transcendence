@@ -3,6 +3,7 @@ import {Link, Redirect} from "react-router-dom"
 import './stylesheets/Profile.css'
 import axios from "axios";
 import {GameModel} from "../../models/Game.model";
+import {User} from "../../models/User.model";
 
 const Profile = () => {
     const [privateGame, setprivateGame] = useState(false);
@@ -13,6 +14,7 @@ const Profile = () => {
     const [gamesPlayed, setGamesPlayed] = useState(0);
     const [unauthorized, setUnauthorized] = useState(false);
     const [pendingInvite, setPendingInvite] = useState(false);
+    const [userFriends, setUserFriends] = useState([]);
     const [user, setUser] = useState({
         username: '',
         avatar: '',
@@ -44,6 +46,17 @@ const Profile = () => {
         }
         getUser();
     }, []);
+
+    useEffect(() => {
+        const getUserFriends = async () => {
+            try {
+                const {data} = await axios.get('users/userWithFriends')
+                setUserFriends(data.friends);
+            }
+            catch (err) {setUnauthorized(true);}
+        }
+        getUserFriends();
+    }, [user]);
 
     useEffect(() => {
         const getPendingInvite = async () => {
@@ -126,6 +139,21 @@ const Profile = () => {
 
     const logout = async () => {
         await axios.post('logout', {});
+    }
+
+    const deleteFriend = async (e: SyntheticEvent, userID: number, friendID: number) => {
+        e.preventDefault();
+
+        try {
+            const ret = await axios.post("users/deleteFriendToUser", {
+                userID: userID,
+                friendID: friendID,
+            });
+            if (ret.status === 201)
+                alert("You've removed the user as friend");
+            window.location.reload();
+        }
+        catch (err) { setUnauthorized(true); }
     }
 
     if (unauthorized)
@@ -223,6 +251,40 @@ const Profile = () => {
                     </div>
                 </div>
             </div>
+
+            <div className="row">
+                <div className="col-md-3"></div>
+                <div className="col-md-6 ">
+                    <div className="row">
+                        <div className="col-md-12 title"><h3>FRIENDS</h3></div>
+                    </div>
+                    <div className="row friends">
+
+                        <table>
+                            <thead className="friendTable">
+                                <td></td>
+                                <td>Username</td>
+                                <td>Status</td>
+                                <td></td>
+                            </thead>
+                            <tbody>
+                            {userFriends.map((friend: User) =>
+                                <tr key={friend.id}>
+                                    <td><img src={`${friend.avatar}`} className="img-responsive friendAvatar" alt=""/></td>
+                                    <td>{friend.username}</td>
+                                    <td>{friend.status}</td>
+                                    <td><button onClick={(e) => {deleteFriend(e, user.id, friend.id)}} type="button" className="btn btn-danger btn-sm">Remove friend</button></td>
+                                </tr>
+                            )}
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+                <div className="col-md-3"></div>
+            </div>
+
+
         </div>
     )
 

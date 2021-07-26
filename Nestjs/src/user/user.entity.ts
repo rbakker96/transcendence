@@ -23,6 +23,9 @@ export class User {
     pendingInvite: boolean;
 
     @Column()
+    status: string;
+
+    @Column()
     authentication: boolean;
 
     @Column({ nullable: true })

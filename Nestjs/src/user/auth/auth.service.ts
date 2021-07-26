@@ -46,6 +46,7 @@ export class AuthService {
         data.id = clientID;
         data.authentication = false;
         data.pendingInvite = false;
+        data.status = 'ONLINE';
 
         await this.userService.create(data);
     }

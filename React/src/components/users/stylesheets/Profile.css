@@ -131,3 +131,27 @@
     overflow: scroll;
     overflow-scrolling: auto;
 }
+
+.friends {
+    margin-top: 12px;
+    margin-bottom: 80px;
+    padding-top: 10px;
+    border: 4px solid #496b53;
+    background: white;
+    max-height: 300px;
+    contain: content;
+    overflow: scroll;
+    overflow-scrolling: auto;
+}
+
+.friendTable {
+    font-weight: bolder;
+}
+
+.friendAvatar {
+    border-radius: 90px;
+    height: 30px;
+    margin-left: 25px;
+}
+
+

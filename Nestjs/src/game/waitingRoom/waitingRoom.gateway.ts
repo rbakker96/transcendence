@@ -80,6 +80,10 @@ export class WaitingRoomGateway implements OnGatewayInit, OnGatewayConnection, O
         const playerOne = await this.userService.findOne(waitingUsers[gameType][0]);
         const playerTwo = await this.userService.findOne(waitingUsers[gameType][1]);
 
+        // update status of players
+        await this.userService.setInGame(playerOne.id);
+        await this.userService.setInGame(playerTwo.id);
+
         // new database entry
         let newGameDto = {
           playerOne: waitingUsers[gameType][0],
@@ -104,6 +108,8 @@ export class WaitingRoomGateway implements OnGatewayInit, OnGatewayConnection, O
         await this.gameService.updateGameURL(gameID, gameURL);
 
         console.log(await this.gameService.findOne(gameID));
+
+
 
         // send event for redirect to game page
         const gameData = {

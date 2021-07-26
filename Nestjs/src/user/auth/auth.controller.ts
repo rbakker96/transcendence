@@ -26,6 +26,8 @@ export class AuthController {
 
         if(!clientData)
             return response.redirect('http://localhost:8080/register')
+        else
+            await this.userService.setOnline(client['id']);
         if (clientData.authentication == true)
             return response.redirect('http://localhost:8080/twoFactor')
         else
@@ -117,8 +119,10 @@ export class AuthController {
 
     @UseGuards(verifyUser)
     @Post('logout')
-    async logout(@Res({passthrough: true}) response: Response) {
+    async logout(@Req() request: Request, @Res({passthrough: true}) response: Response) {
         response.clearCookie('clientID');
+        const clientID = await this.authService.clientID(request);
+        await this.userService.setOffline(clientID);
 
         return {message: 'Success'}
     }
