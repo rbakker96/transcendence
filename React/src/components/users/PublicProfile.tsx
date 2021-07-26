@@ -1,10 +1,12 @@
-import React, {useEffect, useState} from "react";
+import React, {SyntheticEvent, useEffect, useState} from "react";
 import {Link, Redirect} from "react-router-dom"
 import './stylesheets/Profile.css'
 import axios from "axios";
 import {GameModel} from "../../models/Game.model";
 
 const PublicProfile = (props: any) => {
+    const [notAvailable, setNotAvailable] = useState(false);
+    const [privateGame, setprivateGame] = useState(false);
     const [games, setGames] = useState([]);
     const [wins, setWins] = useState(0);
     const [loses, setLoses] = useState(0);
@@ -100,8 +102,22 @@ const PublicProfile = (props: any) => {
     }, [user.id, games, wins]);
 
 
+    const sendGameInvite = async (e: SyntheticEvent, id: number) => {
+        e.preventDefault();
+
+        try {
+            await axios.put('sendGameInvite', {id});
+            setprivateGame(true);
+        }
+        catch (err) { setNotAvailable(true); }
+    }
+
+
     if (unauthorized)
         return <Redirect to={'/'}/>;
+
+    if (privateGame)
+        return <Redirect to={{pathname:"/WaitingRoom", state: "private"}}/>;
 
     return (
         <div className="container profilepage">
@@ -116,8 +132,17 @@ const PublicProfile = (props: any) => {
                             <div className="profile-usertitle-job">{user?.username}</div>
                         </div>
 
+                        {   notAvailable?
+                            <div>
+                                <p className="notAvailable" >Sorry the private game room is full, please try again later.</p>
+                            </div>
+                            :
+                            <p/>  }
+
+
                         <div className="profile-userbuttons">
                             <Link to={`/profile`} type="button" className="btn btn-success btn-sm">Return to own profile</Link>
+                            <button onClick={(e) => {sendGameInvite(e, user.id)}} type="button" className="btn btn-success btn-sm">Invite for private game</button>
                         </div>
                     </div>
                 </div>

@@ -22,6 +22,9 @@ export class User {
     phonenumber: string;
 
     @Column()
+    pendingInvite: boolean;
+
+    @Column()
     authentication: boolean;
 
     @Column({ nullable: true })
