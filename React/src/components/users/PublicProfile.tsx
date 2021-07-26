@@ -139,8 +139,8 @@ const PublicProfile = (props: any) => {
                 userID: userID,
                 friendID: friendID,
             });
-            if (ret.status === 201) alert("You've added the user as friend");
-            else console.log("Error when adding friend");
+            if (ret.status === 201)
+                alert("You've added the user as friend");
         }
         catch (err) { setUnauthorized(true); }
     }

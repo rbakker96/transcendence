@@ -58,7 +58,7 @@ export class UserController {
     return await this.userService.saveFriendToUser(message.userID, message.friendID);
   }
 
-  @Post("deleteTestUser")
+  @Post("deleteFriendToUser")
   async deleteFriendToUser(@Body() message): Promise<User[]> {
     return await this.userService.deleteFriendFromUser(message.userID, message.friendID);
   }

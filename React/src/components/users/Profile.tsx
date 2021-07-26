@@ -141,6 +141,21 @@ const Profile = () => {
         await axios.post('logout', {});
     }
 
+    const deleteFriend = async (e: SyntheticEvent, userID: number, friendID: number) => {
+        e.preventDefault();
+
+        try {
+            const ret = await axios.post("users/deleteFriendToUser", {
+                userID: userID,
+                friendID: friendID,
+            });
+            if (ret.status === 201)
+                alert("You've removed the user as friend");
+            window.location.reload();
+        }
+        catch (err) { setUnauthorized(true); }
+    }
+
     if (unauthorized)
         return <Redirect to={'/'}/>;
 
@@ -243,18 +258,22 @@ const Profile = () => {
                     <div className="row">
                         <div className="col-md-12 title"><h3>FRIENDS</h3></div>
                     </div>
-                    <div className="row ranking">
+                    <div className="row friends">
 
                         <table>
-                            <thead>
+                            <thead className="friendTable">
+                                <td></td>
+                                <td>Username</td>
+                                <td>Status</td>
+                                <td></td>
                             </thead>
                             <tbody>
                             {userFriends.map((friend: User) =>
                                 <tr key={friend.id}>
+                                    <td><img src={`${friend.avatar}`} className="img-responsive friendAvatar" alt=""/></td>
                                     <td>{friend.username}</td>
-                                    {/*<td>{gameData.playerOneUsername} - {gameData.playerOneScore}</td>*/}
-                                    {/*<td> vs </td>*/}
-                                    {/*<td>{gameData.playerTwoScore} - {gameData.playerTwoUsername}</td>*/}
+                                    <td>{friend.status}</td>
+                                    <td><button onClick={(e) => {deleteFriend(e, user.id, friend.id)}} type="button" className="btn btn-danger btn-sm">Remove friend</button></td>
                                 </tr>
                             )}
                             </tbody>

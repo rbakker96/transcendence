@@ -46,4 +46,10 @@ export class GameController {
     async updateGameStats (@Req() request: Request, @Body() data: gameStatsDto) : Promise<any> {
         return this.gameService.update(data.gameID, data);
     }
+
+    @UseGuards(verifyUser)
+    @Post('updatePlayerStatus')
+    async updatePlayerStatus (@Req() request: Request, @Body() data: any) : Promise<any> {
+        return this.userService.setOnline(data.id);
+    }
 }
