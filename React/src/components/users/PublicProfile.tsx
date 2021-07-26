@@ -35,17 +35,22 @@ const PublicProfile = (props: any) => {
 
     useEffect(() => {
         const getUser = async () => {
-            const {data} = await axios.post('publicUserData', {id: props.location.state.usersData.id});
-            setUser(data);
+            try {
+                const {data} = await axios.post('publicUserData', {id: props.location.state.usersData.id});
+                setUser(data);
+            }
+            catch (err) {setUnauthorized(true);}
         }
         getUser();
     }, [props.location.state.usersData.id]);
 
     useEffect(() => {
-
         const getGameData = async () => {
-            const {data} = await axios.get('/allGameData');
-            setGames(data);
+            try {
+                const {data} = await axios.get('/allGameData');
+                setGames(data);
+            }
+            catch (err) {setUnauthorized(true);}
         }
         getGameData();
     }, []);

@@ -34,9 +34,7 @@ const LoginTwoFactor = () => {
             setRedirect(true);
             setLoginFailure(false);
         }
-        catch (err) {
-            setLoginFailure(true);
-        }
+        catch (err) {setLoginFailure(true);}
     }
 
     if (unauthorized)
