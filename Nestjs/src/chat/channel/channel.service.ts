@@ -1,9 +1,9 @@
 import {BadRequestException, Injectable} from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Channel } from "./channel.entity";
-import {DeleteResult,  getRepository, Repository} from "typeorm";
+import {InjectRepository} from "@nestjs/typeorm";
+import {Channel} from "./channel.entity";
+import {DeleteResult, getRepository, Repository} from "typeorm";
 import {ChannelUser, ChannelUserType} from "./channelUsers.entity";
-import {User} from "../../user/models/user.entity";
+import {User} from "../../user/user.entity";
 
 
 @Injectable()
@@ -19,11 +19,10 @@ export class ChannelService {
 
 
   async login(id : number) : Promise<Channel> {
-    const channelUsers =  await getRepository(Channel)
-        .createQueryBuilder("channel")
-        .where("channel.Id = :Id", { Id : id})
-        .getOne();
-    return channelUsers;
+    return await getRepository(Channel)
+      .createQueryBuilder("channel")
+      .where("channel.Id = :Id", {Id: id})
+      .getOne();
   }
 
   public getAll = async (userId: any): Promise<Channel[]> => {
@@ -148,10 +147,7 @@ export class ChannelService {
        .getOne();
    if (channelUserType)
    {
-     if (channelUserType.userType === 2)
-       return true;
-     else
-       return false
+     return channelUserType.userType === 2;
    }
   }
 

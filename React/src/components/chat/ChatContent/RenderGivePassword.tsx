@@ -1,6 +1,5 @@
 import React, {useState} from "react";
 import API from "../../../API/API";
-import {Redirect} from "react-router-dom";
 
 type ChatContentProps = {
     activeChannelID: number;

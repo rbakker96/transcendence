@@ -1,5 +1,4 @@
-import {Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn} from "typeorm";
-import {User} from "../../user/models/user.entity";
+import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {ChannelUser} from "./channelUsers.entity";
 
 
