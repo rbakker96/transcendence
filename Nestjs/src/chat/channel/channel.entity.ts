@@ -1,5 +1,6 @@
-import {Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {User} from "../../user/models/user.entity";
+import {ChannelUser} from "./channelUsers.entity";
 
 
 @Entity('channels')
@@ -9,16 +10,14 @@ export class Channel {
   @Column()
   ChannelName: string;
 
-  @ManyToMany(type => User, users => users.channels)
-  @JoinTable()
-  users: User[];
-
-  @ManyToMany(type => User, admin => admin.channels )
-  @JoinTable()
-  admins: User[];
+  @OneToMany(() => ChannelUser, (channelUser) => channelUser.channel)
+  userLinks: Promise<ChannelUser[]>;
 
   @Column()
   IsPrivate: boolean;
+
+  @Column()
+  public ownerId: number;
 
   @Column({default : false})
   IsDirect: boolean;

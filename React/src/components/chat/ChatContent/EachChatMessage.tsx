@@ -61,6 +61,7 @@ function EachChatMessage(props: EachChatMessageProps) {
               ProfileLink={"http://placeholder"}
               handleClose={togglePopup}
               setIDIsMuted={props.setIDIsMuted}
+              activeChannel={props.message.channelID}
             />
           )}
       </div>

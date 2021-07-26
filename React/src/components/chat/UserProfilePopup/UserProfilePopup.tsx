@@ -4,6 +4,7 @@ import React, {SyntheticEvent, useEffect, useState} from "react";
 import { Link } from 'react-router-dom';
 import axios from "axios";
 import {User} from "../../../models/User.model";
+import API from "../../../API/API";
 
 type UserProfilePopupType = {
   ActiveUserID: number;
@@ -13,6 +14,7 @@ type UserProfilePopupType = {
   ProfileLink: string;
   handleClose: any;
   setIDIsMuted: Function;
+  activeChannel: number;
 };
 
 const { Meta } = Card;
@@ -31,6 +33,7 @@ function UserProfilePopup(props: UserProfilePopupType) {
 
   function onclick(e: SyntheticEvent) {
     e.preventDefault();
+    API.Channels.changeState(3, props.activeChannel, props.ActiveUserID);
     props.setIDIsMuted((prevState: number[]) => [
       ...prevState,
       props.MessageUserID,

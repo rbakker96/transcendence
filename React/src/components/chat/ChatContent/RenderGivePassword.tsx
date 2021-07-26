@@ -12,27 +12,19 @@ function RenderGivePassword(props : ChatContentProps) {
     const [givenPassword, setGivenPassword] = useState('');
     const [invalid, setInvalid] = useState(false);
 
-
      async function retrievePassword()
      {
         const {data} = await API.Channels.login(givenPassword, props.activeChannelID)
         return data;
     }
 
-
     async function verifyPassword()
     {
         const password = await retrievePassword()
         if (password === true) {
+            console.log("Password is ", password);
             props.setPasswordValid(true);
             setInvalid(false);
-            return (
-                <Redirect to={{
-                    pathname: "/renderChatContent",
-                    state: {activeChannelId: props.activeChannelID}
-                }}
-                />
-            )
         }
         else
         {
@@ -53,6 +45,6 @@ function RenderGivePassword(props : ChatContentProps) {
                 <p/>  }
         </div>
         )
-};
+}
 
 export default RenderGivePassword;

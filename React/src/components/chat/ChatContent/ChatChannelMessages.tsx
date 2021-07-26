@@ -83,6 +83,8 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
           oneShownPopup={oneShownPopup}
           setOneShownPopup={setOneShownPopup}
           activeUserID={props.activeUserID}
+
+
         />
       ))}
       {newMessages.map((message: SocketMessageType) => (

@@ -38,6 +38,7 @@ function ChatPage() {
             setActiveId={setActiveChannelID}
             ActiveUserName={ActiveUserName}
             ActiveUserId={ActiveUserID}
+            ActiveChannelId={ActiveChannelID}
           />
         </Col>
         <Col className="gutter-row" span={20}>
