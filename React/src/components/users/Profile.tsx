@@ -54,8 +54,11 @@ const Profile = () => {
 
     useEffect(() => {
         const getGameData = async () => {
-            const {data} = await axios.get('/allGameData');
-            setGames(data);
+            try {
+                const {data} = await axios.get('/allGameData');
+                setGames(data);
+            }
+            catch (err) {setUnauthorized(true);}
         }
         getGameData();
     }, []);
@@ -143,7 +146,6 @@ const Profile = () => {
                         <div className="profile-usertitle">
                             <div className="profile-usertitle-job">{user?.username}</div>
                         </div>
-
 
                         {   pendingInvite?
                             <div>
