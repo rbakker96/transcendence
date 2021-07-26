@@ -17,7 +17,6 @@ function ChatChannelHeader(props: ChatChannelHeaderProps) {
 
   useEffect(() => {
     const getChannelName = async () => {
-      console.log("Hoevaak kom ik hierin?")
       if (props.activeChannelID) {
         const { data } = await API.Channels.findName(props.activeChannelID);
         setChannelName(data.ChannelName);
@@ -48,7 +47,7 @@ function ChatChannelHeader(props: ChatChannelHeaderProps) {
       setToAdmins(true);
   }
 
-  if (toAdmins === true)
+  if (toAdmins)
   {
       console.log("active channel in the redirect = ", props.activeChannelID);
       return (

@@ -1,9 +1,14 @@
 import { Card } from "antd";
-import { UserDeleteOutlined, CloseOutlined, LinkOutlined } from "@ant-design/icons";
-import React, {SyntheticEvent, useEffect, useState} from "react";
-import { Link } from 'react-router-dom';
+import {
+  UserDeleteOutlined,
+  CloseOutlined,
+  LinkOutlined,
+  HeartOutlined,
+} from "@ant-design/icons";
+import React, { SyntheticEvent, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
-import {User} from "../../../models/User.model";
+import { User } from "../../../models/User.model";
 import API from "../../../API/API";
 
 type UserProfilePopupType = {
@@ -20,14 +25,15 @@ type UserProfilePopupType = {
 const { Meta } = Card;
 
 function UserProfilePopup(props: UserProfilePopupType) {
-
   const [usersData, setUsersData] = useState<User>();
 
   useEffect(() => {
     const getUser = async () => {
-      const {data} = await axios.post('publicUserData', {id: props.MessageUserID});
+      const { data } = await axios.post("publicUserData", {
+        id: props.MessageUserID,
+      });
       setUsersData(data);
-    }
+    };
     getUser();
   }, [props.MessageUserID]);
 
@@ -40,15 +46,30 @@ function UserProfilePopup(props: UserProfilePopupType) {
     ]);
   }
 
+  async function handleLikeFriend(e: SyntheticEvent) {
+    e.preventDefault();
+    const ret = await axios.post("users/saveFriendToUser", {
+      userID: props.ActiveUserID,
+      friendID: props.MessageUserID,
+    });
+    if (ret.status === 201) alert("You've added the user as friend");
+    else console.log("Error when adding friend");
+  }
+
   let actions: JSX.Element[];
   if (props.ActiveUserID === props.MessageUserID) {
     actions = [
-      <Link to={{pathname:"/publicProfile", state: {usersData}}}><LinkOutlined/></Link>,
-      <CloseOutlined onClick={props.handleClose} />
+      <Link to={{ pathname: "/publicProfile", state: { usersData } }}>
+        <LinkOutlined />
+      </Link>,
+      <CloseOutlined onClick={props.handleClose} />,
     ];
   } else {
     actions = [
-      <Link to={{pathname:"/publicProfile", state: {usersData}}}><LinkOutlined/></Link>,
+      <Link to={{ pathname: "/publicProfile", state: { usersData } }}>
+        <LinkOutlined />
+      </Link>,
+      <HeartOutlined onClick={handleLikeFriend} />,
       <UserDeleteOutlined onClick={onclick} />,
       <CloseOutlined onClick={props.handleClose} />,
     ];
@@ -61,7 +82,7 @@ function UserProfilePopup(props: UserProfilePopupType) {
       cover={<img alt="userAvatar" src={props.Avatar} />}
       actions={actions}
     >
-      <Meta title={props.UserName} description={props.ProfileLink} />
+      <Meta title={props.UserName} />
     </Card>
   );
 }

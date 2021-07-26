@@ -1,8 +1,6 @@
 import React, {SyntheticEvent, useEffect, useState} from "react";
 import {Redirect} from "react-router-dom";
 import API from "../../../API/API";
-import axios from "axios";
-import * as path from "path";
 
 
 type RenderChangePasswordProps = {
@@ -23,7 +21,7 @@ function RenderChangePassword(props : RenderChangePasswordProps){
             setIsPrivate(data.IsPrivate);
         }
         checkIsPrivate()
-    },[])
+    },[props.activeChannelID])
 
     async function retrievePassword()
     {
@@ -52,7 +50,7 @@ function RenderChangePassword(props : RenderChangePasswordProps){
     }
 
     function renderNewPasswordBox() {
-        if (renderPasswordBox === true) {
+        if (renderPasswordBox) {
             return (
                 <div className="form-floating">
                     <label htmlFor="floatingInput">New Password</label>
@@ -66,12 +64,12 @@ function RenderChangePassword(props : RenderChangePasswordProps){
             return ;
     }
 
-    if(redirect === true)
+    if(redirect)
     {
         return <Redirect to={'/chat'}/>;
     }
 
-    if (isPrivate === true)
+    if (isPrivate)
     {
         return (
             <div className="form-group">
@@ -91,7 +89,7 @@ function RenderChangePassword(props : RenderChangePasswordProps){
         return (
             <div className="form-check">
                 <input className="form-check-input" type="checkbox" value="" id="defaultCheck1"
-                       onChange={e => setRenderPasswordBox(true)}
+                       onChange={() => setRenderPasswordBox(true)}
                 />
                 <label className="form-check-label" htmlFor="defaultCheck1">
                     Add password to channel

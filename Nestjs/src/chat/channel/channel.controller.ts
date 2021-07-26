@@ -1,10 +1,10 @@
-import {BadRequestException, Body, Controller, Get, Param, Patch, Post, Query} from "@nestjs/common";
-import { ChannelService } from "./channel.service";
-import { Channel } from "./channel.entity";
-import {User} from "../../user/models/user.entity";
+import {Body, Controller, Get, Patch, Post, Query} from "@nestjs/common";
+import {ChannelService} from "./channel.service";
+import {Channel} from "./channel.entity";
+import {User} from "../../user/user.entity";
 import * as bcrypt from 'bcryptjs'
-import { IsDefined, IsOptional } from "class-validator";
-import { ChannelUserType } from "./channelUsers.entity";
+import {IsDefined, IsOptional} from "class-validator";
+import {ChannelUserType} from "./channelUsers.entity";
 
 export class UpdateChannelUserDto {
   @IsDefined()
@@ -15,7 +15,7 @@ export class UpdateChannelUserDto {
 
   @IsOptional()
   channelId?: string
-};
+}
 
 
 @Controller('channels/')
@@ -62,8 +62,7 @@ export class ChannelController {
     channel.IsPrivate = Private;
     channel.ownerId = ownerId;
     channel.IsDirect = IsDirect;
-    const hashed = await bcrypt.hash(Password, 12);
-    channel.Password = hashed;
+    channel.Password = await bcrypt.hash(Password, 12);
     const generatedID = await this.channelService.create(channel);
     if(!generatedID)
         return;
@@ -83,16 +82,14 @@ export class ChannelController {
 
     const channelUser = await this.channelService.getUserLink(channelId, userId);
     if (!channelUser) {
-      const newUserChannel = await this.channelService.createChannelUser(channelId, userId);
-      return newUserChannel;
+      return await this.channelService.createChannelUser(channelId, userId);
     }
     return channelUser;
   }
 
   @Get("findName")
   async findUserName(@Query() query): Promise<Channel> {
-    const res = await this.channelService.findChannelName(query)
-    return res ;
+    return await this.channelService.findChannelName(query) ;
   }
 
 
@@ -110,11 +107,7 @@ export class ChannelController {
               @Body('channelId') channelId: number,)
   {
     const channel : Channel = await this.channelService.login(channelId);
-    if(!await bcrypt.compare(password, channel.Password)) {
-      return false;
-    }
-    else
-      return true;
+    return await bcrypt.compare(password, channel.Password);
 
   }
 

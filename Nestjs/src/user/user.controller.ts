@@ -1,6 +1,6 @@
-import { Controller, Get, Query, Req, UseGuards } from "@nestjs/common";
+import {Body, Controller, Get, Param, Post, Query, Req, UseGuards} from "@nestjs/common";
 import { UserService } from "./user.service";
-import { User } from "./models/user.entity";
+import { User } from "./user.entity";
 import { AuthService } from "./auth/auth.service";
 import { Request } from "express";
 import { verifyUser } from "./auth/strategy/auth.guard";
@@ -39,5 +39,20 @@ export class UserController {
       res = data.channels;
       return res;
     }
+  }
+
+  @Get("allUserFriends")
+  async getAllUserFriends(): Promise<User[]> {
+    return await this.userService.findAllUserFriends();
+  }
+
+  @Post("saveFriendToUser")
+  async saveFriendToUser(@Body() message): Promise<User[]> {
+    return await this.userService.saveFriendToUser(message.userID, message.friendID);
+  }
+
+  @Post("deleteTestUser/:userID&:friendID")
+  async deleteFriendToUser(@Param('userID') userID: number, @Param('friendID') friendID: number ): Promise<User[]> {
+    return await this.userService.deleteFriendFromUser(userID, friendID);
   }
 }
