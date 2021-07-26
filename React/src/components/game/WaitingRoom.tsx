@@ -55,7 +55,7 @@ const WaitingRoom = (props: any) => {
                     const classicPlayer = JSON.stringify({event: "newPlayer", data: [user.id, "classic"]});
                     websocket.current.send(classicPlayer);
                 }
-                else if (props.location.state === "deluxe")  {
+                else if (props.location.state === "deluxe") {
                     let deluxePlayer = JSON.stringify({event: "newPlayer", data: [user.id, "deluxe"]});
                     websocket.current.send(deluxePlayer);
                 }
