@@ -14,6 +14,9 @@ const PublicProfile = (props: any) => {
     const [gamesPlayed, setGamesPlayed] = useState(0);
     const [unauthorized, setUnauthorized] = useState(false);
     const [user, setUser] = useState({
+        id: 0,
+    });
+    const [publicUser, setPublicUser] = useState({
         username: '',
         avatar: '',
         id: 0,
@@ -36,12 +39,23 @@ const PublicProfile = (props: any) => {
     useEffect(() => {
         const getUser = async () => {
             try {
-                const {data} = await axios.post('publicUserData', {id: props.location.state.usersData.id});
+                const {data} = await axios.get('userData')
                 setUser(data);
             }
             catch (err) {setUnauthorized(true);}
         }
         getUser();
+    }, []);
+
+    useEffect(() => {
+        const getPublicUser = async () => {
+            try {
+                const {data} = await axios.post('publicUserData', {id: props.location.state.usersData.id});
+                setPublicUser(data);
+            }
+            catch (err) {setUnauthorized(true);}
+        }
+        getPublicUser();
     }, [props.location.state.usersData.id]);
 
     useEffect(() => {
@@ -59,37 +73,37 @@ const PublicProfile = (props: any) => {
         let counter = 0;
 
         const getPlayedGames = async () => {
-            games.filter((game: GameModel) => !game.active && (game.playerOne === user.id || game.playerTwo === user.id)).map((gameData: GameModel) =>
+            games.filter((game: GameModel) => !game.active && (game.playerOne === publicUser.id || game.playerTwo === publicUser.id)).map((gameData: GameModel) =>
                 counter++
             )
             setGamesPlayed(counter);
         }
         getPlayedGames();
-    }, [user.id, games]);
+    }, [publicUser.id, games]);
 
     useEffect(() => {
         let counter = 0;
 
         const getGamesWon = async () => {
-            games.filter((game: GameModel) => !game.active && game.winner === user.id ).map((gameData: GameModel) =>
+            games.filter((game: GameModel) => !game.active && game.winner === publicUser.id ).map((gameData: GameModel) =>
                 counter++
             )
             setWins(counter);
         }
         getGamesWon();
-    }, [user.id, games]);
+    }, [publicUser.id, games]);
 
     useEffect(() => {
         let counter = 0;
 
         const getGamesLost = async () => {
-            games.filter((game: GameModel) => !game.active && game.loser === user.id ).map((gameData: GameModel) =>
+            games.filter((game: GameModel) => !game.active && game.loser === publicUser.id ).map((gameData: GameModel) =>
                 counter++
             )
             setLoses(counter);
         }
         getGamesLost();
-    }, [user.id, games]);
+    }, [publicUser.id, games]);
 
     useEffect(() => {
         let rank = 'ROOKIE'
@@ -104,7 +118,7 @@ const PublicProfile = (props: any) => {
             setRank(rank);
         }
         getRank();
-    }, [user.id, games, wins]);
+    }, [publicUser.id, games, wins]);
 
 
     const sendGameInvite = async (e: SyntheticEvent, id: number) => {
@@ -115,6 +129,20 @@ const PublicProfile = (props: any) => {
             setprivateGame(true);
         }
         catch (err) { setNotAvailable(true); }
+    }
+
+    const addAsFriend = async (e: SyntheticEvent, userID: number, friendID: number) => {
+        e.preventDefault();
+
+        try {
+            const ret = await axios.post("users/saveFriendToUser", {
+                userID: userID,
+                friendID: friendID,
+            });
+            if (ret.status === 201) alert("You've added the user as friend");
+            else console.log("Error when adding friend");
+        }
+        catch (err) { setUnauthorized(true); }
     }
 
 
@@ -130,11 +158,11 @@ const PublicProfile = (props: any) => {
                 <div className="col-md-12">
                     <div className="profile-sidebar">
                         <div className="profile-userpic">
-                            <img src={`${user?.avatar}`} className="img-responsive" alt=""/>
+                            <img src={`${publicUser?.avatar}`} className="img-responsive" alt=""/>
                         </div>
 
                         <div className="profile-usertitle">
-                            <div className="profile-usertitle-job">{user?.username}</div>
+                            <div className="profile-usertitle-job">{publicUser?.username}</div>
                         </div>
 
                         {   notAvailable?
@@ -147,7 +175,8 @@ const PublicProfile = (props: any) => {
 
                         <div className="profile-userbuttons">
                             <Link to={`/profile`} type="button" className="btn btn-success btn-sm">Return to own profile</Link>
-                            <button onClick={(e) => {sendGameInvite(e, user.id)}} type="button" className="btn btn-success btn-sm">Invite for private game</button>
+                            <button onClick={(e) => {sendGameInvite(e, publicUser.id)}} type="button" className="btn btn-success btn-sm">Invite for private game</button>
+                            <button onClick={(e) => {addAsFriend(e, user.id, publicUser.id)}} type="button" className="btn btn-success btn-sm">Add as friend</button>
                         </div>
                     </div>
                 </div>
@@ -194,7 +223,7 @@ const PublicProfile = (props: any) => {
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {games.filter((game: GameModel) => !game.active && (game.playerOne === user.id || game.playerTwo === user.id)).map((gameData: GameModel) =>
+                                    {games.filter((game: GameModel) => !game.active && (game.playerOne === publicUser.id || game.playerTwo === publicUser.id)).map((gameData: GameModel) =>
                                         <tr key={gameData.gameID}>
                                             <td>#{gameData.gameID}</td>
                                             <td>{gameData.playerOneUsername} - {gameData.playerOneScore}</td>
