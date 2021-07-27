@@ -75,10 +75,10 @@ function RenderChangePassword(props : RenderChangePasswordProps){
     function renderNewPasswordBox() {
         if (renderPasswordBox) {
             return (
-                <div className="form-floating">
-                    <label htmlFor="floatingInput">New Password</label>
-                    <input type="password" className="form-control" id="exampleInputPassword1" placeholder="Password"
+                <div className="form-floating newPassword">
+                    <input required type="password" className="form-control" id="floatingInput"
                            onChange={e => setNewPassword(e.target.value)}/>
+                    <label htmlFor="floatingInput">New password</label>
                     <button  type="submit" className="btn btn-primary" onClick={submit}>Submit</button>
                 </div>
             )
@@ -96,15 +96,15 @@ function RenderChangePassword(props : RenderChangePasswordProps){
 
     if (isPrivate) {
         return (
-            <div className="form-group">
-                <label htmlFor="exampleInputPassword1">Old Password</label>
-                <input type="password" className="form-control" id="exampleInputPassword1" placeholder="Password"
+            <div className="form-floating">
+                <input required type="password" className="form-control" id="floatingInput"
                        onChange={e => setGivenPassword(e.target.value)}/>
-                <button type="submit" className="btn btn-primary" onClick={verifyPassword} >Submit oldpassword</button>
+                <label htmlFor="floatingInput">Old password</label>
                 {   invalid?
                     <p className="registerSubTitle">Wrong password try another</p>
                     :
                     <p/>  }
+                <button type="submit" className="btn btn-primary" onClick={verifyPassword} >Submit oldpassword</button>
                 {renderNewPasswordBox()}
             </div>
         )

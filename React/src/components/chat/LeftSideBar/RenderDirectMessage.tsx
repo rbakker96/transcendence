@@ -60,6 +60,7 @@ function RenderDirectMessage(props: RenderDirectMessageType) {
           setActiveChannelId={props.setActiveChannelId}
           ActiveUserName={props.ActiveUserName}
           directChannel={channel}
+          private={channel.IsPrivate}
         />
       ))}
     </div>

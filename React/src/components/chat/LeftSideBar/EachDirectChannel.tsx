@@ -7,6 +7,7 @@ type EachDirectChannelType = {
   setActiveChannelId: Function;
   ActiveUserName: string;
   directChannel: Channel;
+  private: boolean;
 };
 
 function EachDirectChannel(props: EachDirectChannelType) {
@@ -28,8 +29,7 @@ function EachDirectChannel(props: EachDirectChannelType) {
     const setChannelName = () => {
       if (Users.length === 2) {
         Users.forEach((channelUser: any ) => {
-          if (channelUser.user.username !== props.ActiveUserName)
-          {
+          if (channelUser.user.username !== props.ActiveUserName) {
             setDirectChannelName(channelUser.user.username);
           }
         });
@@ -47,8 +47,8 @@ function EachDirectChannel(props: EachDirectChannelType) {
     return <Redirect to={'/'}/>;
 
   return (
-    <ul key={props.directChannel.Id} onClick={onclick}>
-      {DirectChannelName}
+    <ul className="chatChannelsLock" key={props.directChannel.Id} onClick={onclick}>
+      <p className="channelName">{DirectChannelName}</p>
     </ul>
   );
 }
