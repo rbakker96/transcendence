@@ -13,8 +13,6 @@ type ChatMessageType = {
 
 type EachChatMessageProps = {
   message: ChatMessageType;
-  IDIsMuted: number[];
-  setIDIsMuted: Function;
   oneShownPopup: string;
   setOneShownPopup: Function;
   activeUserID: number;
@@ -26,6 +24,7 @@ function EachChatMessage(props: EachChatMessageProps) {
   const [IsOpenPopup, setIsOpenPopup] = useState(false);
   const [UserName, setUserName] = useState("");
   const [Avatar, setAvatar] = useState("");
+  const [IsMuted, setIsMuted] = useState(false);
 
   const togglePopup = () => {
     setIsOpenPopup(!IsOpenPopup);
@@ -41,7 +40,17 @@ function EachChatMessage(props: EachChatMessageProps) {
     getUser();
   }, [props, setUserName, setAvatar]);
 
-  if (props.IDIsMuted.includes(props.message.senderID)) return <div />;
+  useEffect( () => {
+    const getMuted = async () => {
+      const {data} = await API.Channels.getState(props.message.senderID, props.message.channelID)
+      console.log("data is", data);
+      if (data === 3)
+        setIsMuted( true);
+    }
+    getMuted();
+  }, [props.message.senderID, props.message.channelID])
+
+  if (IsMuted) return <div />;
   else
     return (
       <div onClick={togglePopup}>
@@ -60,8 +69,7 @@ function EachChatMessage(props: EachChatMessageProps) {
               Avatar={Avatar}
               ProfileLink={"http://placeholder"}
               handleClose={togglePopup}
-              setIDIsMuted={props.setIDIsMuted}
-              activeChannel={props.message.channelID}
+              activeChannelId={props.message.channelID}
             />
           )}
       </div>

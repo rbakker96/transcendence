@@ -92,6 +92,16 @@ export default class ChannelAPI {
     })
   }
 
+  static getState(userID : number, activeChannelID : number)
+  {
+    return axios.get('channels/get-state', {
+      params: {
+        userId : userID,
+        channelId: activeChannelID}
+    })
+  }
+
+
   static changeState(newState : number, channelId : number, userId: number)
   {
     return axios.patch('channels/change-state', {

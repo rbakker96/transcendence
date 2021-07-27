@@ -8,8 +8,6 @@ import "./ChatContent.css"
 type ChatContentProps = {
   activeChannelID: number;
   setActiveChannelID: Function;
-  IDIsMuted: number[];
-  setIDIsMuted: Function;
   activeUserID: number;
 };
 
@@ -43,8 +41,7 @@ function ChatContent(props: ChatContentProps) {
             ? ( <ChatChannelMessages
               activeChannelID={props.activeChannelID}
               activeUserID={props.activeUserID}
-              IDIsMuted={props.IDIsMuted}
-              setIDIsMuted={props.setIDIsMuted} />)
+               />)
             : (<div />)}
           </>)
       }

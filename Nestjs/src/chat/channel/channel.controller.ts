@@ -49,6 +49,13 @@ export class ChannelController {
     return await this.channelService.getIsAdmin(query.userId, query.channelId);
   }
 
+  @Get('/get-state')
+  async getState(@Query() query: any)
+  {
+    return await this.channelService.getState(query.userId, query.channelId);
+  }
+
+
   @Post()
   async addOneChannel(
     @Body('Name') ChannelName:string,
@@ -132,8 +139,6 @@ export class ChannelController {
       @Body('newPassword') newPassword : string,
       @Body('channelId') channelId : number)
   {
-    console.log("new password controller =", newPassword);
-    console.log("channelID controller = ", channelId);
     const hashed = await bcrypt.hash(newPassword, 12);
 
     await this.channelService.updatePassword(hashed, channelId)

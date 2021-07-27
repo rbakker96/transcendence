@@ -12,7 +12,6 @@ function ChatPage() {
   const [ActiveUserID, setActiveUserID] = useState<number>(0);
   const [ActiveUserName, setActiveUserName] = useState("");
   const [Avatar, setAvatar] = useState("");
-  const [IDIsMuted, setIDIsMuted] = useState<number[]>([]);
 
   useEffect(() => {
     const setActiveID = async () => {
@@ -46,8 +45,6 @@ function ChatPage() {
             activeChannelID={ActiveChannelID}
             setActiveChannelID={setActiveChannelID}
             activeUserID={ActiveUserID}
-            IDIsMuted={IDIsMuted}
-            setIDIsMuted={setIDIsMuted}
           />
         </Col>
       </Row>
