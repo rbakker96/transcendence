@@ -1,10 +1,12 @@
-import React, {useEffect, useState} from "react";
+import React, {SyntheticEvent, useEffect, useState} from "react";
 import {Link, Redirect} from "react-router-dom"
 import './stylesheets/Profile.css'
 import axios from "axios";
 import {GameModel} from "../../models/Game.model";
 
 const PublicProfile = (props: any) => {
+    const [notAvailable, setNotAvailable] = useState(false);
+    const [privateGame, setprivateGame] = useState(false);
     const [games, setGames] = useState([]);
     const [wins, setWins] = useState(0);
     const [loses, setLoses] = useState(0);
@@ -12,6 +14,9 @@ const PublicProfile = (props: any) => {
     const [gamesPlayed, setGamesPlayed] = useState(0);
     const [unauthorized, setUnauthorized] = useState(false);
     const [user, setUser] = useState({
+        id: 0,
+    });
+    const [publicUser, setPublicUser] = useState({
         username: '',
         avatar: '',
         id: 0,
@@ -33,17 +38,33 @@ const PublicProfile = (props: any) => {
 
     useEffect(() => {
         const getUser = async () => {
-            const {data} = await axios.post('publicUserData', {id: props.location.state.usersData.id});
-            setUser(data);
+            try {
+                const {data} = await axios.get('userData')
+                setUser(data);
+            }
+            catch (err) {setUnauthorized(true);}
         }
         getUser();
+    }, []);
+
+    useEffect(() => {
+        const getPublicUser = async () => {
+            try {
+                const {data} = await axios.post('publicUserData', {id: props.location.state.usersData.id});
+                setPublicUser(data);
+            }
+            catch (err) {setUnauthorized(true);}
+        }
+        getPublicUser();
     }, [props.location.state.usersData.id]);
 
     useEffect(() => {
-
         const getGameData = async () => {
-            const {data} = await axios.get('/allGameData');
-            setGames(data);
+            try {
+                const {data} = await axios.get('/allGameData');
+                setGames(data);
+            }
+            catch (err) {setUnauthorized(true);}
         }
         getGameData();
     }, []);
@@ -52,37 +73,37 @@ const PublicProfile = (props: any) => {
         let counter = 0;
 
         const getPlayedGames = async () => {
-            games.filter((game: GameModel) => !game.active && (game.playerOne === user.id || game.playerTwo === user.id)).map((gameData: GameModel) =>
+            games.filter((game: GameModel) => !game.active && (game.playerOne === publicUser.id || game.playerTwo === publicUser.id)).map((gameData: GameModel) =>
                 counter++
             )
             setGamesPlayed(counter);
         }
         getPlayedGames();
-    }, [user.id, games]);
+    }, [publicUser.id, games]);
 
     useEffect(() => {
         let counter = 0;
 
         const getGamesWon = async () => {
-            games.filter((game: GameModel) => !game.active && game.winner === user.id ).map((gameData: GameModel) =>
+            games.filter((game: GameModel) => !game.active && game.winner === publicUser.id ).map((gameData: GameModel) =>
                 counter++
             )
             setWins(counter);
         }
         getGamesWon();
-    }, [user.id, games]);
+    }, [publicUser.id, games]);
 
     useEffect(() => {
         let counter = 0;
 
         const getGamesLost = async () => {
-            games.filter((game: GameModel) => !game.active && game.loser === user.id ).map((gameData: GameModel) =>
+            games.filter((game: GameModel) => !game.active && game.loser === publicUser.id ).map((gameData: GameModel) =>
                 counter++
             )
             setLoses(counter);
         }
         getGamesLost();
-    }, [user.id, games]);
+    }, [publicUser.id, games]);
 
     useEffect(() => {
         let rank = 'ROOKIE'
@@ -97,11 +118,39 @@ const PublicProfile = (props: any) => {
             setRank(rank);
         }
         getRank();
-    }, [user.id, games, wins]);
+    }, [publicUser.id, games, wins]);
+
+
+    const sendGameInvite = async (e: SyntheticEvent, id: number) => {
+        e.preventDefault();
+
+        try {
+            await axios.put('sendGameInvite', {id});
+            setprivateGame(true);
+        }
+        catch (err) { setNotAvailable(true); }
+    }
+
+    const addAsFriend = async (e: SyntheticEvent, userID: number, friendID: number) => {
+        e.preventDefault();
+
+        try {
+            const ret = await axios.post("users/saveFriendToUser", {
+                userID: userID,
+                friendID: friendID,
+            });
+            if (ret.status === 201)
+                alert("You've added the user as friend");
+        }
+        catch (err) { setUnauthorized(true); }
+    }
 
 
     if (unauthorized)
         return <Redirect to={'/'}/>;
+
+    if (privateGame)
+        return <Redirect to={{pathname:"/WaitingRoom", state: "private"}}/>;
 
     return (
         <div className="container profilepage">
@@ -109,15 +158,25 @@ const PublicProfile = (props: any) => {
                 <div className="col-md-12">
                     <div className="profile-sidebar">
                         <div className="profile-userpic">
-                            <img src={`${user?.avatar}`} className="img-responsive" alt=""/>
+                            <img src={`${publicUser?.avatar}`} className="img-responsive" alt=""/>
                         </div>
 
                         <div className="profile-usertitle">
-                            <div className="profile-usertitle-job">{user?.username}</div>
+                            <div className="profile-usertitle-job">{publicUser?.username}</div>
                         </div>
+
+                        {   notAvailable?
+                            <div>
+                                <p className="notAvailable" >Sorry the private game room is full, please try again later.</p>
+                            </div>
+                            :
+                            <p/>  }
+
 
                         <div className="profile-userbuttons">
                             <Link to={`/profile`} type="button" className="btn btn-success btn-sm">Return to own profile</Link>
+                            <button onClick={(e) => {sendGameInvite(e, publicUser.id)}} type="button" className="btn btn-success btn-sm">Invite for private game</button>
+                            <button onClick={(e) => {addAsFriend(e, user.id, publicUser.id)}} type="button" className="btn btn-success btn-sm">Add as friend</button>
                         </div>
                     </div>
                 </div>
@@ -164,7 +223,7 @@ const PublicProfile = (props: any) => {
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {games.filter((game: GameModel) => !game.active && (game.playerOne === user.id || game.playerTwo === user.id)).map((gameData: GameModel) =>
+                                    {games.filter((game: GameModel) => !game.active && (game.playerOne === publicUser.id || game.playerTwo === publicUser.id)).map((gameData: GameModel) =>
                                         <tr key={gameData.gameID}>
                                             <td>#{gameData.gameID}</td>
                                             <td>{gameData.playerOneUsername} - {gameData.playerOneScore}</td>

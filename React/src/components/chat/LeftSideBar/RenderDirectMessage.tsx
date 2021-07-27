@@ -1,30 +1,51 @@
 import { Divider } from "antd";
 import API from "../../../API/API";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Channel } from "../../../models/Channel.model";
 import EachDirectChannel from "./EachDirectChannel";
+import {Redirect} from "react-router-dom";
+import axios from "axios";
 
 type RenderDirectMessageType = {
   setActiveChannelId: Function;
   ActiveUserName: string;
   ActiveUserId : number;
+  ActiveChannelID : number;
 };
 
 function RenderDirectMessage(props: RenderDirectMessageType) {
   const [DirectChannels, setDirectChannels] = useState<Array<Channel>>([]);
+  const [unauthorized, setUnauthorized] = useState(false);
 
   useEffect(() => {
-    const getchannels = async () => {
-      const { data } = await API.User.getChannels(props.ActiveUserId);
+    let mounted = true;
+
+    const authorization = async () => {
+      try { await axios.get('userData'); }
+      catch(err){
+        if(mounted)
+          setUnauthorized(true);
+      }
+    }
+    authorization();
+    return () => {mounted = false;}
+  }, []);
+
+  useEffect(() => {
+    const getChannels = async () => {
+      const { data } = await API.Channels.getWithUser(props.ActiveUserId);
       if (data)
       {
         let result: Channel[];
-        result = data.filter((channel: any) => channel.IsDirect);
+        result = data.filter((channel : any) => channel.IsDirect);
         setDirectChannels(result);
       }
     };
-    getchannels();
-  }, [props.ActiveUserId]);
+    getChannels();
+  }, [props.ActiveUserId, props.ActiveChannelID]);
+
+  if (unauthorized)
+    return <Redirect to={'/'}/>;
 
   return (
     <div>

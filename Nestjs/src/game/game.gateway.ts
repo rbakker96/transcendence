@@ -38,8 +38,6 @@ type gameState = {
 	gameFinished: boolean
 }
 
-//ADD POWERUPS TO BACKEND
-
 @WebSocketGateway()
 export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 	@WebSocketServer() server: Server;
@@ -101,7 +99,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			}
 		});
 		console.log('Game: client disconnected');
-
 	}
 
 	afterInit(server: any): any {

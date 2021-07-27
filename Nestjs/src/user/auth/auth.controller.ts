@@ -26,6 +26,8 @@ export class AuthController {
 
         if(!clientData)
             return response.redirect('http://localhost:8080/register')
+        else
+            await this.userService.setOnline(client['id']);
         if (clientData.authentication == true)
             return response.redirect('http://localhost:8080/twoFactor')
         else
@@ -88,6 +90,21 @@ export class AuthController {
     }
 
     @UseGuards(verifyUser)
+    @Put('sendGameInvite')
+    async sendGameInvite(@Req() request: Request, @Body() data): Promise<any> {
+        if (await this.userService.findPrivateGame())
+            throw new UnauthorizedException('Only one private game possible');
+        else
+            return await this.userService.sendGameInvite(data);
+    }
+
+    @UseGuards(verifyUser)
+    @Put('acceptGameInvite')
+    async acceptGameInvite(@Req() request: Request, @Body() data): Promise<any> {
+        return await this.userService.acceptGameInvite(data);
+    }
+
+    @UseGuards(verifyUser)
     @Get('userData')
     async getUserData(@Req() request: Request) {
         const clientID = await this.authService.clientID(request);
@@ -102,8 +119,10 @@ export class AuthController {
 
     @UseGuards(verifyUser)
     @Post('logout')
-    async logout(@Res({passthrough: true}) response: Response) {
+    async logout(@Req() request: Request, @Res({passthrough: true}) response: Response) {
         response.clearCookie('clientID');
+        const clientID = await this.authService.clientID(request);
+        await this.userService.setOffline(clientID);
 
         return {message: 'Success'}
     }

@@ -24,14 +24,17 @@ function GamePage(props : any)
 
 	useEffect(() => {
 		const getGameData = async () => {
-			const {data} = await axios.get('userData')
+			try {
+				const {data} = await axios.get('userData')
 
-			if (data.id === props.location.state.gameData.playerOne)
-				setRole('leftPlayer');
-			else if (data.id === props.location.state.gameData.playerTwo)
-				setRole('rightPlayer');
-			else
-				setRole('viewer');
+				if (data.id === props.location.state.gameData.playerOne)
+					setRole('leftPlayer');
+				else if (data.id === props.location.state.gameData.playerTwo)
+					setRole('rightPlayer');
+				else
+					setRole('viewer');
+			}
+			catch (err) {setUnauthorized(true);}
 		}
 		getGameData();
 	}, [props.location.state.gameData.playerOne, props.location.state.gameData.playerTwo]);

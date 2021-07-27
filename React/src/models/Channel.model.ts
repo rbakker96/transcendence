@@ -6,6 +6,6 @@ export interface Channel {
     ChannelName : string
     IsPrivate : boolean
     IsDirect: boolean
-    password: string
+    password?: string
     users: User[]
 }

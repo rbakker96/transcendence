@@ -28,8 +28,11 @@ const WatchGame = () => {
     useEffect(() => {
 
         const getGames = async () => {
-            const {data} = await axios.get('/allGameData');
-            setGames(data);
+            try {
+                const {data} = await axios.get('/allGameData');
+                setGames(data);
+            }
+            catch (err) {setUnauthorized(true);}
         }
         getGames();
     }, []);

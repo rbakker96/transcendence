@@ -29,9 +29,11 @@ const WaitingRoom = (props: any) => {
 
     useEffect(() => {
         const getUser = async () => {
-            const {data} = await axios.get('userData')
-            setUser(data);
-            console.log(data);
+            try {
+                const {data} = await axios.get('userData')
+                setUser(data);
+            }
+            catch (err) {setUnauthorized(true);}
         }
         getUser();
     }, []);
@@ -44,13 +46,13 @@ const WaitingRoom = (props: any) => {
             websocket.current = new WebSocket("ws://localhost:8000/classicWaitingRoom");
         else if ((props.location.state === "deluxe"))
             websocket.current = new WebSocket("ws://localhost:8000/deluxeWaitingRoom");
+        else if ((props.location.state === "private"))
+            websocket.current = new WebSocket("ws://localhost:8000/privateWaitingRoom");
 
         websocket.current.onopen = () => {
             console.log("ws entered waitingRoom: ");
 
             if (user.id) {
-                // const playerData = {id: user.id};
-
                 if (props.location.state === "classic") {
                     const classicPlayer = JSON.stringify({event: "newPlayer", data: [user.id, "classic"]});
                     websocket.current.send(classicPlayer);
@@ -58,6 +60,10 @@ const WaitingRoom = (props: any) => {
                 else if (props.location.state === "deluxe") {
                     let deluxePlayer = JSON.stringify({event: "newPlayer", data: [user.id, "deluxe"]});
                     websocket.current.send(deluxePlayer);
+                }
+                else if (props.location.state === "private")  {
+                    let privatePlayer = JSON.stringify({event: "newPlayer", data: [user.id, "private"]});
+                    websocket.current.send(privatePlayer);
                 }
             }
         };

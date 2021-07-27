@@ -1,20 +1,25 @@
-import React, {useEffect, useState} from "react";
+import React, {SyntheticEvent, useEffect, useState} from "react";
 import {Link, Redirect} from "react-router-dom"
 import './stylesheets/Profile.css'
 import axios from "axios";
 import {GameModel} from "../../models/Game.model";
+import {User} from "../../models/User.model";
 
 const Profile = () => {
+    const [privateGame, setprivateGame] = useState(false);
     const [games, setGames] = useState([]);
     const [wins, setWins] = useState(0);
     const [loses, setLoses] = useState(0);
     const [rank, setRank] = useState('');
     const [gamesPlayed, setGamesPlayed] = useState(0);
     const [unauthorized, setUnauthorized] = useState(false);
+    const [pendingInvite, setPendingInvite] = useState(false);
+    const [userFriends, setUserFriends] = useState([]);
     const [user, setUser] = useState({
         username: '',
         avatar: '',
         id: 0,
+        pendingInvite: false,
     });
 
     useEffect(() => {
@@ -43,9 +48,30 @@ const Profile = () => {
     }, []);
 
     useEffect(() => {
+        const getUserFriends = async () => {
+            try {
+                const {data} = await axios.get('users/userWithFriends')
+                setUserFriends(data.friends);
+            }
+            catch (err) {setUnauthorized(true);}
+        }
+        getUserFriends();
+    }, [user]);
+
+    useEffect(() => {
+        const getPendingInvite = async () => {
+            setPendingInvite(user.pendingInvite);
+        }
+        getPendingInvite();
+    }, [user]);
+
+    useEffect(() => {
         const getGameData = async () => {
-            const {data} = await axios.get('/allGameData');
-            setGames(data);
+            try {
+                const {data} = await axios.get('/allGameData');
+                setGames(data);
+            }
+            catch (err) {setUnauthorized(true);}
         }
         getGameData();
     }, []);
@@ -101,13 +127,40 @@ const Profile = () => {
         getRank();
     }, [user.id, games, wins]);
 
+    const acceptGameInvite = async (e: SyntheticEvent) => {
+        e.preventDefault();
+
+        try {
+            await axios.put('acceptGameInvite');
+            setprivateGame(true);
+        }
+        catch (err) {setUnauthorized(true);}
+    }
 
     const logout = async () => {
         await axios.post('logout', {});
     }
 
+    const deleteFriend = async (e: SyntheticEvent, userID: number, friendID: number) => {
+        e.preventDefault();
+
+        try {
+            const ret = await axios.post("users/deleteFriendToUser", {
+                userID: userID,
+                friendID: friendID,
+            });
+            if (ret.status === 201)
+                alert("You've removed the user as friend");
+            window.location.reload();
+        }
+        catch (err) { setUnauthorized(true); }
+    }
+
     if (unauthorized)
         return <Redirect to={'/'}/>;
+
+    if (privateGame)
+        return <Redirect to={{pathname:"/WaitingRoom", state: "private"}}/>;
 
     return (
         <div className="container profilepage">
@@ -121,6 +174,13 @@ const Profile = () => {
                         <div className="profile-usertitle">
                             <div className="profile-usertitle-job">{user?.username}</div>
                         </div>
+
+                        {   pendingInvite?
+                            <div>
+                                <button onClick={acceptGameInvite} type="button" className="btn btn-sm inviteButton">Accept Game invite</button>
+                            </div>
+                            :
+                            <p/>  }
 
                         <div className="profile-userbuttons">
                             <Link to={`/PlayGame`} type="button" className="btn btn-success btn-sm">Play game</Link>
@@ -191,6 +251,41 @@ const Profile = () => {
                     </div>
                 </div>
             </div>
+
+            <div className="row">
+                <div className="col-md-3"></div>
+                <div className="col-md-6 ">
+                    <div className="row">
+                        <div className="col-md-12 title"><h3>FRIENDS</h3></div>
+                    </div>
+                    <div className="row friends">
+                        <table>
+                            <thead className="friendTable">
+                                <tr>
+                                    <th></th>
+                                    <th>Username</th>
+                                    <th>Status</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {userFriends.map((friend: User) =>
+                                <tr key={friend.id}>
+                                    <td><img src={`${friend.avatar}`} className="img-responsive friendAvatar" alt=""/></td>
+                                    <td>{friend.username}</td>
+                                    <td>{friend.status}</td>
+                                    <td><button onClick={(e) => {deleteFriend(e, user.id, friend.id)}} type="button" className="btn btn-danger btn-sm">Remove friend</button></td>
+                                </tr>
+                            )}
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+                <div className="col-md-3"></div>
+            </div>
+
+
         </div>
     )
 

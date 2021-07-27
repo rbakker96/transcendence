@@ -1,6 +1,8 @@
 import styles from "./ChatInputBar.module.css";
-import { SyntheticEvent, useState } from "react";
+import React, {SyntheticEvent, useEffect, useState} from "react";
 import API from "../../../API/API";
+import axios from "axios";
+import {Redirect} from "react-router-dom";
 
 type TextBarType = {
   websocket: WebSocket;
@@ -16,10 +18,25 @@ type newMessageType = {
 };
 
 function ChatInputBar(props: TextBarType) {
+  const [unauthorized, setUnauthorized] = useState(false);
   const [message, setMessage] = useState("");
   const [messageTimestamp, setMessageTimeStamp] = useState(
     new Date().toLocaleString()
   );
+
+  useEffect(() => {
+    let mounted = true;
+
+    const authorization = async () => {
+      try { await axios.get('userData'); }
+      catch(err){
+        if(mounted)
+          setUnauthorized(true);
+      }
+    }
+    authorization();
+    return () => {mounted = false;}
+  }, []);
 
   async function submitHandler(e: SyntheticEvent) {
     e.preventDefault();
@@ -43,6 +60,9 @@ function ChatInputBar(props: TextBarType) {
     // reset input box to nothing
     setMessage("");
   }
+
+  if (unauthorized)
+    return <Redirect to={'/'}/>;
 
   return (
     <div className={styles.textBar}>

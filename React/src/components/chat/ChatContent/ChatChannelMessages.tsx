@@ -1,12 +1,12 @@
 import EachChatMessage from "./EachChatMessage";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import API from "../../../API/API";
 import ChatInputBar from "./ChatInputBar";
+import axios from "axios";
+import {Redirect} from "react-router-dom";
 
 type ChatChannelMessagesProps = {
   activeChannelID: number;
-  IDIsMuted: number[];
-  setIDIsMuted: Function;
   activeUserID: number;
 };
 
@@ -29,9 +29,24 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
   const [historicChatMessages, setHistoricChatMessages] = useState([]);
   const [newMessages, setNewMessages] = useState<SocketMessageType[]>([]);
   const [oneShownPopup, setOneShownPopup] = useState("");
+  const [unauthorized, setUnauthorized] = useState(false);
 
   const websocket: any = useRef<WebSocket>(null);
   const URL = `ws://localhost:8000/chat/${props.activeChannelID}`;
+
+  useEffect(() => {
+    let mounted = true;
+
+    const authorization = async () => {
+      try { await axios.get('userData'); }
+      catch(err){
+        if(mounted)
+          setUnauthorized(true);
+      }
+    }
+    authorization();
+    return () => {mounted = false;}
+  }, []);
 
   useEffect(() => {
     const getChatMessages = async () => {
@@ -56,7 +71,6 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
     websocket.current.addEventListener("message", function (event: any) {
       const object = JSON.parse(event.data);
       if (object.event === "newMessage") {
-        console.log("React: newMessage event triggered");
         const new_message: SocketMessageType = {
           channelID: object.data.channelID,
           senderID: object.data.senderID,
@@ -72,14 +86,15 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
     };
   }, [props.activeChannelID, URL]);
 
+  if (unauthorized)
+    return <Redirect to={'/'}/>;
+
   return (
     <div>
       {historicChatMessages.map((message: DatabaseMessageType) => (
         <EachChatMessage
           key={message.messageID}
           message={message}
-          IDIsMuted={props.IDIsMuted}
-          setIDIsMuted={props.setIDIsMuted}
           oneShownPopup={oneShownPopup}
           setOneShownPopup={setOneShownPopup}
           activeUserID={props.activeUserID}
@@ -89,8 +104,6 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
         <EachChatMessage
           key={message.messageTimestamp}
           message={message}
-          IDIsMuted={props.IDIsMuted}
-          setIDIsMuted={props.setIDIsMuted}
           oneShownPopup={oneShownPopup}
           setOneShownPopup={setOneShownPopup}
           activeUserID={props.activeUserID}

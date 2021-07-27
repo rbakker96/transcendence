@@ -45,6 +45,8 @@ export class AuthService {
         data.avatar = 'http://localhost:8000/api/uploads/egg.jpeg';
         data.id = clientID;
         data.authentication = false;
+        data.pendingInvite = false;
+        data.status = 'ONLINE';
 
         await this.userService.create(data);
     }
@@ -52,5 +54,4 @@ export class AuthService {
     async updateUser(@Body() data: UpdateDto) {
         await this.userService.update(data.id, data);
     }
-
 }

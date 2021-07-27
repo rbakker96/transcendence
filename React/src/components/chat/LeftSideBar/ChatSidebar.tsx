@@ -9,6 +9,7 @@ type ChatSidebarType = {
   setActiveId: Function;
   ActiveUserName: string;
   ActiveUserId : number;
+  ActiveChannelId : number;
 };
 
 function ChatSidebar(props: ChatSidebarType) {
@@ -23,6 +24,7 @@ function ChatSidebar(props: ChatSidebarType) {
         setActiveChannelId={props.setActiveId}
         ActiveUserName={props.ActiveUserName}
         ActiveUserId={props.ActiveUserId}
+        ActiveChannelID={props.ActiveChannelId}
       />
       <Divider orientation={"left"} style={{ color: "#5B8FF9" }}>
         <Link to="/createChannel">Create New Channel</Link>

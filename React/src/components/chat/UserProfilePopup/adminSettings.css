@@ -1,0 +1,13 @@
+.adminPage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding-top: 40px;
+}
+
+.userNameCol {
+    color: white;
+    font-weight: bolder;
+    padding-right: 30px;
+}

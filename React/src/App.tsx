@@ -18,7 +18,7 @@ import PublicProfilesOverview from "./components/users/PublicProfilesOverview";
 
 import RenderCreateChannel from "./components/chat/CreateChannel/RenderCreateChannel";
 import CreateDirectMessage from "./components/chat/CreateChannel/CreateDirectChannel";
-
+import AdminSettings from "./components/chat/UserProfilePopup/adminSettings";
 function App() {
   return (
     <BrowserRouter>
@@ -36,6 +36,7 @@ function App() {
         <Route exact path={"/chat"} component={ChatPage} />
         <Route exact path={"/createChannel"} component={RenderCreateChannel} />
         <Route exact path={"/createDirectMessage"} component={CreateDirectMessage} />
+        <Route exact path={"/adminSetting"} component={AdminSettings} />
         {/*Game*/}
         <Route exact path={"/PlayGame"} component={PlayGame} />
         <Route exact path={"/WatchGame"} component={WatchGame} />

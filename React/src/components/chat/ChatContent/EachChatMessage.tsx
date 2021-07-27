@@ -1,8 +1,10 @@
 import { Comment } from "antd";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import API from "../../../API/API";
 import UserProfilePopup from "../UserProfilePopup/UserProfilePopup";
 import "./ChatContent.css"
+import axios from "axios";
+import {Redirect} from "react-router-dom";
 
 type ChatMessageType = {
   channelID: number;
@@ -13,8 +15,6 @@ type ChatMessageType = {
 
 type EachChatMessageProps = {
   message: ChatMessageType;
-  IDIsMuted: number[];
-  setIDIsMuted: Function;
   oneShownPopup: string;
   setOneShownPopup: Function;
   activeUserID: number;
@@ -26,11 +26,27 @@ function EachChatMessage(props: EachChatMessageProps) {
   const [IsOpenPopup, setIsOpenPopup] = useState(false);
   const [UserName, setUserName] = useState("");
   const [Avatar, setAvatar] = useState("");
+  const [IsMuted, setIsMuted] = useState(false);
+  const [unauthorized, setUnauthorized] = useState(false);
 
   const togglePopup = () => {
     setIsOpenPopup(!IsOpenPopup);
     props.setOneShownPopup(props.message.messageTimestamp);
   };
+
+  useEffect(() => {
+    let mounted = true;
+
+    const authorization = async () => {
+      try { await axios.get('userData'); }
+      catch(err){
+        if(mounted)
+          setUnauthorized(true);
+      }
+    }
+    authorization();
+    return () => {mounted = false;}
+  }, []);
 
   useEffect(() => {
     const getUser = async () => {
@@ -40,6 +56,20 @@ function EachChatMessage(props: EachChatMessageProps) {
     };
     getUser();
   }, [props, setUserName, setAvatar]);
+
+  useEffect( () => {
+    const getMuted = async () => {
+      const {data} = await API.Channels.getState(props.message.senderID, props.message.channelID)
+      console.log("data is", data);
+      if (data === 3)
+        setIsMuted( true);
+    }
+    getMuted();
+  }, [props.message.senderID, props.message.channelID])
+
+  if (IsMuted) return <div />;
+  if (unauthorized)
+    return <Redirect to={'/'}/>;
 
   if (props.IDIsMuted.includes(props.message.senderID)) return <div />;
   else
@@ -60,7 +90,7 @@ function EachChatMessage(props: EachChatMessageProps) {
               Avatar={Avatar}
               ProfileLink={"http://placeholder"}
               handleClose={togglePopup}
-              setIDIsMuted={props.setIDIsMuted}
+              activeChannelId={props.message.channelID}
             />
           )}
       </div>

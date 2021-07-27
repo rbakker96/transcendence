@@ -1,5 +1,6 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import API from "../../../API/API";
+import axios from "axios";
 import {Redirect} from "react-router-dom";
 
 type ChatContentProps = {
@@ -9,30 +10,35 @@ type ChatContentProps = {
 };
 
 function RenderGivePassword(props : ChatContentProps) {
+    const [unauthorized, setUnauthorized] = useState(false);
     const [givenPassword, setGivenPassword] = useState('');
     const [invalid, setInvalid] = useState(false);
 
+    useEffect(() => {
+        let mounted = true;
 
-     async function retrievePassword()
-     {
+        const authorization = async () => {
+            try { await axios.get('userData'); }
+            catch(err){
+                if(mounted)
+                    setUnauthorized(true);
+            }
+        }
+        authorization();
+        return () => {mounted = false;}
+    }, []);
+
+     async function retrievePassword() {
         const {data} = await API.Channels.login(givenPassword, props.activeChannelID)
         return data;
     }
 
-
-    async function verifyPassword()
-    {
+    async function verifyPassword() {
         const password = await retrievePassword()
         if (password === true) {
+            console.log("Password is ", password);
             props.setPasswordValid(true);
             setInvalid(false);
-            return (
-                <Redirect to={{
-                    pathname: "/renderChatContent",
-                    state: {activeChannelId: props.activeChannelID}
-                }}
-                />
-            )
         }
         else
         {
@@ -40,6 +46,9 @@ function RenderGivePassword(props : ChatContentProps) {
             props.setPasswordValid(false);
         }
     }
+
+    if (unauthorized)
+        return <Redirect to={'/'}/>;
 
     return (
         <div className="form-group">
@@ -53,6 +62,6 @@ function RenderGivePassword(props : ChatContentProps) {
                 <p/>  }
         </div>
         )
-};
+}
 
 export default RenderGivePassword;
