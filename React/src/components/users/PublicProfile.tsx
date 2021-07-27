@@ -57,7 +57,7 @@ const PublicProfile = (props: any) => {
         }
         getPublicUser();
         return () => {mounted = false;}
-    }, [props.location.state.usersData.id]);
+    }, [props]);
 
     useEffect(() => {
         let mounted = true;

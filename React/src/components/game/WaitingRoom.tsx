@@ -50,45 +50,48 @@ const WaitingRoom = (props: any) => {
         else if ((props.location.state === "private"))
             websocket.current = new WebSocket("ws://localhost:8000/privateWaitingRoom");
 
-        websocket.current.onopen = () => {
-            if (user.id) {
-                if (props.location.state === "classic") {
-                    const classicPlayer = JSON.stringify({event: "newPlayer", data: [user.id, "classic"]});
-                    websocket.current.send(classicPlayer);
+        if (websocket.current)
+        {
+            websocket.current.onopen = () => {
+                if (user.id) {
+                    if (props.location.state === "classic") {
+                        const classicPlayer = JSON.stringify({event: "newPlayer", data: [user.id, "classic"]});
+                        websocket.current.send(classicPlayer);
+                    }
+                    else if (props.location.state === "deluxe") {
+                        let deluxePlayer = JSON.stringify({event: "newPlayer", data: [user.id, "deluxe"]});
+                        websocket.current.send(deluxePlayer);
+                    }
+                    else if (props.location.state === "private")  {
+                        let privatePlayer = JSON.stringify({event: "newPlayer", data: [user.id, "private"]});
+                        websocket.current.send(privatePlayer);
+                    }
                 }
-                else if (props.location.state === "deluxe") {
-                    let deluxePlayer = JSON.stringify({event: "newPlayer", data: [user.id, "deluxe"]});
-                    websocket.current.send(deluxePlayer);
+            };
+
+            websocket.current.onclose = () => { };
+
+            websocket.current.addEventListener("message", function (event: any) {
+                const object = JSON.parse(event.data);
+
+                if (object.event === "newPlayer") {
+                    if (mounted) setRedirectURL(object.data.gameURL);
+                    if (mounted) setGameData(object.data);
+                    if (mounted) setStartGame(true);
                 }
-                else if (props.location.state === "private")  {
-                    let privatePlayer = JSON.stringify({event: "newPlayer", data: [user.id, "private"]});
-                    websocket.current.send(privatePlayer);
+
+                if (object.event === "duplicateClient") {
+                    if (mounted) setRedirectURL(object.data.URL);
+                    if (mounted) setProfilePage(true);
                 }
-            }
-        };
 
-        websocket.current.onclose = () => { };
+            });
+        }
 
-        websocket.current.addEventListener("message", function (event: any) {
-            const object = JSON.parse(event.data);
-
-            if (object.event === "newPlayer") {
-                // websocket.current.close();
-                if (mounted) setRedirectURL(object.data.gameURL);
-                if (mounted) setGameData(object.data);
-                if (mounted) setStartGame(true);
-            }
-
-            if (object.event === "duplicateClient") {
-                // websocket.current.close();
-                if (mounted) setRedirectURL(object.data.URL);
-                if (mounted) setProfilePage(true);
-            }
-
-        });
 
         return () => {
-            websocket.current.close();
+            if (websocket.current)
+                websocket.current.close();
             mounted = false;
         };
     }, [user, props.location.state]);

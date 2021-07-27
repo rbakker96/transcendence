@@ -113,7 +113,6 @@ export default class ChannelAPI {
 
   static changePassword(newPassword : string, channelId: number)
   {
-    console.log("newPassword in apichannel", newPassword);
     return axios.patch('channels/change-password', {
         newPassword: newPassword,
         channelId: channelId
