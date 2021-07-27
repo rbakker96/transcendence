@@ -61,12 +61,9 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
   useEffect(() => {
     websocket.current = new WebSocket(URL);
 
-    websocket.current.onopen = () => {
-      // console.log(`ws opened & active channel: ${props.activeChannelID}`);
-    };
+    websocket.current.onopen = () => { };
 
     websocket.current.onclose = () => {
-      // console.log(`ws closed & active channel: ${props.activeChannelID}`);
       setNewMessages([]);
     };
 

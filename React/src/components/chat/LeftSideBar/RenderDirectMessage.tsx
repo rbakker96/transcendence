@@ -44,7 +44,7 @@ function RenderDirectMessage(props: RenderDirectMessageType) {
       }catch (err) {setUnauthorized(true);}
     };
     getChannels();
-  }, [props.ActiveUserId, props.ActiveChannelID]);
+  }, [props.ActiveUserId]);
 
   if (unauthorized)
     return <Redirect to={'/'}/>;

@@ -36,7 +36,6 @@ function EachChatMessage(props: EachChatMessageProps) {
 
   useEffect(() => {
     let mounted = true;
-
     const authorization = async () => {
       try {
         await axios.get("userData");
@@ -59,12 +58,11 @@ function EachChatMessage(props: EachChatMessageProps) {
       }catch (err) {setUnauthorized(true);}
     };
     getUser();
-  }, [props, setUserName, setAvatar]);
+  }, [props.message.senderID]);
 
   useEffect(() => {
     const getMuted = async () => {
       try {
-
         const {data} = await API.Channels.getState(
             props.message.senderID,
             props.message.channelID
@@ -75,7 +73,7 @@ function EachChatMessage(props: EachChatMessageProps) {
     getMuted();
   }, [props.message.senderID, props.message.channelID]);
 
-  if (IsMuted) return <div />;
+  if (unauthorized)
     return <Redirect to={'/'}/>;
 
   if (IsMuted) return <div />;
@@ -95,7 +93,6 @@ function EachChatMessage(props: EachChatMessageProps) {
               MessageUserID={props.message.senderID}
               UserName={UserName}
               Avatar={Avatar}
-              ProfileLink={"http://placeholder"}
               handleClose={togglePopup}
               activeChannelId={props.message.channelID}
             />
