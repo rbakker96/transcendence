@@ -44,7 +44,9 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
       }
     };
     authorization();
-    return () => {mounted = false;}
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -60,16 +62,20 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
       }
     };
     getChatMessages();
-    return () => {mounted = false;}
+    return () => {
+      mounted = false;
+    };
   }, [props.activeChannelID]);
 
   useEffect(() => {
+    let mounted = true;
+
     websocket.current = new WebSocket(URL);
 
     websocket.current.onopen = () => {};
 
     websocket.current.onclose = () => {
-      setNewMessages([]);
+      if (mounted) setNewMessages([]);
     };
 
     websocket.current.addEventListener("message", function (event: any) {
@@ -81,15 +87,17 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
           messageContent: object.data.messageContent,
           messageTimestamp: object.data.messageTimestamp,
         };
-        if (object.data.channelID === props.activeChannelID)
+        if (object.data.channelID === props.activeChannelID && mounted)
           setNewMessages((prevState: SocketMessageType[]) => [
             ...prevState,
             new_message,
           ]);
       }
     });
+
     return () => {
       websocket.current.close();
+      mounted = false;
     };
   }, [props.activeChannelID, URL]);
 

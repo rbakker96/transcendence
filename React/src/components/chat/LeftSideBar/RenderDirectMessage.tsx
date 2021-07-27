@@ -32,6 +32,7 @@ function RenderDirectMessage(props: RenderDirectMessageType) {
   }, []);
 
   useEffect(() => {
+    let mounted = true;
     const getChannels = async () => {
       try {
         const { data } = await API.Channels.getWithUser(props.ActiveUserId);
@@ -39,11 +40,15 @@ function RenderDirectMessage(props: RenderDirectMessageType) {
         {
           let result: Channel[];
           result = data.filter((channel : any) => channel.IsDirect);
-          setDirectChannels(result);
+          if (mounted) setDirectChannels(result);
         }
-      }catch (err) {setUnauthorized(true);}
+      } catch(err){
+        if(mounted)
+          setUnauthorized(true);
+      }
     };
     getChannels();
+    return () => {mounted = false;}
   }, [props.ActiveUserId]);
 
   if (unauthorized)
