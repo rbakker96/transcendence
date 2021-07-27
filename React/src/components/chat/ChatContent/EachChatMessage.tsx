@@ -72,7 +72,9 @@ function EachChatMessage(props: EachChatMessageProps) {
   }, [props.message.senderID, props.message.channelID]);
 
   if (IsMuted) return <div />;
-  if (unauthorized) return <Redirect to={"/"} />;
+    return <Redirect to={'/'}/>;
+
+  if (IsMuted) return <div />;
   else
     return (
       <div onClick={togglePopup}>
