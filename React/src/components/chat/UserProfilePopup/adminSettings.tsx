@@ -12,6 +12,7 @@ function AdminSettings(props: any) {
   const [channelUsers, setChannelUser] = useState<User[]>([]);
   const [redirect, setRedirect] = useState(false);
   const [unauthorized, setUnauthorized] = useState(false);
+  const [channelID, setChannelID] = useState(0);
 
   useEffect(() => {
     let mounted = true;
@@ -26,8 +27,19 @@ function AdminSettings(props: any) {
 
   useEffect(() => {
     let mounted = true;
+
+    const setChannelid = () => {
+      try { if (mounted) setChannelID(props.location.state.activeChannelId); }
+      catch(err){if(mounted) setUnauthorized(true);}
+    }
+    setChannelid();
+    return () => {mounted = false;}
+  }, [props]);
+
+  useEffect(() => {
+    let mounted = true;
     const getChannelUsers = async () => {
-      if (props.location.state.activeChannelId) {
+      if (props) {
         try {
           const { data } = await API.Channels.getChannelUsers(
             props.location.state.activeChannelId
@@ -38,7 +50,7 @@ function AdminSettings(props: any) {
     };
     getChannelUsers();
     return () => {mounted = false;}
-  }, [props.location.state.activeChannelId]);
+  }, [props]);
 
   function kickUser(userId: number) {
     try {
@@ -163,7 +175,7 @@ function AdminSettings(props: any) {
       <Divider>
         <h1 className="h3 mb-3 fw-normal register_title">Change Password</h1>
         <RenderChangePassword
-          activeChannelID={props.location.state.activeChannelId}
+          activeChannelID={channelID}
         />
       </Divider>
       <Divider>

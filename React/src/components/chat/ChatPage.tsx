@@ -29,16 +29,20 @@ function ChatPage() {
   useEffect(() => {
     let mounted = true;
     const setActiveID = async () => {
-      const { data } = await API.User.getActiveUserID();
-      if (mounted) setActiveUserID(data.activeUserID);
+      try {
+        const { data } = await API.User.getActiveUserID();
+        if (mounted) setActiveUserID(data.activeUserID);
+      } catch (err) { if (mounted) setUnauthorized(true); }
     };
 
     const getUser = async () => {
-      const { data } = await API.User.findName(ActiveUserID);
-      if (mounted) {
-        setActiveUserName(data.username);
-        setAvatar(data.avatar);
-      }
+      try {
+        const { data } = await API.User.findName(ActiveUserID);
+        if (mounted) {
+          setActiveUserName(data.username);
+          setAvatar(data.avatar);
+        }
+      } catch (err) { if (mounted) setUnauthorized(true); }
     };
     setActiveID();
     getUser();

@@ -182,8 +182,6 @@ export class ChannelService {
   }
 
   updatePassword = async (newPassword: string, channelId : number) => {
-    console.log("new password =", newPassword);
-    console.log("channelID = ", channelId);
     const channel : Channel = await this.channelRepository
         .createQueryBuilder('channel')
         .where('channel.Id = :channelId',
