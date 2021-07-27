@@ -1,34 +1,31 @@
 import { Channel } from "../../../models/Channel.model";
-import React, { SyntheticEvent, useEffect, useState } from "react";
+import { SyntheticEvent, useEffect, useState } from "react";
 import API from "../../../API/API";
-import {Redirect} from "react-router-dom";
 
 type EachDirectChannelType = {
   setActiveChannelId: Function;
   ActiveUserName: string;
   directChannel: Channel;
-  private: boolean;
 };
 
 function EachDirectChannel(props: EachDirectChannelType) {
   const [DirectChannelName, setDirectChannelName] = useState("");
-  const [Users , setUsers] = useState<any>([])
-  const [unauthorized, setUnauthorized] = useState(false);
+  const [Users, setUsers] = useState<any>([]);
 
   useEffect(() => {
-    const getUsers = async ()  => {
-      try {
-        const {data} = await API.Channels.getChannelUsers(props.directChannel.Id)
-        setUsers(data);
-      }catch (err) {setUnauthorized(true);}
-    }
+    const getUsers = async () => {
+      const { data } = await API.Channels.getChannelUsers(
+        props.directChannel.Id
+      );
+      setUsers(data);
+    };
     getUsers();
-  }, [props.directChannel.Id])
+  }, [props.directChannel.Id]);
 
   useEffect(() => {
     const setChannelName = () => {
       if (Users.length === 2) {
-        Users.forEach((channelUser: any ) => {
+        Users.forEach((channelUser: any) => {
           if (channelUser.user.username !== props.ActiveUserName) {
             setDirectChannelName(channelUser.user.username);
           }
@@ -36,19 +33,21 @@ function EachDirectChannel(props: EachDirectChannelType) {
       }
     };
     setChannelName();
-  }, [props.ActiveUserName, props.directChannel.users, props.directChannel.Id, Users]);
+  }, [
+    props.ActiveUserName,
+    props.directChannel.users,
+    props.directChannel.Id,
+    Users,
+  ]);
 
   function onclick(e: SyntheticEvent) {
     e.preventDefault();
     props.setActiveChannelId(props.directChannel.Id);
   }
 
-  if (unauthorized)
-    return <Redirect to={'/'}/>;
-
   return (
-    <ul className="chatChannelsLock" key={props.directChannel.Id} onClick={onclick}>
-      <p className="channelName">{DirectChannelName}</p>
+    <ul key={props.directChannel.Id} onClick={onclick}>
+      {DirectChannelName}
     </ul>
   );
 }
