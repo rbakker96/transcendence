@@ -56,6 +56,7 @@ function UserProfilePopup(props: UserProfilePopupType) {
   function onclick(e: SyntheticEvent) {
     e.preventDefault();
     API.Channels.changeState(3, props.activeChannelId, props.MessageUserID);
+    window.location.reload();
   }
 
   async function handleLikeFriend(e: SyntheticEvent) {

@@ -2,9 +2,9 @@ import { Comment } from "antd";
 import React, { useEffect, useState } from "react";
 import API from "../../../API/API";
 import UserProfilePopup from "../UserProfilePopup/UserProfilePopup";
-import "./ChatContent.css"
+import "./ChatContent.css";
 import axios from "axios";
-import {Redirect} from "react-router-dom";
+import { Redirect } from "react-router-dom";
 
 type ChatMessageType = {
   channelID: number;
@@ -38,14 +38,16 @@ function EachChatMessage(props: EachChatMessageProps) {
     let mounted = true;
 
     const authorization = async () => {
-      try { await axios.get('userData'); }
-      catch(err){
-        if(mounted)
-          setUnauthorized(true);
+      try {
+        await axios.get("userData");
+      } catch (err) {
+        if (mounted) setUnauthorized(true);
       }
-    }
+    };
     authorization();
-    return () => {mounted = false;}
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -57,21 +59,20 @@ function EachChatMessage(props: EachChatMessageProps) {
     getUser();
   }, [props, setUserName, setAvatar]);
 
-  useEffect( () => {
+  useEffect(() => {
     const getMuted = async () => {
-      const {data} = await API.Channels.getState(props.message.senderID, props.message.channelID)
+      const { data } = await API.Channels.getState(
+        props.message.senderID,
+        props.message.channelID
+      );
       console.log("data is", data);
-      if (data === 3)
-        setIsMuted( true);
-    }
+      if (data === 3) setIsMuted(true);
+    };
     getMuted();
-  }, [props.message.senderID, props.message.channelID])
+  }, [props.message.senderID, props.message.channelID]);
 
   if (IsMuted) return <div />;
-  if (unauthorized)
-    return <Redirect to={'/'}/>;
-
-  if (props.IDIsMuted.includes(props.message.senderID)) return <div />;
+  if (unauthorized) return <Redirect to={"/"} />;
   else
     return (
       <div onClick={togglePopup}>
