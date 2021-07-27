@@ -2,9 +2,9 @@ import { Comment } from "antd";
 import React, { useEffect, useState } from "react";
 import API from "../../../API/API";
 import UserProfilePopup from "../UserProfilePopup/UserProfilePopup";
-import "./ChatContent.css"
+import "./ChatContent.css";
 import axios from "axios";
-import {Redirect} from "react-router-dom";
+import { Redirect } from "react-router-dom";
 
 type ChatMessageType = {
   channelID: number;
@@ -15,8 +15,6 @@ type ChatMessageType = {
 
 type EachChatMessageProps = {
   message: ChatMessageType;
-  IDIsMuted: number[];
-  setIDIsMuted: Function;
   oneShownPopup: string;
   setOneShownPopup: Function;
   activeUserID: number;
@@ -28,6 +26,7 @@ function EachChatMessage(props: EachChatMessageProps) {
   const [IsOpenPopup, setIsOpenPopup] = useState(false);
   const [UserName, setUserName] = useState("");
   const [Avatar, setAvatar] = useState("");
+  const [IsMuted, setIsMuted] = useState(false);
   const [unauthorized, setUnauthorized] = useState(false);
 
   const togglePopup = () => {
@@ -37,31 +36,47 @@ function EachChatMessage(props: EachChatMessageProps) {
 
   useEffect(() => {
     let mounted = true;
-
     const authorization = async () => {
-      try { await axios.get('userData'); }
-      catch(err){
-        if(mounted)
-          setUnauthorized(true);
+      try {
+        await axios.get("userData");
+      } catch (err) {
+        if (mounted) setUnauthorized(true);
       }
-    }
+    };
     authorization();
-    return () => {mounted = false;}
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   useEffect(() => {
     const getUser = async () => {
-      const { data } = await API.User.findName(props.message.senderID);
-      setUserName(data.username);
-      setAvatar(data.avatar);
+      try {
+        const {data} = await API.User.findName(props.message.senderID);
+        setUserName(data.username);
+        setAvatar(data.avatar);
+      }catch (err) {setUnauthorized(true);}
     };
     getUser();
-  }, [props, setUserName, setAvatar]);
+  }, [props.message.senderID]);
+
+  useEffect(() => {
+    const getMuted = async () => {
+      try {
+        const {data} = await API.Channels.getState(
+            props.message.senderID,
+            props.message.channelID
+        );
+        if (data === 3) setIsMuted(true);
+      }  catch (err) {setUnauthorized(true);}
+    };
+    getMuted();
+  }, [props.message.senderID, props.message.channelID]);
 
   if (unauthorized)
     return <Redirect to={'/'}/>;
 
-  if (props.IDIsMuted.includes(props.message.senderID)) return <div />;
+  if (IsMuted) return <div />;
   else
     return (
       <div onClick={togglePopup}>
@@ -78,10 +93,8 @@ function EachChatMessage(props: EachChatMessageProps) {
               MessageUserID={props.message.senderID}
               UserName={UserName}
               Avatar={Avatar}
-              ProfileLink={"http://placeholder"}
               handleClose={togglePopup}
-              setIDIsMuted={props.setIDIsMuted}
-              activeChannel={props.message.channelID}
+              activeChannelId={props.message.channelID}
             />
           )}
       </div>

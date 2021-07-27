@@ -7,8 +7,6 @@ import {Redirect} from "react-router-dom";
 
 type ChatChannelMessagesProps = {
   activeChannelID: number;
-  IDIsMuted: number[];
-  setIDIsMuted: Function;
   activeUserID: number;
 };
 
@@ -52,8 +50,10 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
 
   useEffect(() => {
     const getChatMessages = async () => {
-      const { data } = await API.ChatMessage.getChannelMessages(props.activeChannelID);
-      setHistoricChatMessages(data);
+      try {
+        const { data } = await API.ChatMessage.getChannelMessages(props.activeChannelID);
+        setHistoricChatMessages(data);
+      } catch (err) {setUnauthorized(true);}
     };
     getChatMessages();
   }, [props.activeChannelID]);
@@ -61,12 +61,9 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
   useEffect(() => {
     websocket.current = new WebSocket(URL);
 
-    websocket.current.onopen = () => {
-      // console.log(`ws opened & active channel: ${props.activeChannelID}`);
-    };
+    websocket.current.onopen = () => { };
 
     websocket.current.onclose = () => {
-      // console.log(`ws closed & active channel: ${props.activeChannelID}`);
       setNewMessages([]);
     };
 
@@ -97,21 +94,15 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
         <EachChatMessage
           key={message.messageID}
           message={message}
-          IDIsMuted={props.IDIsMuted}
-          setIDIsMuted={props.setIDIsMuted}
           oneShownPopup={oneShownPopup}
           setOneShownPopup={setOneShownPopup}
           activeUserID={props.activeUserID}
-
-
         />
       ))}
       {newMessages.map((message: SocketMessageType) => (
         <EachChatMessage
           key={message.messageTimestamp}
           message={message}
-          IDIsMuted={props.IDIsMuted}
-          setIDIsMuted={props.setIDIsMuted}
           oneShownPopup={oneShownPopup}
           setOneShownPopup={setOneShownPopup}
           activeUserID={props.activeUserID}

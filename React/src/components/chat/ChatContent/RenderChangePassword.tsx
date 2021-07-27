@@ -33,35 +33,43 @@ function RenderChangePassword(props : RenderChangePasswordProps){
 
     useEffect(() => {
         const checkIsPrivate = async () => {
-            const {data} = await API.Channels.getOne(props.activeChannelID)
-            setIsPrivate(data.IsPrivate);
+            try {
+                const {data} = await API.Channels.getOne(props.activeChannelID)
+                setIsPrivate(data.IsPrivate);
+            }catch (err) {setUnauthorized(true);}
         }
         checkIsPrivate()
     },[props.activeChannelID])
 
     async function retrievePassword()
     {
-        const {data} = await API.Channels.login(givenPassword, props.activeChannelID)
-        return data;
+        try {
+            const {data} = await API.Channels.login(givenPassword, props.activeChannelID)
+            return data;
+        }catch (err) {setUnauthorized(true);}
     }
 
     async function verifyPassword()
     {
-        const password = await retrievePassword()
-        if (password === true) {
-            setRenderPasswordBox(true)
-            setInvalid(false);
-        }
-        else
-        {
-            setInvalid(true);
-        }
+        try {
+            const password = await retrievePassword()
+            if (password === true) {
+                setRenderPasswordBox(true)
+                setInvalid(false);
+            }
+            else
+            {
+                setInvalid(true);
+            }
+        } catch (err) {setUnauthorized(true);}
     }
 
     let submit = async (e: SyntheticEvent) => {
         e.preventDefault();
-        await API.Channels.changePassword(newPassword, props.activeChannelID);
-        setRedirect(true);
+        try {
+            await API.Channels.changePassword(newPassword, props.activeChannelID);
+            setRedirect(true);
+        }catch (err) {setUnauthorized(true);}
     }
 
     function renderNewPasswordBox() {

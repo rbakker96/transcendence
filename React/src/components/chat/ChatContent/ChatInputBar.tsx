@@ -50,8 +50,9 @@ function ChatInputBar(props: TextBarType) {
     };
 
     // send new message to database
-    await API.ChatMessage.createChatMessage(new_message);
-
+    try {
+      await API.ChatMessage.createChatMessage(new_message);
+    } catch (err) {setUnauthorized(true);}
     // send new message to socket
     props.websocket.send(
       JSON.stringify({ event: "newMessage", data: new_message })

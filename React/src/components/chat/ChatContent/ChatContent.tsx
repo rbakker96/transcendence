@@ -10,8 +10,6 @@ import {Redirect} from "react-router-dom";
 type ChatContentProps = {
   activeChannelID: number;
   setActiveChannelID: Function;
-  IDIsMuted: number[];
-  setIDIsMuted: Function;
   activeUserID: number;
 };
 
@@ -23,7 +21,6 @@ function ChatContent(props: ChatContentProps) {
 
   useEffect(() => {
     let mounted = true;
-
     const authorization = async () => {
       try { await axios.get('userData'); }
       catch(err){
@@ -37,8 +34,10 @@ function ChatContent(props: ChatContentProps) {
 
   useEffect(() => {
     const getChannelType = async () => {
-      const { data } = await API.Channels.findName(active_channel_ID);
-      setIsPrivate(data.IsPrivate);
+      try {
+        const { data } = await API.Channels.findName(active_channel_ID);
+        setIsPrivate(data.IsPrivate);
+      }catch (err) {setUnauthorized(true);}
     };
     getChannelType();
   });
@@ -63,9 +62,8 @@ function ChatContent(props: ChatContentProps) {
             ? ( <ChatChannelMessages
               activeChannelID={props.activeChannelID}
               activeUserID={props.activeUserID}
-              IDIsMuted={props.IDIsMuted}
-              setIDIsMuted={props.setIDIsMuted} />)
-            : (<div />)}
+               />)
+            : null}
           </>)
       }
     </div>

@@ -1,7 +1,7 @@
 import { Channel } from "../../../models/Channel.model";
 import React, { SyntheticEvent, useEffect, useState } from "react";
 import API from "../../../API/API";
-import {FaLock} from "react-icons/fa";
+import {Redirect} from "react-router-dom";
 
 type EachDirectChannelType = {
   setActiveChannelId: Function;
@@ -13,11 +13,14 @@ type EachDirectChannelType = {
 function EachDirectChannel(props: EachDirectChannelType) {
   const [DirectChannelName, setDirectChannelName] = useState("");
   const [Users , setUsers] = useState<any>([])
+  const [unauthorized, setUnauthorized] = useState(false);
 
   useEffect(() => {
     const getUsers = async ()  => {
-      const {data} = await API.Channels.getChannelUsers(props.directChannel.Id)
-      setUsers(data);
+      try {
+        const {data} = await API.Channels.getChannelUsers(props.directChannel.Id)
+        setUsers(data);
+      }catch (err) {setUnauthorized(true);}
     }
     getUsers();
   }, [props.directChannel.Id])
@@ -40,20 +43,12 @@ function EachDirectChannel(props: EachDirectChannelType) {
     props.setActiveChannelId(props.directChannel.Id);
   }
 
-  function renderLocks(item : any) {
-    if (item === true){
-      return (
-          <FaLock />
-      )
-    }
-    else
-      return ;
-  }
+  if (unauthorized)
+    return <Redirect to={'/'}/>;
 
   return (
     <ul className="chatChannelsLock" key={props.directChannel.Id} onClick={onclick}>
       <p className="channelName">{DirectChannelName}</p>
-      <p className="lockImg">{renderLocks(props.private)}</p>
     </ul>
   );
 }

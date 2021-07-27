@@ -3,113 +3,105 @@ import API from "../../../API/API";
 import { Divider } from "antd";
 import { Redirect } from "react-router-dom";
 import axios from "axios";
-import "./ChatContent.css"
+import "./ChatContent.css";
+import LeaveChannelButton from "./LeaveChannelButton";
 
 type ChatChannelHeaderProps = {
-    activeChannelID: number;
-    activeUserID : number;
-    setActiveChannelID: Function;
+  activeChannelID: number;
+  activeUserID: number;
+  setActiveChannelID: Function;
 };
 
 function ChatChannelHeader(props: ChatChannelHeaderProps) {
   const [ChannelName, setChannelName] = useState("");
-  const [admins, setAdmins] = useState<boolean>();
-  const [toAdmins, setToAdmins] = useState<boolean>(false);
+  const [IsAdmin, setIsAdmin] = useState<boolean>(false);
+  const [redirectToAdmins, setRedirectToAdmins] = useState<boolean>(false);
   const [unauthorized, setUnauthorized] = useState(false);
 
   useEffect(() => {
-      let mounted = true;
-
-      const authorization = async () => {
-          try { await axios.get('userData'); }
-          catch(err){
-              if(mounted)
-                  setUnauthorized(true);
-          }
+    let mounted = true;
+    const authorization = async () => {
+      try {
+        await axios.get("userData");
+      } catch (err) {
+        if (mounted) setUnauthorized(true);
       }
-      authorization();
-      return () => {mounted = false;}
+    };
+    authorization();
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   useEffect(() => {
     const getChannelName = async () => {
       if (props.activeChannelID) {
-        const { data } = await API.Channels.findName(props.activeChannelID);
-        setChannelName(data.ChannelName);
-      } else setChannelName("Select a channel on the left to view messages");
+          try {
+              const { data } = await API.Channels.findName(props.activeChannelID);
+              setChannelName(data.ChannelName);
+          } catch (err) {
+              {setUnauthorized(true);}
+          }
+
+      }
+      else setChannelName("Select a channel on the left to view messages");
     };
     getChannelName();
-  }, [props, setChannelName]);
+  }, [props.activeChannelID]);
 
     useEffect(() => {
         const getAdmins = async () => {
-            const {data} = await API.Channels.getIsAdmin(props.activeUserID, props.activeChannelID);
-            setAdmins(data);
+            try {
+                const { data } = await API.Channels.getIsAdmin(
+                    props.activeUserID,
+                    props.activeChannelID
+                );
+                setIsAdmin(data);
+            }
+            catch (err) {
+                {setUnauthorized(true);}
+            }
         }
         getAdmins()
-    }, [props, setAdmins])
+    }, [props.activeUserID, props.activeChannelID])
 
-  function leaveChannel()
-  {
-    const deleteUser = async () => {
-      await API.Channels.leaveChannel(props.activeUserID, props.activeChannelID)
-    }
-    deleteUser();
-    props.setActiveChannelID(0);
+  if (unauthorized) return <Redirect to={"/"} />;
+
+  if (redirectToAdmins) {
+    return (
+      <Redirect
+        to={{
+          pathname: "/adminSetting",
+          state: { activeChannelId: props.activeChannelID },
+        }}
+      />
+    );
   }
 
-  function goToAdminSettings() {
-      setToAdmins(true);
-  }
-
-  if (unauthorized)
-      return <Redirect to={'/'}/>;
-
-  if (toAdmins) {
-      console.log("active channel in the redirect = ", props.activeChannelID);
-      return (
-          <Redirect to={{
-              pathname: "/adminSetting",
-              state: {activeChannelId: props.activeChannelID}
-          }}
+  return (
+    <div>
+      <Divider orientation={"center"} style={{ color: "#5B8FF9" }}>
+        {ChannelName}
+      </Divider>
+      <div className="buttonsBar">
+        {props.activeChannelID ? (
+          <LeaveChannelButton
+            activeChannelID={props.activeChannelID}
+            activeUserID={props.activeUserID}
           />
-      )
-  }
-
-  if (admins === true) {
-    return(
-        <div>
-          <Divider orientation={"center"} style={{ color: "#5B8FF9" }}>
-            {ChannelName}
-          </Divider>
-        <div className="buttonsBar">
-            <button type="button" className="btn btn-danger leaveChannel" onClick={leaveChannel}>Leave Channel</button>
-            <button type="button" className="btn btn-primary adminPanel" onClick={goToAdminSettings} >Admin panel</button>
-        </div>
-        </div>
-    )
-  }
-  else if(ChannelName !== "Select a channel on the left to view messages") {
-    return (
-        <div>
-          <Divider orientation={"center"} style={{ color: "#5B8FF9" }}>
-            {ChannelName}
-          </Divider>
-          <div className="buttonsBar">
-              <button type="button" className="btn btn-danger leaveChannel" onClick={leaveChannel}>Leave Channel</button>
-          </div>
-        </div>
-    );
-  }
-  else {
-    return (
-        <div>
-          <Divider orientation={"center"} style={{ color: "#5B8FF9" }}>
-            {ChannelName}
-          </Divider>
-        </div>
-    );
-  }
+        ) : null}
+        {IsAdmin ? (
+          <button
+            type="button"
+            className="btn btn-primary adminPanel"
+            onClick={() => setRedirectToAdmins(true)}
+          >
+            Admin panel
+          </button>
+        ) : null}
+      </div>
+    </div>
+  );
 }
 
 export default ChatChannelHeader;

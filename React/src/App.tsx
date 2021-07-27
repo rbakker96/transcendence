@@ -5,7 +5,7 @@ import Login from "./components/users/Login";
 import Profile from "./components/users/Profile";
 import LoginTwoFactor from "./components/users/LoginTwoFactor";
 import UpdateUser from "./components/users/Update";
-import ChatPage from "./pages/ChatPage";
+import ChatPage from "./components/chat/ChatPage";
 import GamePage from "./components/game/GamePage";
 import SpecialGame from "./components/game/SpecialGamePage";
 import enableTwoFactor from "./components/users/EnableTwoFactor";
