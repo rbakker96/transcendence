@@ -14,7 +14,6 @@ function RenderChatChannels (props: RenderChatChannelsType) {
 
   function setActiveChannelId(activeChannelId: number) {
     props.setActiveId(activeChannelId);
-    console.log("Clicked channelID: " + activeChannelId);
   }
 
   useEffect(() => {

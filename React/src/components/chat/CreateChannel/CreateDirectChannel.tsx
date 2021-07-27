@@ -13,7 +13,7 @@ function CreateDirectMessage() {
   const [channelAdmin, setChannelAdmin] = useState<Array<User>>([]);
   const [redirect, setRedirect] = useState(false);
   const [valid, setValid] = useState(false);
-  const [activeUserID, setActiveUserID] = useState<User>();
+  const [activeUserID, setActiveUserID] = useState(0);
   const [unauthorized, setUnauthorized] = useState(false);
 
   useEffect(() => {
@@ -31,11 +31,14 @@ function CreateDirectMessage() {
   }, []);
 
   useEffect(() => {
+    let mounted = true;
     const getUser = async () => {
       const { data } = await axios.get("users");
-      setUsers(data);
+      if (mounted)
+        setUsers(data);
     };
     getUser();
+    return () => {mounted = false;}
   }, []);
 
   useEffect(() => {
@@ -71,12 +74,6 @@ function CreateDirectMessage() {
       setValid(false);
   }
 
-  function OnRemove(selectedList: User[]) {
-    if (selectedList.length === 2) setValid(true);
-    else if (selectedList.length === 1 || selectedList.length > 2)
-      setValid(false);
-  }
-
   if (unauthorized)
     return <Redirect to={'/'}/>;
 
@@ -100,7 +97,6 @@ function CreateDirectMessage() {
                 <Multiselect
                   selectedValues={channelAdmin}
                   displayValue="username"
-                  placeholder=""
                 />
                 <Multiselect
                   options={users}
@@ -108,7 +104,7 @@ function CreateDirectMessage() {
                   displayValue="username"
                   placeholder="Add one user"
                   onSelect={OnSelectUser}
-                  onRemove={OnRemove}
+                  onRemove={OnSelectUser}
                 />
               </>
             )}

@@ -21,7 +21,6 @@ function ChatContent(props: ChatContentProps) {
 
   useEffect(() => {
     let mounted = true;
-
     const authorization = async () => {
       try { await axios.get('userData'); }
       catch(err){
@@ -62,7 +61,7 @@ function ChatContent(props: ChatContentProps) {
               activeChannelID={props.activeChannelID}
               activeUserID={props.activeUserID}
                />)
-            : (<div />)}
+            : null}
           </>)
       }
     </div>

@@ -32,7 +32,6 @@ export class ChannelController {
   @UseGuards(verifyUser)
   @Get('/one')
   async getOne(@Query() query): Promise<Channel> {
-    console.log('channelId', query.channelID)
     return this.channelService.getOne(query.channelID);
   }
 
@@ -85,7 +84,6 @@ export class ChannelController {
           this.createChannelUser(generatedID.Id, user.id);
       })
     }
-
     return {id: generatedID.Id}
   }
 

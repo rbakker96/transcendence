@@ -18,7 +18,7 @@ function RenderCreateChannel() {
     const [users, setUsers] = useState<Array<User>>([]);
     const [channelUsers, setChannelUsers] = useState<Array<User>>([]);
     const [invalid, setInvalid] = useState(false);
-    const [activeUserID, setActiveUserID] = useState<User>();
+    const [activeUserID, setActiveUserID] = useState(0);
 
     const [unauthorized, setUnauthorized] = useState(false);
 
@@ -48,22 +48,28 @@ function RenderCreateChannel() {
         const setActiveID = async () => {
             const {data} = await API.User.getActiveUserID();
             setActiveUserID(data.activeUserID);
+            users.forEach((user: User) => {
+                if (user.id === data.activeUserID) setChannelUsers([user]);
+            });
         };
         setActiveID();
-    },[]);
+    },[users]);
 
 
     let submit = async (e: SyntheticEvent) => {
         e.preventDefault();
-        await axios.post('channels', {
-            Name: channelName,
-            IsPrivate: isPrivate,
-            IsDirect: false,
-            Users: channelUsers,
-            ownerId : activeUserID,
-            Password: Password,
-        });
-        setRedirect(true);
+        if (!invalid)
+        {
+            await axios.post('channels', {
+                Name: channelName,
+                IsPrivate: isPrivate,
+                IsDirect: false,
+                Users: channelUsers,
+                ownerId : activeUserID,
+                Password: Password,
+            });
+            setRedirect(true);
+        }
     }
 
     if (unauthorized)
@@ -81,21 +87,21 @@ function RenderCreateChannel() {
 
 
     function renderChooseUsers() {
-        function OnSelectUser(selectedList: any) {
+        function OnSelectUser(selectedList: User[]) {
             setChannelUsers(selectedList);
-            if (selectedList.length < 2)
+            if (selectedList.length >= 3) setInvalid(false);
+            else if (selectedList.length < 3)
                 setInvalid(true);
-            else
-                setInvalid(false);
         }
         return (
             <div>
                 <Multiselect
                     options={users}
-                    displayValue="username" // Property name to display in the dropdown options
+                    selectedValues={channelUsers}
+                    displayValue="username"
                     placeholder="Choose Users"
                     onSelect={OnSelectUser}
-
+                    onRemove={OnSelectUser}
                 />
             </div>
         )
@@ -105,8 +111,7 @@ function RenderCreateChannel() {
     function renderIsPrivate() {
         return (
             <div className="form-check">
-                <input className="form-check-input" type="checkbox" value="" id="defaultCheck1"
-                       onChange={e => setIsPrivate(true)}
+                <input className="form-check-input" type="checkbox" value="" id="defaultCheck1" onClick={() => setIsPrivate(!isPrivate)}
                 />
                 <label className="form-check-label" htmlFor="defaultCheck1">
                     Private
@@ -116,7 +121,7 @@ function RenderCreateChannel() {
     }
 
     function renderPassword() {
-        if (isPrivate === true) {
+        if (isPrivate) {
             return (
                 <div className="form-floating">
                     <input required className="form-control" id="floatingInput" placeholder="name@example.com"
@@ -139,7 +144,7 @@ function RenderCreateChannel() {
             </div>
         )
     }
-    if (redirect && invalid !== true)
+    if (redirect && !invalid)
         return <Redirect to={'/chat'}/>;
     else
     {
@@ -148,7 +153,7 @@ function RenderCreateChannel() {
                 <form onSubmit={submit}>
                     <img className="mb-4" src={logo} alt="42_logo" width="72" height="57"/>
                     { invalid?
-                        <p className="participantSubTitle">Choose more than 1 participant</p>
+                        <p className="participantSubTitle">Choose 3 or more participants</p>
                         :
                         <p/>  }
                     <h1 className="h3 mb-3 fw-normal">Create new Channel</h1>
