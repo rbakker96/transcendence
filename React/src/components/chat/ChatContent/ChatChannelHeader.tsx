@@ -29,38 +29,40 @@ function ChatChannelHeader(props: ChatChannelHeaderProps) {
       }
     };
     authorization();
-    return () => {
-      mounted = false;
-    };
+    return () => {mounted = false;}
   }, []);
 
   useEffect(() => {
+    let mounted = true;
     const getChannelName = async () => {
       if (props.activeChannelID) {
         try {
           const { data } = await API.Channels.findName(props.activeChannelID);
-          setChannelName(data.ChannelName);
+          if (mounted) setChannelName(data.ChannelName);
         } catch (err) {
-          setUnauthorized(true);
+          if (mounted) setUnauthorized(true);
         }
       } else setChannelName("Select a channel on the left to view messages");
     };
     getChannelName();
+    return () => {mounted = false;}
   }, [props.activeChannelID]);
 
   useEffect(() => {
+    let mounted = true;
     const getAdmins = async () => {
       try {
         const { data } = await API.Channels.getIsAdmin(
           props.activeUserID,
           props.activeChannelID
         );
-        setIsAdmin(data);
+        if (mounted) setIsAdmin(data);
       } catch (err) {
-        setUnauthorized(true);
+        if (mounted) setUnauthorized(true);
       }
     };
     getAdmins();
+    return () => {mounted = false;}
   }, [props.activeUserID, props.activeChannelID]);
 
   if (unauthorized) return <Redirect to={"/"} />;
@@ -88,7 +90,7 @@ function ChatChannelHeader(props: ChatChannelHeaderProps) {
             activeUserID={props.activeUserID}
           />
         ) : null}
-        {(IsAdmin && !props.isDirect) ? (
+        {IsAdmin && !props.isDirect ? (
           <button
             type="button"
             className="btn btn-primary adminPanel"
