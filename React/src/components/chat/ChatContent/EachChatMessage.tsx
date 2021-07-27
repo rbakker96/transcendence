@@ -71,7 +71,7 @@ function EachChatMessage(props: EachChatMessageProps) {
     getMuted();
   }, [props.message.senderID, props.message.channelID]);
 
-  if (IsMuted) return <div />;
+  if (unauthorized)
     return <Redirect to={'/'}/>;
 
   if (IsMuted) return <div />;
