@@ -36,34 +36,31 @@ function ChatChannelHeader(props: ChatChannelHeaderProps) {
   useEffect(() => {
     const getChannelName = async () => {
       if (props.activeChannelID) {
-          try {
-              const { data } = await API.Channels.findName(props.activeChannelID);
-              setChannelName(data.ChannelName);
-          } catch (err) {
-              {setUnauthorized(true);}
-          }
-
-      }
-      else setChannelName("Select a channel on the left to view messages");
+        try {
+          const { data } = await API.Channels.findName(props.activeChannelID);
+          setChannelName(data.ChannelName);
+        } catch (err) {
+          setUnauthorized(true);
+        }
+      } else setChannelName("Select a channel on the left to view messages");
     };
     getChannelName();
   }, [props.activeChannelID]);
 
-    useEffect(() => {
-        const getAdmins = async () => {
-            try {
-                const { data } = await API.Channels.getIsAdmin(
-                    props.activeUserID,
-                    props.activeChannelID
-                );
-                setIsAdmin(data);
-            }
-            catch (err) {
-                {setUnauthorized(true);}
-            }
-        }
-        getAdmins()
-    }, [props.activeUserID, props.activeChannelID])
+  useEffect(() => {
+    const getAdmins = async () => {
+      try {
+        const { data } = await API.Channels.getIsAdmin(
+          props.activeUserID,
+          props.activeChannelID
+        );
+        setIsAdmin(data);
+      } catch (err) {
+        setUnauthorized(true);
+      }
+    };
+    getAdmins();
+  }, [props.activeUserID, props.activeChannelID]);
 
   if (unauthorized) return <Redirect to={"/"} />;
 
