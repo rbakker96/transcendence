@@ -13,30 +13,31 @@ function GamePage(props : any)
 
 		const authorization = async () => {
 			try { await axios.get('userData'); }
-			catch(err){
-				if(mounted)
-					setUnauthorized(true);
-			}
+			catch(err){if(mounted) setUnauthorized(true);}
 		}
 		authorization();
 		return () => {mounted = false;}
 	}, []);
 
 	useEffect(() => {
+		let mounted = true;
+
 		const getGameData = async () => {
 			try {
 				const {data} = await axios.get('userData')
-
-				if (data.id === props.location.state.gameData.playerOne)
-					setRole('leftPlayer');
-				else if (data.id === props.location.state.gameData.playerTwo)
-					setRole('rightPlayer');
-				else
-					setRole('viewer');
+				if (mounted) {
+					if (data.id === props.location.state.gameData.playerOne)
+						setRole('leftPlayer');
+					else if (data.id === props.location.state.gameData.playerTwo)
+						setRole('rightPlayer');
+					else
+						setRole('viewer');
+				}
 			}
-			catch (err) {setUnauthorized(true);}
+			catch(err){if(mounted) setUnauthorized(true);}
 		}
 		getGameData();
+		return () => {mounted = false;}
 	}, [props.location.state.gameData.playerOne, props.location.state.gameData.playerTwo]);
 
 	if (unauthorized)

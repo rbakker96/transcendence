@@ -18,10 +18,7 @@ const EnableTwoFactor = () => {
 
         const authorization = async () => {
             try { await axios.get('userData'); }
-            catch(err){
-                if(mounted)
-                    setUnauthorized(true);
-            }
+            catch(err){if(mounted) setUnauthorized(true);}
         }
         authorization();
         return () => {mounted = false;}
@@ -35,10 +32,7 @@ const EnableTwoFactor = () => {
                 const {data} = await axios.get('2fa/generate')
                 if (mounted) setQRCode(data.url);
             }
-            catch(err){
-                if(mounted)
-                    setUnauthorized(true);
-            }
+            catch(err){if(mounted) setUnauthorized(true);}
         }
         getQRcode();
         return () => {mounted = false;}

@@ -27,10 +27,7 @@ const Profile = () => {
 
         const authorization = async () => {
             try { await axios.get('userData'); }
-            catch(err){
-                if(mounted)
-                    setUnauthorized(true);
-            }
+            catch(err){if(mounted) setUnauthorized(true);}
         }
         authorization();
         return () => {mounted = false;}
@@ -43,10 +40,7 @@ const Profile = () => {
                 const {data} = await axios.get('userData')
                 if (mounted) setUser(data);
             }
-            catch(err){
-                if(mounted)
-                    setUnauthorized(true);
-            }
+            catch(err){if(mounted) setUnauthorized(true);}
         }
         getUser();
         return () => {mounted = false;}
@@ -59,10 +53,7 @@ const Profile = () => {
                 const {data} = await axios.get('users/userWithFriends')
                 if (mounted) setUserFriends(data.friends);
             }
-            catch(err){
-                if(mounted)
-                    setUnauthorized(true);
-            }
+            catch(err){if(mounted) setUnauthorized(true);}
         }
         getUserFriends();
         return () => {mounted = false;}
@@ -85,10 +76,7 @@ const Profile = () => {
                 const {data} = await axios.get('/allGameData');
                 if (mounted) setGames(data);
             }
-            catch(err){
-                if(mounted)
-                    setUnauthorized(true);
-            }
+            catch(err){if(mounted) setUnauthorized(true);}
         }
         getGameData();
         return () => {mounted = false;}
