@@ -16,6 +16,7 @@ type ChatContentProps = {
 function ChatContent(props: ChatContentProps) {
   const active_channel_ID: number = props.activeChannelID;
   const [isPrivate, setIsPrivate] = useState(false);
+  const [isDirect, setIsDirect] = useState(false);
   const [PasswordValid, setPasswordValid] = useState(false);
   const [unauthorized, setUnauthorized] = useState(false);
 
@@ -35,12 +36,13 @@ function ChatContent(props: ChatContentProps) {
   useEffect(() => {
     const getChannelType = async () => {
       try {
-        const { data } = await API.Channels.findName(active_channel_ID);
+        const { data } = await API.Channels.findName(props.activeChannelID);
         setIsPrivate(data.IsPrivate);
+        setIsDirect(data.IsDirect);
       }catch (err) {setUnauthorized(true);}
     };
     getChannelType();
-  });
+  }, [props.activeChannelID]);
 
   if (unauthorized)
     return <Redirect to={'/'}/>;
@@ -57,7 +59,9 @@ function ChatContent(props: ChatContentProps) {
           <ChatChannelHeader
               activeChannelID={props.activeChannelID}
               activeUserID={props.activeUserID}
-              setActiveChannelID={props.setActiveChannelID}/>
+              setActiveChannelID={props.setActiveChannelID}
+              isDirect={isDirect}
+          />
           {props.activeChannelID
             ? ( <ChatChannelMessages
               activeChannelID={props.activeChannelID}

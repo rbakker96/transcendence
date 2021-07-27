@@ -10,6 +10,7 @@ type ChatChannelHeaderProps = {
   activeChannelID: number;
   activeUserID: number;
   setActiveChannelID: Function;
+  isDirect: boolean;
 };
 
 function ChatChannelHeader(props: ChatChannelHeaderProps) {
@@ -87,7 +88,7 @@ function ChatChannelHeader(props: ChatChannelHeaderProps) {
             activeUserID={props.activeUserID}
           />
         ) : null}
-        {IsAdmin ? (
+        {(IsAdmin && !props.isDirect) ? (
           <button
             type="button"
             className="btn btn-primary adminPanel"
