@@ -3,7 +3,7 @@ import API from "../../../API/API";
 import { Divider } from "antd";
 import {Redirect} from "react-router-dom";
 import axios from "axios";
-
+import "./ChatContent.css"
 
 type ChatChannelHeaderProps = {
     activeChannelID: number;
@@ -82,10 +82,12 @@ function ChatChannelHeader(props: ChatChannelHeaderProps) {
           <Divider orientation={"center"} style={{ color: "#5B8FF9" }}>
             {ChannelName}
           </Divider>
-        <button type="button" className="btn btn-outline-danger" onClick={leaveChannel}>Leave Channel</button>
-        <button type="button" className="btn btn-primary" onClick={goToAdminSettings} >Go to admin settings</button>
+        <div className="buttonsBar">
+            <button type="button" className="btn btn-danger leaveChannel" onClick={leaveChannel}>Leave Channel</button>
+            <button type="button" className="btn btn-primary adminPanel" onClick={goToAdminSettings} >Admin panel</button>
         </div>
-        )
+        </div>
+    )
   }
   else if(ChannelName !== "Select a channel on the left to view messages") {
     return (
@@ -93,7 +95,9 @@ function ChatChannelHeader(props: ChatChannelHeaderProps) {
           <Divider orientation={"center"} style={{ color: "#5B8FF9" }}>
             {ChannelName}
           </Divider>
-          <button type="button" className="btn btn-outline-danger" onClick={leaveChannel}>Leave Channel</button>
+          <div className="buttonsBar">
+              <button type="button" className="btn btn-danger leaveChannel" onClick={leaveChannel}>Leave Channel</button>
+          </div>
         </div>
     );
   }

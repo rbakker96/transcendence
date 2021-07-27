@@ -8,7 +8,6 @@ import "./adminSettings.css"
 import logo from "./img/42_logo.svg";
 
 function AdminSettings(props: any) {
-
     const [channelUsers, setChannelUser] = useState<User[]>([])
     const [redirect, setRedirect] = useState(false)
     useEffect(() => {
