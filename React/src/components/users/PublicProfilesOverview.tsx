@@ -16,10 +16,7 @@ const PublicProfilesOverview = () => {
 
         const authorization = async () => {
             try { await axios.get('userData'); }
-            catch(err){
-                if(mounted)
-                    setUnauthorized(true);
-            }
+            catch(err){if(mounted) setUnauthorized(true);}
         }
         authorization();
         return () => {mounted = false;}
@@ -27,25 +24,29 @@ const PublicProfilesOverview = () => {
 
 
     useEffect(() => {
+        let mounted = true;
         const getUser = async () => {
             try {
                 const {data} = await axios.get('userData')
-                setUser(data);
+                if (mounted) setUser(data);
             }
-            catch (err) {setUnauthorized(true);}
+            catch(err){if(mounted) setUnauthorized(true);}
         }
         getUser();
+        return () => {mounted = false;}
     }, []);
 
     useEffect(() => {
+        let mounted = true;
         const getUsers = async () => {
             try {
                 const {data} = await axios.get('users');
-                setUsers(data);
+                if (mounted) setUsers(data);
             }
-            catch (err) {setUnauthorized(true);}
+            catch(err){if(mounted) setUnauthorized(true);}
         }
         getUsers();
+        return () => {mounted = false;}
     }, []);
 
 

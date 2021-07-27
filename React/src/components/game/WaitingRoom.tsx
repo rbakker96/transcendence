@@ -18,30 +18,31 @@ const WaitingRoom = (props: any) => {
 
         const authorization = async () => {
             try { await axios.get('userData'); }
-            catch(err){
-                if(mounted)
-                    setUnauthorized(true);
-            }
+            catch(err){if(mounted) setUnauthorized(true);}
         }
         authorization();
         return () => {mounted = false;}
     }, []);
 
     useEffect(() => {
+        let mounted = true;
         const getUser = async () => {
             try {
                 const {data} = await axios.get('userData')
-                setUser(data);
+                if (mounted) setUser(data);
             }
-            catch (err) {setUnauthorized(true);}
+            catch(err){if(mounted) setUnauthorized(true);}
         }
         getUser();
+        return () => {mounted = false;}
     }, []);
 
 
     const websocket: any = useRef<WebSocket>(null);
 
     useEffect(() => {
+        let mounted = true;
+
         if (props.location.state === "classic")// get form url
             websocket.current = new WebSocket("ws://localhost:8000/classicWaitingRoom");
         else if ((props.location.state === "deluxe"))
@@ -50,8 +51,6 @@ const WaitingRoom = (props: any) => {
             websocket.current = new WebSocket("ws://localhost:8000/privateWaitingRoom");
 
         websocket.current.onopen = () => {
-            console.log("ws entered waitingRoom: ");
-
             if (user.id) {
                 if (props.location.state === "classic") {
                     const classicPlayer = JSON.stringify({event: "newPlayer", data: [user.id, "classic"]});
@@ -68,32 +67,29 @@ const WaitingRoom = (props: any) => {
             }
         };
 
-        websocket.current.onclose = () => {
-            console.log("ws left waitingRoom ");
-        };
+        websocket.current.onclose = () => { };
 
         websocket.current.addEventListener("message", function (event: any) {
             const object = JSON.parse(event.data);
 
             if (object.event === "newPlayer") {
-                console.log("React: newPlayer event triggered");
-                websocket.current.close();
-                setRedirectURL(object.data.gameURL);
-                setGameData(object.data);
-                setStartGame(true);
+                // websocket.current.close();
+                if (mounted) setRedirectURL(object.data.gameURL);
+                if (mounted) setGameData(object.data);
+                if (mounted) setStartGame(true);
             }
 
             if (object.event === "duplicateClient") {
-                console.log("React: duplicateClient event triggered");
-                websocket.current.close();
-                setRedirectURL(object.data.URL);
-                setProfilePage(true);
+                // websocket.current.close();
+                if (mounted) setRedirectURL(object.data.URL);
+                if (mounted) setProfilePage(true);
             }
 
         });
 
         return () => {
             websocket.current.close();
+            mounted = false;
         };
     }, [user, props.location.state]);
 

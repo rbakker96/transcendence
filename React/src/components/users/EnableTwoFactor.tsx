@@ -18,24 +18,24 @@ const EnableTwoFactor = () => {
 
         const authorization = async () => {
             try { await axios.get('userData'); }
-            catch(err){
-                if(mounted)
-                    setUnauthorized(true);
-            }
+            catch(err){if(mounted) setUnauthorized(true);}
         }
         authorization();
         return () => {mounted = false;}
     }, []);
 
     useEffect(() => {
+        let mounted = true;
+
         const getQRcode = async () => {
             try {
                 const {data} = await axios.get('2fa/generate')
-                setQRCode(data.url);
+                if (mounted) setQRCode(data.url);
             }
-            catch (err) {setUnauthorized(true);}
+            catch(err){if(mounted) setUnauthorized(true);}
         }
         getQRcode();
+        return () => {mounted = false;}
     }, []);
 
     const enable = async (e: SyntheticEvent) => {
@@ -69,7 +69,7 @@ const EnableTwoFactor = () => {
                 <p className="enableSubTitle">Scan this QR-code with the Google Authenticator app</p>
 
                 <div><img className="qrImg" alt="QRcode" src={QRCode}/></div>
-              
+
                 {   invalid?
                     <p className="faSubTitle">Wrong validation code, please try again</p>
                     :

@@ -39,14 +39,10 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
     const authorization = async () => {
       try {
         await axios.get("userData");
-      } catch (err) {
-        if (mounted) setUnauthorized(true);
-      }
+      } catch (err) { if (mounted) setUnauthorized(true); }
     };
     authorization();
-    return () => {
-      mounted = false;
-    };
+    return () => { mounted = false; };
   }, []);
 
   useEffect(() => {
@@ -57,14 +53,10 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
           props.activeChannelID
         );
         if (mounted) setHistoricChatMessages(data);
-      } catch (err) {
-        if (mounted) setUnauthorized(true);
-      }
+      } catch (err) { if (mounted) setUnauthorized(true); }
     };
     getChatMessages();
-    return () => {
-      mounted = false;
-    };
+    return () => { mounted = false; };
   }, [props.activeChannelID]);
 
   useEffect(() => {

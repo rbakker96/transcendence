@@ -20,29 +20,29 @@ function ChatPage() {
     const authorization = async () => {
       try {
         await axios.get("userData");
-      } catch (err) {
-        if (mounted) setUnauthorized(true);
-      }
+      } catch (err) { if (mounted) setUnauthorized(true); }
     };
     authorization();
-    return () => {
-      mounted = false;
-    };
+    return () => { mounted = false; };
   }, []);
 
   useEffect(() => {
+    let mounted = true;
     const setActiveID = async () => {
       const { data } = await API.User.getActiveUserID();
-      setActiveUserID(data.activeUserID);
+      if (mounted) setActiveUserID(data.activeUserID);
     };
 
     const getUser = async () => {
       const { data } = await API.User.findName(ActiveUserID);
-      setActiveUserName(data.username);
-      setAvatar(data.avatar);
+      if (mounted) {
+        setActiveUserName(data.username);
+        setAvatar(data.avatar);
+      }
     };
     setActiveID();
     getUser();
+    return () => { mounted = false; };
   }, [ActiveUserID]);
 
   if (unauthorized) return <Redirect to={"/"} />;

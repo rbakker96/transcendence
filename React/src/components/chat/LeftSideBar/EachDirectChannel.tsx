@@ -1,6 +1,8 @@
 import { Channel } from "../../../models/Channel.model";
-import { SyntheticEvent, useEffect, useState } from "react";
+import React, { SyntheticEvent, useEffect, useState } from "react";
 import API from "../../../API/API";
+import {Redirect} from "react-router-dom";
+import axios from "axios";
 
 type EachDirectChannelType = {
   setActiveChannelId: Function;
@@ -11,15 +13,29 @@ type EachDirectChannelType = {
 function EachDirectChannel(props: EachDirectChannelType) {
   const [DirectChannelName, setDirectChannelName] = useState("");
   const [Users, setUsers] = useState<any>([]);
+  const [unauthorized, setUnauthorized] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+    const authorization = async () => {
+      try {
+        await axios.get("userData");
+      } catch (err) { if (mounted) setUnauthorized(true); }
+    };
+    authorization();
+    return () => {mounted = false;}
+  }, []);
 
   useEffect(() => {
     let mounted = true;
     const getUsers = async () => {
-      const { data } = await API.Channels.getChannelUsers(
-        props.directChannel.Id
-      );
-      if (mounted)
-        setUsers(data);
+      try {
+        const { data } = await API.Channels.getChannelUsers(
+          props.directChannel.Id
+        );
+        if (mounted) setUsers(data);
+      }
+      catch (err) { if (mounted) setUnauthorized(true); }
     };
     getUsers();
     return () => {mounted = false;}
@@ -49,6 +65,8 @@ function EachDirectChannel(props: EachDirectChannelType) {
     e.preventDefault();
     props.setActiveChannelId(props.directChannel.Id);
   }
+
+  if (unauthorized) return <Redirect to={"/"} />;
 
   return (
     <ul key={props.directChannel.Id} onClick={onclick}>

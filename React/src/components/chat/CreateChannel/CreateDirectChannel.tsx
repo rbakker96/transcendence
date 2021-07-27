@@ -21,9 +21,7 @@ function CreateDirectMessage() {
     const authorization = async () => {
       try {
         await axios.get("userData");
-      } catch (err) {
-        if (mounted) setUnauthorized(true);
-      }
+      } catch (err) { if (mounted) setUnauthorized(true); }
     };
     authorization();
     return () => {mounted = false;}
@@ -35,9 +33,7 @@ function CreateDirectMessage() {
       try {
         const { data } = await axios.get("users");
         if (mounted) setUsers(data);
-      } catch (err) {
-        if (mounted) setUnauthorized(true);
-      }
+      } catch (err) { if (mounted) setUnauthorized(true); }
     };
     getUser();
     return () => {mounted = false;}
@@ -52,7 +48,7 @@ function CreateDirectMessage() {
         users.forEach((user: User) => {
           if (user.id === data.activeUserID && mounted) setChannelAdmin([user]);
         });
-      } catch (err) {setUnauthorized(true);}
+      } catch (err) { if (mounted) setUnauthorized(true); }
     };
     getActiveUserID();
     return () => {mounted = false;}

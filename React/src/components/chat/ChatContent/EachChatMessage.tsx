@@ -39,9 +39,7 @@ function EachChatMessage(props: EachChatMessageProps) {
     const authorization = async () => {
       try {
         await axios.get("userData");
-      } catch (err) {
-        if (mounted) setUnauthorized(true);
-      }
+      } catch (err) { if (mounted) setUnauthorized(true); }
     };
     authorization();
     return () => {mounted = false;}
@@ -56,9 +54,7 @@ function EachChatMessage(props: EachChatMessageProps) {
           setUserName(data.username);
           setAvatar(data.avatar);
         }
-      } catch (err) {
-        if (mounted) setUnauthorized(true);
-      }
+      } catch (err) { if (mounted) setUnauthorized(true); }
     };
     getUser();
     return () => {mounted = false;}
@@ -73,9 +69,7 @@ function EachChatMessage(props: EachChatMessageProps) {
           props.message.channelID
         );
         if (data === 3 && mounted) setIsMuted(true);
-      } catch (err) {
-        if (mounted) setUnauthorized(true);
-      }
+      } catch (err) { if (mounted) setUnauthorized(true); }
     };
     getMuted();
     return () => {mounted = false;}

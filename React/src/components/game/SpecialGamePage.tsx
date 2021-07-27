@@ -16,10 +16,7 @@ function SpecialGamePage (props: any) {
 
 		const authorization = async () => {
 			try { await axios.get('userData'); }
-			catch(err){
-				if(mounted)
-					setUnauthorized(true);
-			}
+			catch(err){if(mounted) setUnauthorized(true);}
 		}
 		authorization();
 		return () => {mounted = false;}
@@ -27,27 +24,33 @@ function SpecialGamePage (props: any) {
 
 
 	useEffect(() => {
+		let mounted = true;
 		const getGameData = async () => {
 			const {data} = await axios.get('userData')
 
-			if (data.id === props.location.state.gameData.playerOne)
-				setRole('leftPlayer');
-			else if (data.id === props.location.state.gameData.playerTwo)
-				setRole('rightPlayer');
-			else
-				setRole('viewer');
-			setMapArray(["red", "blue", "green"]);
-			setmapColorIndex(Math.floor(Math.random() * 3));
+			if (mounted){
+				if (data.id === props.location.state.gameData.playerOne)
+					setRole('leftPlayer');
+				else if (data.id === props.location.state.gameData.playerTwo)
+					setRole('rightPlayer');
+				else
+					setRole('viewer');
+			}
+			if (mounted) setMapArray(["red", "blue", "green"]);
+			if (mounted) setmapColorIndex(Math.floor(Math.random() * 3));
 		}
 		getGameData();
+		return () => {mounted = false;}
 	}, [props.location.state.gameData.playerOne, props.location.state.gameData.playerTwo]);
 
 	useEffect(() => {
+		let mounted = true;
 		const calcPlayerColor = async (index: number) => {
 			let color= ((index - 1 === -1) ? 2 : index - 1);
-			setplayerColorIndex(color);
+			if (mounted) setplayerColorIndex(color);
 		}
 		calcPlayerColor(mapColorIndex);
+		return () => {mounted = false;}
 	}, [mapColorIndex]);
 
 

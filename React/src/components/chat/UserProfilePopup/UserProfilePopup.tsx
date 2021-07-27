@@ -30,10 +30,7 @@ function UserProfilePopup(props: UserProfilePopupType) {
     let mounted = true;
     const authorization = async () => {
       try { await axios.get('userData'); }
-      catch(err){
-        if(mounted)
-          setUnauthorized(true);
-      }
+      catch(err){ if(mounted) setUnauthorized(true); }
     }
     authorization();
     return () => {mounted = false;}
@@ -47,10 +44,7 @@ function UserProfilePopup(props: UserProfilePopupType) {
           id: props.MessageUserID,
         });
         if (mounted) setUsersData(data);
-      } catch(err){
-        if(mounted)
-          setUnauthorized(true);
-      }
+      } catch(err){ if(mounted) setUnauthorized(true); }
     };
     getUser();
     return () => {mounted = false;}
