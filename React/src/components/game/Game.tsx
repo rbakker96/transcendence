@@ -201,7 +201,6 @@ class Game extends Component<GameProps> {
 			}
 		}
 
-		// THIS NEEDS A GOOD IMPLEMENTATION, NEED TO WORK THIS OUT LATER
 		const updateRoleStateVariable = (id: number) => {
 			this.state.websocket.send(JSON.stringify({event: 'setLeftPlayerName', data: [this.state.gameID, this.state.leftPlayerName]}));
 			this.state.websocket.send(JSON.stringify({event: 'setRightPlayerName', data: [this.state.gameID, this.state.rightPlayerName]}));

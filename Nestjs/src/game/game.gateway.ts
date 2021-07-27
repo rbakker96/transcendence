@@ -10,7 +10,7 @@ import {
 
 import { Server, Socket } from 'ws';
 
-let connectedClients: Socket[][] = [];		//clients for specific game (palyers/viewers)
+let connectedClients: Socket[][] = [];		//clients for specific game (players/viewers)
 let allGameStates: gameState[][] = [];		//gameState for each game
 let activeGameIDs: number[] = [];			//all active games by gameID
 
@@ -80,7 +80,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			connectedClients[gameID].push(client);				//Add client to gameID
 			activeGameIDs.push(gameID);							//Add gameID to active IDs
 
-			console.log('game ', gameID, ' has ', connectedClients[gameID].length / 2, 'users');
+			console.log('game ', gameID, ' has ', connectedClients[gameID].length, 'users');
 		}
 	}
 
