@@ -27,52 +27,48 @@ function AdminSettings(props: any) {
       }
     };
     getChannelUsers();
-    return () => {mounted = false;}
+    return () => {
+      mounted = false;
+    };
   }, [props.location.state.activeChannelId]);
 
   function kickUser(userId: number) {
     try {
-      API.Channels.leaveChannel(userId, props.location.state.activeChannelId)
-            alert("This user is now kicked from this channel");
-            window.location.reload();
-        } catch (err) {setUnauthorized(true);}
-    }
+      API.Channels.leaveChannel(userId, props.location.state.activeChannelId);
+      alert("This user is now kicked from this channel");
+      window.location.reload();
     } catch (err) {
       setUnauthorized(true);
     }
   }
-  
 
-    function changeStatus(userId: number, newStatus: number) {
-        try {
-            API.Channels.changeState(newStatus, props.location.state.activeChannelId, userId);
-            if (newStatus === 3)
-                alert("This user is now muted");
-            else if (newStatus === 1)
-                alert("This user is now an admin");
-            else if (newStatus === 0)
-                alert("All setting for this user have been reset");
-            window.location.reload();
-        } catch (err) {setUnauthorized(true);}
+  function changeStatus(userId: number, newStatus: number) {
+    try {
+      API.Channels.changeState(
+        newStatus,
+        props.location.state.activeChannelId,
+        userId
+      );
+      if (newStatus === 3) alert("This user is now muted");
+      else if (newStatus === 1) alert("This user is now an admin");
+      else if (newStatus === 0)
+        alert("All setting for this user have been reset");
+      window.location.reload();
+    } catch (err) {
+      setUnauthorized(true);
     }
+  }
 
-    function renderKickButton(userId : number) {
-        return (
-            <button type="button" className="btn btn-danger" onClick={() => kickUser(userId)}>Kick this user</button>
-        )
-    }
-
-    function renderMuteButton(userId : number) {
-        return(
-            <button type="button" className="btn btn-warning" onClick={() => changeStatus(userId, 3)}>Mute this user</button>
-        )
-    }
-
-    function renderMakeAdminButton(userId : number) {
-        return (
-            <button type="button" className="btn btn-success" onClick={() => changeStatus(userId, 1)}>Make admin</button>
-        )
-    }
+  function renderKickButton(userId: number) {
+    return (
+      <button
+        type="button"
+        className="btn btn-danger"
+        onClick={() => kickUser(userId)}
+      >
+        Kick this user
+      </button>
+    );
   }
 
   function renderMuteButton(userId: number) {
@@ -92,13 +88,12 @@ function AdminSettings(props: any) {
       <button
         type="button"
         className="btn btn-success"
-        onClick={() => changeStatus(userId, 2)}
+        onClick={() => changeStatus(userId, 1)}
       >
         Make admin
       </button>
     );
   }
-
 
   function renderUndoAdmin(userId: number) {
     return (
@@ -113,8 +108,7 @@ function AdminSettings(props: any) {
   }
 
   if (unauthorized) return <Redirect to={"/"} />;
-  if (redirect) return <Redirect to={'/chat'}/>;
-
+  if (redirect) return <Redirect to={"/chat"} />;
 
   return (
     <div className="adminPage">
@@ -126,21 +120,38 @@ function AdminSettings(props: any) {
         height="57"
       />
       <h1 className="h3 mb-3 fw-normal register_title">Admin panel</h1>
-            <table>
-                <thead>
-                </thead>
-                <tbody>
-                    {channelUsers.map((item: any) =>
-                        <tr key={item.user.id}>
-                            <td className="userNameCol">{item.user.username}</td>
-                            <td>{(item.userType === 1 || item.userType === 2 || item.userType === 4) ? '' : renderKickButton(item.user.id)}</td>
-                            <td>{(item.userType === 1 || item.userType === 2 || item.userType === 3) ? '' : renderMuteButton(item.user.id)}</td>
-                            <td>{(item.userType === 1 || item.userType === 2) ? '' : renderMakeAdminButton(item.user.id)}</td>
-                            <td>{(item.userType === 2) ? '' : renderUndoAdmin(item.user.id)}</td>
-                        </tr>
-                    )}
-                </tbody>
-            </table>
+      <table>
+        <thead></thead>
+        <tbody>
+          {channelUsers.map((item: any) => (
+            <tr key={item.user.id}>
+              <td className="userNameCol">{item.user.username}</td>
+              <td>
+                {item.userType === 1 ||
+                item.userType === 2 ||
+                item.userType === 4
+                  ? ""
+                  : renderKickButton(item.user.id)}
+              </td>
+              <td>
+                {item.userType === 1 ||
+                item.userType === 2 ||
+                item.userType === 3
+                  ? ""
+                  : renderMuteButton(item.user.id)}
+              </td>
+              <td>
+                {item.userType === 1 || item.userType === 2
+                  ? ""
+                  : renderMakeAdminButton(item.user.id)}
+              </td>
+              <td>
+                {item.userType === 2 ? "" : renderUndoAdmin(item.user.id)}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
       <Divider>
         <h1 className="h3 mb-3 fw-normal register_title">Change Password</h1>
         <RenderChangePassword
