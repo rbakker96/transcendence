@@ -13,11 +13,13 @@ export class UserController {
     private authService: AuthService
   ) {}
 
+  @UseGuards(verifyUser)
   @Get()
   async all(): Promise<User[]> {
     return this.userService.all();
   }
 
+  @UseGuards(verifyUser)
   @Get("findName")
   async findUserName(@Query() query): Promise<User> {
     return await this.userService.findUserName(query);
@@ -30,6 +32,7 @@ export class UserController {
     return { activeUserID: id };
   }
 
+  @UseGuards(verifyUser)
   @Get("channels")
   async getChannels(@Query() query): Promise<Channel[]> {
     let res: Channel[] = [];
@@ -41,11 +44,13 @@ export class UserController {
     }
   }
 
+  @UseGuards(verifyUser)
   @Get("allUserFriends")
   async getAllUserFriends(): Promise<User[]> {
     return await this.userService.findAllUserFriends();
   }
 
+  @UseGuards(verifyUser)
   @Get("userWithFriends")
   async getUserWithFriends(@Req() request: Request): Promise<User> {
     const id = await this.authService.clientID(request);
@@ -53,11 +58,13 @@ export class UserController {
     return await this.userService.findUserWithFriends(id);
   }
 
+  @UseGuards(verifyUser)
   @Post("saveFriendToUser")
   async saveFriendToUser(@Body() message): Promise<User[]> {
     return await this.userService.saveFriendToUser(message.userID, message.friendID);
   }
 
+  @UseGuards(verifyUser)
   @Post("deleteFriendToUser")
   async deleteFriendToUser(@Body() message): Promise<User[]> {
     return await this.userService.deleteFriendFromUser(message.userID, message.friendID);
