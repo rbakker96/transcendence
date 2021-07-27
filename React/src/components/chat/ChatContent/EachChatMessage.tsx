@@ -1,8 +1,10 @@
 import { Comment } from "antd";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import API from "../../../API/API";
 import UserProfilePopup from "../UserProfilePopup/UserProfilePopup";
 import "./ChatContent.css"
+import axios from "axios";
+import {Redirect} from "react-router-dom";
 
 type ChatMessageType = {
   channelID: number;
@@ -26,11 +28,26 @@ function EachChatMessage(props: EachChatMessageProps) {
   const [IsOpenPopup, setIsOpenPopup] = useState(false);
   const [UserName, setUserName] = useState("");
   const [Avatar, setAvatar] = useState("");
+  const [unauthorized, setUnauthorized] = useState(false);
 
   const togglePopup = () => {
     setIsOpenPopup(!IsOpenPopup);
     props.setOneShownPopup(props.message.messageTimestamp);
   };
+
+  useEffect(() => {
+    let mounted = true;
+
+    const authorization = async () => {
+      try { await axios.get('userData'); }
+      catch(err){
+        if(mounted)
+          setUnauthorized(true);
+      }
+    }
+    authorization();
+    return () => {mounted = false;}
+  }, []);
 
   useEffect(() => {
     const getUser = async () => {
@@ -40,6 +57,9 @@ function EachChatMessage(props: EachChatMessageProps) {
     };
     getUser();
   }, [props, setUserName, setAvatar]);
+
+  if (unauthorized)
+    return <Redirect to={'/'}/>;
 
   if (props.IDIsMuted.includes(props.message.senderID)) return <div />;
   else

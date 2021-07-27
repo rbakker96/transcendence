@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Row, Col } from "antd";
 import "antd/dist/antd.css";
 import ChatContent from "../components/chat/ChatContent/ChatContent";
@@ -6,13 +6,30 @@ import ChatSidebar from "../components/chat/LeftSideBar/ChatSidebar";
 import CurrentUserBar from "../components/chat/CurrentUserBar/CurrentUserBar";
 import API from "../API/API";
 import "./ChatPage.css"
+import axios from "axios";
+import {Redirect} from "react-router-dom";
 
 function ChatPage() {
+  const [unauthorized, setUnauthorized] = useState(false);
   const [ActiveChannelID, setActiveChannelID] = useState(0);
   const [ActiveUserID, setActiveUserID] = useState<number>(0);
   const [ActiveUserName, setActiveUserName] = useState("");
   const [Avatar, setAvatar] = useState("");
   const [IDIsMuted, setIDIsMuted] = useState<number[]>([]);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const authorization = async () => {
+      try { await axios.get('userData'); }
+      catch(err){
+        if(mounted)
+          setUnauthorized(true);
+      }
+    }
+    authorization();
+    return () => {mounted = false;}
+  }, []);
 
   useEffect(() => {
     const setActiveID = async () => {
@@ -28,6 +45,9 @@ function ChatPage() {
     setActiveID();
     getUser();
   }, [ActiveUserID]);
+
+  if (unauthorized)
+    return <Redirect to={'/'}/>;
 
   return (
     <div className="chatpage">
