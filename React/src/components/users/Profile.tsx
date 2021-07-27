@@ -259,13 +259,14 @@ const Profile = () => {
                         <div className="col-md-12 title"><h3>FRIENDS</h3></div>
                     </div>
                     <div className="row friends">
-
                         <table>
                             <thead className="friendTable">
-                                <td></td>
-                                <td>Username</td>
-                                <td>Status</td>
-                                <td></td>
+                                <tr>
+                                    <th></th>
+                                    <th>Username</th>
+                                    <th>Status</th>
+                                    <th></th>
+                                </tr>
                             </thead>
                             <tbody>
                             {userFriends.map((friend: User) =>
