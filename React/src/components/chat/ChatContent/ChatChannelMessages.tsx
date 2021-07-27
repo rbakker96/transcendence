@@ -50,8 +50,10 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
 
   useEffect(() => {
     const getChatMessages = async () => {
-      const { data } = await API.ChatMessage.getChannelMessages(props.activeChannelID);
-      setHistoricChatMessages(data);
+      try {
+        const { data } = await API.ChatMessage.getChannelMessages(props.activeChannelID);
+        setHistoricChatMessages(data);
+      } catch (err) {setUnauthorized(true);}
     };
     getChatMessages();
   }, [props.activeChannelID]);

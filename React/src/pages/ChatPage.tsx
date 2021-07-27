@@ -32,14 +32,18 @@ function ChatPage() {
 
   useEffect(() => {
     const setActiveID = async () => {
-      const { data } = await API.User.getActiveUserID();
-      setActiveUserID(data.activeUserID);
+      try {
+        const { data } = await API.User.getActiveUserID();
+        setActiveUserID(data.activeUserID);
+      } catch (err) {setUnauthorized(true);}
     };
 
     const getUser = async () => {
-      const { data } = await API.User.findName(ActiveUserID);
-      setActiveUserName(data.username);
-      setAvatar(data.avatar);
+      try {
+        const { data } = await API.User.findName(ActiveUserID);
+        setActiveUserName(data.username);
+        setAvatar(data.avatar);
+      }catch (err) {setUnauthorized(true);}
     };
     setActiveID();
     getUser();

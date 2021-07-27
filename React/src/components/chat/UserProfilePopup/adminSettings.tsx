@@ -10,18 +10,24 @@ import logo from "./img/42_logo.svg";
 function AdminSettings(props: any) {
     const [channelUsers, setChannelUser] = useState<User[]>([])
     const [redirect, setRedirect] = useState(false)
+    const [unauthorized, setUnauthorized] = useState(false);
+
     useEffect(() => {
         const getChannelUsers = async () => {
             if (props.location.state.activeChannelId) {
-                const {data} = await API.Channels.getChannelUsers(props.location.state.activeChannelId);
-                setChannelUser(data);
+                try {
+                    const {data} = await API.Channels.getChannelUsers(props.location.state.activeChannelId);
+                    setChannelUser(data);
+                }catch (err) {setUnauthorized(true);}
             }
         }
         getChannelUsers()
     },[props.location.state.activeChannelId])
 
     function kickUser(userId : number) {
-        API.Channels.leaveChannel(userId, props.location.state.activeChannelId)
+        try {
+            API.Channels.leaveChannel(userId, props.location.state.activeChannelId)
+        } catch (err) {setUnauthorized(true);}
     }
 
     function renderKickButton(userId : number) {
@@ -31,7 +37,9 @@ function AdminSettings(props: any) {
     }
 
     function changeStatus(userId: number, newStatus: number) {
-        API.Channels.changeState(newStatus, props.location.state.activeChannelId, userId);
+        try {
+            API.Channels.changeState(newStatus, props.location.state.activeChannelId, userId);
+        }catch (err) {setUnauthorized(true);}
     }
 
     function renderMuteButton(userId : number) {
@@ -48,9 +56,12 @@ function AdminSettings(props: any) {
 
     function renderUndoAdmin(userId : number) {
         return (
-            <button type="button" className="btn btn-dark" onClick={() => changeStatus(userId, 0)}>Undo Admin</button>
+            <button type="button" className="btn btn-dark" onClick={() => changeStatus(userId, 0)}>Undo all settings</button>
         )
     }
+
+    if (unauthorized)
+        return <Redirect to={'/'}/>;
 
     if (redirect === true) {
         return <Redirect to={'/chat'}/>;

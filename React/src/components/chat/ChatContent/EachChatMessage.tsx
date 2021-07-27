@@ -52,21 +52,25 @@ function EachChatMessage(props: EachChatMessageProps) {
 
   useEffect(() => {
     const getUser = async () => {
-      const { data } = await API.User.findName(props.message.senderID);
-      setUserName(data.username);
-      setAvatar(data.avatar);
+      try {
+        const {data} = await API.User.findName(props.message.senderID);
+        setUserName(data.username);
+        setAvatar(data.avatar);
+      }catch (err) {setUnauthorized(true);}
     };
     getUser();
   }, [props, setUserName, setAvatar]);
 
   useEffect(() => {
     const getMuted = async () => {
-      const { data } = await API.Channels.getState(
-        props.message.senderID,
-        props.message.channelID
-      );
-      console.log("data is", data);
-      if (data === 3) setIsMuted(true);
+      try {
+
+        const {data} = await API.Channels.getState(
+            props.message.senderID,
+            props.message.channelID
+        );
+        if (data === 3) setIsMuted(true);
+      }  catch (err) {setUnauthorized(true);}
     };
     getMuted();
   }, [props.message.senderID, props.message.channelID]);

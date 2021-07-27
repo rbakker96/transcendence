@@ -3,6 +3,7 @@ import API from "../../../API/API";
 import React, { useEffect, useState } from "react";
 import {FaLock} from 'react-icons/fa';
 import {Channel} from "../../../models/Channel.model";
+import {Redirect} from "react-router-dom";
 
 type RenderChatChannelsType = {
   setActiveId: Function;
@@ -11,6 +12,7 @@ type RenderChatChannelsType = {
 
 function RenderChatChannels (props: RenderChatChannelsType) {
   const [channel, setChannel] = useState<Array<Channel>>([]);
+  const [unauthorized, setUnauthorized] = useState(false);
 
   function setActiveChannelId(activeChannelId: number) {
     props.setActiveId(activeChannelId);
@@ -19,13 +21,15 @@ function RenderChatChannels (props: RenderChatChannelsType) {
 
   useEffect(() => {
     const getChannels = async () => {
-      const { data } = await API.Channels.getWithUser(props.ActiveUserId);
-      if (data)
-      {
-        let result: Channel[];
-        result = data.filter((channel : any) => !channel.IsDirect);
-        setChannel(result);
-      }
+      try {
+        const { data } = await API.Channels.getWithUser(props.ActiveUserId);
+        if (data)
+        {
+          let result: Channel[];
+          result = data.filter((channel : any) => !channel.IsDirect);
+          setChannel(result);
+        }
+      }catch (err) {setUnauthorized(true);}
     };
     getChannels();
   }, [props.ActiveUserId]);
@@ -41,6 +45,9 @@ function RenderChatChannels (props: RenderChatChannelsType) {
     else
       return ;
   }
+
+  if (unauthorized)
+    return <Redirect to={'/'}/>;
 
   return (
     <div>

@@ -32,19 +32,23 @@ function CreateDirectMessage() {
 
   useEffect(() => {
     const getUser = async () => {
-      const { data } = await axios.get("users");
-      setUsers(data);
+      try {
+        const { data } = await axios.get("users");
+        setUsers(data);
+      }catch (err) {setUnauthorized(true);}
     };
     getUser();
   }, []);
 
   useEffect(() => {
     const getActiveUserID = async () => {
-      const { data } = await API.User.getActiveUserID();
-      setActiveUserID(data.activeUserID);
-      users.forEach((user: User) => {
-        if (user.id === data.activeUserID) setChannelAdmin([user]);
-      });
+      try {
+        const { data } = await API.User.getActiveUserID();
+        setActiveUserID(data.activeUserID);
+        users.forEach((user: User) => {
+          if (user.id === data.activeUserID) setChannelAdmin([user]);
+        });
+      }catch (err) {setUnauthorized(true);}
     };
     getActiveUserID();
   }, [users]);
@@ -52,14 +56,16 @@ function CreateDirectMessage() {
   let submit = async (e: SyntheticEvent) => {
     e.preventDefault();
     if (valid) {
-      await axios.post("channels", {
-        Name: "DirectMessage",
-        IsPrivate: false,
-        IsDirect: true,
-        Users: channelUsers,
-        ownerId: activeUserID,
-        Password: "",
-      });
+      try {
+        await axios.post("channels", {
+          Name: "DirectMessage",
+          IsPrivate: false,
+          IsDirect: true,
+          Users: channelUsers,
+          ownerId: activeUserID,
+          Password: "",
+        });
+      } catch (err) {setUnauthorized(true);}
       setRedirect(true);
     }
   };

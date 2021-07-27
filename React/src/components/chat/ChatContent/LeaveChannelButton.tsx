@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import API from "../../../API/API";
+import {Redirect} from "react-router-dom";
 
 type LeaveChannelProps = {
   activeChannelID: number;
@@ -8,11 +9,15 @@ type LeaveChannelProps = {
 
 function LeaveChannelButton(props: LeaveChannelProps) {
   const [userID, setUserID] = useState(0);
+  const [unauthorized, setUnauthorized] = useState(false);
 
   useEffect(() => {
     const getUser = async () => {
-      const { data } = await axios.get("userData");
-      setUserID(data.id);
+      try {
+        const { data } = await axios.get("userData");
+        setUserID(data.id);
+      } catch (err) {setUnauthorized(true);}
+
     };
     getUser();
   }, []);
@@ -24,6 +29,9 @@ function LeaveChannelButton(props: LeaveChannelProps) {
     };
     deleteUser();
   }
+
+  if (unauthorized)
+    return <Redirect to={'/'}/>;
 
   return (
     <div>

@@ -38,16 +38,20 @@ function RenderCreateChannel() {
 
     useEffect(() => {
         const getUser = async () => {
-            const {data} = await axios.get('users')
-            setUsers(data);
+            try {
+                const {data} = await axios.get('users')
+                setUsers(data);
+            }catch (err) {setUnauthorized(true);}
         }
         getUser();
     }, []);
 
     useEffect(() => {
         const setActiveID = async () => {
-            const {data} = await API.User.getActiveUserID();
-            setActiveUserID(data.activeUserID);
+            try {
+                const {data} = await API.User.getActiveUserID();
+                setActiveUserID(data.activeUserID);
+            }catch (err) {setUnauthorized(true);}
         };
         setActiveID();
     },[]);
@@ -55,14 +59,16 @@ function RenderCreateChannel() {
 
     let submit = async (e: SyntheticEvent) => {
         e.preventDefault();
-        await axios.post('channels', {
-            Name: channelName,
-            IsPrivate: isPrivate,
-            IsDirect: false,
-            Users: channelUsers,
-            ownerId : activeUserID,
-            Password: Password,
-        });
+        try {
+            await axios.post('channels', {
+                Name: channelName,
+                IsPrivate: isPrivate,
+                IsDirect: false,
+                Users: channelUsers,
+                ownerId : activeUserID,
+                Password: Password,
+            });
+        }catch (err) {setUnauthorized(true);}
         setRedirect(true);
     }
 

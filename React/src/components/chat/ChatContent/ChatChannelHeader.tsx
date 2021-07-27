@@ -34,17 +34,28 @@ function ChatChannelHeader(props: ChatChannelHeaderProps) {
   useEffect(() => {
     const getChannelName = async () => {
       if (props.activeChannelID) {
-        const { data } = await API.Channels.findName(props.activeChannelID);
-        setChannelName(data.ChannelName);
-      } else setChannelName("Select a channel on the left to view messages");
+          try {
+              const { data } = await API.Channels.findName(props.activeChannelID);
+              setChannelName(data.ChannelName);
+          } catch (err) {
+              {setUnauthorized(true);}
+          }
+
+      }
+      else setChannelName("Select a channel on the left to view messages");
     };
     getChannelName();
   }, [props, setChannelName]);
 
     useEffect(() => {
         const getAdmins = async () => {
-            const {data} = await API.Channels.getIsAdmin(props.activeUserID, props.activeChannelID);
-            setAdmins(data);
+            try {
+                const {data} = await API.Channels.getIsAdmin(props.activeUserID, props.activeChannelID);
+                setAdmins(data);
+            }
+            catch (err) {
+                {setUnauthorized(true);}
+            }
         }
         getAdmins()
     }, [props, setAdmins])
@@ -52,7 +63,12 @@ function ChatChannelHeader(props: ChatChannelHeaderProps) {
   function leaveChannel()
   {
     const deleteUser = async () => {
-      await API.Channels.leaveChannel(props.activeUserID, props.activeChannelID)
+        try {
+            await API.Channels.leaveChannel(props.activeUserID, props.activeChannelID)
+        }
+        catch (err) {
+            {setUnauthorized(true);}
+        }
     }
     deleteUser();
     props.setActiveChannelID(0);

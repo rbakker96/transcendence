@@ -33,13 +33,15 @@ function RenderDirectMessage(props: RenderDirectMessageType) {
 
   useEffect(() => {
     const getChannels = async () => {
-      const { data } = await API.Channels.getWithUser(props.ActiveUserId);
-      if (data)
-      {
-        let result: Channel[];
-        result = data.filter((channel : any) => channel.IsDirect);
-        setDirectChannels(result);
-      }
+      try {
+        const { data } = await API.Channels.getWithUser(props.ActiveUserId);
+        if (data)
+        {
+          let result: Channel[];
+          result = data.filter((channel : any) => channel.IsDirect);
+          setDirectChannels(result);
+        }
+      }catch (err) {setUnauthorized(true);}
     };
     getChannels();
   }, [props.ActiveUserId, props.ActiveChannelID]);
