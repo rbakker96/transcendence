@@ -48,7 +48,7 @@ function AdminSettings(props: any) {
 
     function renderUndoAdmin(userId : number) {
         return (
-            <button type="button" className="btn btn-dark" onClick={() => changeStatus(userId, 0)}>Undo Admin</button>
+            <button type="button" className="btn btn-dark" onClick={() => changeStatus(userId, 0)}>Undo all settings</button>
         )
     }
 
