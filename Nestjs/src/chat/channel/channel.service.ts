@@ -147,7 +147,7 @@ export class ChannelService {
        .getOne();
    if (channelUserType)
    {
-     return channelUserType.userType === 2;
+     return (channelUserType.userType === 2 || channelUserType.userType === 1);
    }
   }
 

@@ -27,6 +27,21 @@ function AdminSettings(props: any) {
     function kickUser(userId : number) {
         try {
             API.Channels.leaveChannel(userId, props.location.state.activeChannelId)
+            alert("This user is now kicked from this channel");
+            window.location.reload();
+        } catch (err) {setUnauthorized(true);}
+    }
+
+    function changeStatus(userId: number, newStatus: number) {
+        try {
+            API.Channels.changeState(newStatus, props.location.state.activeChannelId, userId);
+            if (newStatus === 3)
+                alert("This user is now muted");
+            else if (newStatus === 1)
+                alert("This user is now an admin");
+            else if (newStatus === 0)
+                alert("All setting for this user have been reset");
+            window.location.reload();
         } catch (err) {setUnauthorized(true);}
     }
 
@@ -34,12 +49,6 @@ function AdminSettings(props: any) {
         return (
             <button type="button" className="btn btn-danger" onClick={() => kickUser(userId)}>Kick this user</button>
         )
-    }
-
-    function changeStatus(userId: number, newStatus: number) {
-        try {
-            API.Channels.changeState(newStatus, props.location.state.activeChannelId, userId);
-        }catch (err) {setUnauthorized(true);}
     }
 
     function renderMuteButton(userId : number) {
@@ -50,7 +59,7 @@ function AdminSettings(props: any) {
 
     function renderMakeAdminButton(userId : number) {
         return (
-            <button type="button" className="btn btn-success" onClick={() => changeStatus(userId, 2)}>Make admin</button>
+            <button type="button" className="btn btn-success" onClick={() => changeStatus(userId, 1)}>Make admin</button>
         )
     }
 
@@ -63,9 +72,9 @@ function AdminSettings(props: any) {
     if (unauthorized)
         return <Redirect to={'/'}/>;
 
-    if (redirect === true) {
+    if (redirect)
         return <Redirect to={'/chat'}/>;
-    }
+
     return (
         <div className="adminPage">
             <img className="mb-4" src={logo} alt="./img/42_logo.svg" width="72" height="57"/>
@@ -78,10 +87,10 @@ function AdminSettings(props: any) {
                     {channelUsers.map((item: any) =>
                         <tr key={item.user.id}>
                             <td className="userNameCol">{item.user.username}</td>
-                            <td>{renderKickButton(item.user.id)}</td>
-                            <td>{renderMuteButton(item.user.id)}</td>
-                            <td>{renderMakeAdminButton(item.user.id)}</td>
-                            <td>{renderUndoAdmin(item.user.id)}</td>
+                            <td>{(item.userType === 1 || item.userType === 2 || item.userType === 4) ? '' : renderKickButton(item.user.id)}</td>
+                            <td>{(item.userType === 1 || item.userType === 2 || item.userType === 3) ? '' : renderMuteButton(item.user.id)}</td>
+                            <td>{(item.userType === 1 || item.userType === 2) ? '' : renderMakeAdminButton(item.user.id)}</td>
+                            <td>{(item.userType === 2) ? '' : renderUndoAdmin(item.user.id)}</td>
                         </tr>
                     )}
                 </tbody>
