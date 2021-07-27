@@ -24,9 +24,7 @@ function ChatChannelHeader(props: ChatChannelHeaderProps) {
     const authorization = async () => {
       try {
         await axios.get("userData");
-      } catch (err) {
-        if (mounted) setUnauthorized(true);
-      }
+      } catch (err) { if (mounted) setUnauthorized(true); }
     };
     authorization();
     return () => {mounted = false;}

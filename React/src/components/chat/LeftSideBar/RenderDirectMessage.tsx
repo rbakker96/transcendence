@@ -22,10 +22,7 @@ function RenderDirectMessage(props: RenderDirectMessageType) {
 
     const authorization = async () => {
       try { await axios.get('userData'); }
-      catch(err){
-        if(mounted)
-          setUnauthorized(true);
-      }
+      catch(err){ if(mounted) setUnauthorized(true); }
     }
     authorization();
     return () => {mounted = false;}
@@ -42,10 +39,7 @@ function RenderDirectMessage(props: RenderDirectMessageType) {
           result = data.filter((channel : any) => channel.IsDirect);
           if (mounted) setDirectChannels(result);
         }
-      } catch(err){
-        if(mounted)
-          setUnauthorized(true);
-      }
+      } catch(err){ if(mounted) setUnauthorized(true); }
     };
     getChannels();
     return () => {mounted = false;}

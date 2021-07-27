@@ -6,11 +6,23 @@ import RenderChangePassword from "../ChatContent/RenderChangePassword";
 import { Redirect } from "react-router-dom";
 import "./adminSettings.css";
 import logo from "./img/42_logo.svg";
+import axios from "axios";
 
 function AdminSettings(props: any) {
   const [channelUsers, setChannelUser] = useState<User[]>([]);
   const [redirect, setRedirect] = useState(false);
   const [unauthorized, setUnauthorized] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const authorization = async () => {
+      try { await axios.get('userData'); }
+      catch(err){if(mounted) setUnauthorized(true);}
+    }
+    authorization();
+    return () => {mounted = false;}
+  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -21,15 +33,11 @@ function AdminSettings(props: any) {
             props.location.state.activeChannelId
           );
           if (mounted) setChannelUser(data);
-        } catch (err) {
-          if (mounted) setUnauthorized(true);
-        }
+        } catch (err) { if (mounted) setUnauthorized(true); }
       }
     };
     getChannelUsers();
-    return () => {
-      mounted = false;
-    };
+    return () => {mounted = false;}
   }, [props.location.state.activeChannelId]);
 
   function kickUser(userId: number) {

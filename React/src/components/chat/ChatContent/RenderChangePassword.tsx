@@ -21,9 +21,7 @@ function RenderChangePassword(props: RenderChangePasswordProps) {
     const authorization = async () => {
       try {
         await axios.get("userData");
-      } catch (err) {
-        if (mounted) setUnauthorized(true);
-      }
+      } catch (err) { if (mounted) setUnauthorized(true); }
     };
     authorization();
     return () => {mounted = false;}
@@ -35,9 +33,7 @@ function RenderChangePassword(props: RenderChangePasswordProps) {
       try {
         const { data } = await API.Channels.getOne(props.activeChannelID);
         if (mounted) setIsPrivate(data.IsPrivate);
-      } catch (err) {
-          if (mounted) setUnauthorized(true);
-      }
+      } catch (err) { if (mounted) setUnauthorized(true); }
     };
     checkIsPrivate();
     return () => {mounted = false;}
@@ -50,9 +46,7 @@ function RenderChangePassword(props: RenderChangePasswordProps) {
         props.activeChannelID
       );
       return data;
-    } catch (err) {
-      setUnauthorized(true);
-    }
+    } catch (err) { setUnauthorized(true); }
   }
 
   async function verifyPassword() {

@@ -28,9 +28,7 @@ function RenderChatChannels(props: RenderChatChannelsType) {
           result = data.filter((channel: any) => !channel.IsDirect);
           if (mounted) setChannel(result);
         }
-      } catch (err) {
-        if (mounted) setUnauthorized(true);
-      }
+      } catch (err) { if (mounted) setUnauthorized(true); }
     };
     getChannels();
     return () => {mounted = false;}

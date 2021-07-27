@@ -62,8 +62,7 @@ const Profile = () => {
     useEffect(() => {
         let mounted = true;
         const getPendingInvite = async () => {
-            if (mounted)
-                setPendingInvite(user.pendingInvite);
+            if (mounted) setPendingInvite(user.pendingInvite);
         }
         getPendingInvite();
         return () => {mounted = false;}
@@ -90,8 +89,7 @@ const Profile = () => {
             games.filter((game: GameModel) => !game.active && (game.playerOne === user.id || game.playerTwo === user.id)).map((gameData: GameModel) =>
                 counter++
             )
-            if (mounted)
-                setGamesPlayed(counter);
+            if (mounted) setGamesPlayed(counter);
         }
         getPlayedGames();
         return () => {mounted = false;}

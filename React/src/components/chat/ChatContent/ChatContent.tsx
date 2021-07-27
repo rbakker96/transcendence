@@ -25,9 +25,7 @@ function ChatContent(props: ChatContentProps) {
     const authorization = async () => {
       try {
         await axios.get("userData");
-      } catch (err) {
-        if (mounted) setUnauthorized(true);
-      }
+      } catch (err) { if (mounted) setUnauthorized(true); }
     };
     authorization();
     return () => {mounted = false;}
@@ -42,9 +40,7 @@ function ChatContent(props: ChatContentProps) {
           setIsPrivate(data.IsPrivate);
           setIsDirect(data.IsDirect);
         }
-      } catch (err) {
-        if (mounted) setUnauthorized(true);
-      }
+      } catch (err) { if (mounted) setUnauthorized(true); }
     };
     getChannelType();
     return () => {mounted = false;}
