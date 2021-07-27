@@ -19,8 +19,7 @@ type UserProfilePopupType = {
   Avatar: string;
   ProfileLink: string;
   handleClose: any;
-  setIDIsMuted: Function;
-  activeChannel: number;
+  activeChannelId: number;
 };
 
 const { Meta } = Card;
@@ -56,11 +55,7 @@ function UserProfilePopup(props: UserProfilePopupType) {
 
   function onclick(e: SyntheticEvent) {
     e.preventDefault();
-    API.Channels.changeState(3, props.activeChannel, props.ActiveUserID);
-    props.setIDIsMuted((prevState: number[]) => [
-      ...prevState,
-      props.MessageUserID,
-    ]);
+    API.Channels.changeState(3, props.activeChannelId, props.MessageUserID);
   }
 
   async function handleLikeFriend(e: SyntheticEvent) {

@@ -7,8 +7,6 @@ import {Redirect} from "react-router-dom";
 
 type ChatChannelMessagesProps = {
   activeChannelID: number;
-  IDIsMuted: number[];
-  setIDIsMuted: Function;
   activeUserID: number;
 };
 
@@ -97,21 +95,15 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
         <EachChatMessage
           key={message.messageID}
           message={message}
-          IDIsMuted={props.IDIsMuted}
-          setIDIsMuted={props.setIDIsMuted}
           oneShownPopup={oneShownPopup}
           setOneShownPopup={setOneShownPopup}
           activeUserID={props.activeUserID}
-
-
         />
       ))}
       {newMessages.map((message: SocketMessageType) => (
         <EachChatMessage
           key={message.messageTimestamp}
           message={message}
-          IDIsMuted={props.IDIsMuted}
-          setIDIsMuted={props.setIDIsMuted}
           oneShownPopup={oneShownPopup}
           setOneShownPopup={setOneShownPopup}
           activeUserID={props.activeUserID}

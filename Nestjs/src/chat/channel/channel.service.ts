@@ -151,6 +151,21 @@ export class ChannelService {
    }
   }
 
+  public getState = async (userId: number, channelId : number) => {
+    const channelUserType : ChannelUser = await this.channelUserRepository
+        .createQueryBuilder('channelUsers')
+        .where('channelUsers.userId = :userId',
+            {
+              userId: userId
+            })
+        .andWhere('channelUsers.channelId = :channelId',
+            {
+              channelId: channelId
+            })
+        .getOne();
+    return channelUserType.userType;
+  }
+
   updateChannelUser = async (newstate : number, channelId : number, userId : number) => {
     const channelUserType : ChannelUser = await this.channelUserRepository
         .createQueryBuilder('channelUsers')
