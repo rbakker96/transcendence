@@ -10,7 +10,7 @@ import {
 
 import { Server, Socket } from 'ws';
 
-let connectedClients: Socket[][] = [];		//clients for specific game (palyers/viewers)
+let connectedClients: Socket[][] = [];		//clients for specific game (players/viewers)
 let allGameStates: gameState[][] = [];		//gameState for each game
 let activeGameIDs: number[] = [];			//all active games by gameID
 
@@ -37,8 +37,6 @@ type gameState = {
 	rightPlayerScore: number
 	gameFinished: boolean
 }
-
-//ADD POWERUPS TO BACKEND
 
 @WebSocketGateway()
 export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -100,6 +98,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 				}
 			}
 		});
+		console.log('Game: client disconnected');
 	}
 
 	afterInit(server: any): any {
@@ -293,7 +292,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 	@SubscribeMessage("leaveGame")
 	leaveGame(client: any, data: any): void {
 		let gameID = data[0];
-		console.log('leaveGame event triggerd');
 
 		const response = JSON.stringify({event: 'leaveGame', data: data})
 		connectedClients[gameID].forEach(c => {
