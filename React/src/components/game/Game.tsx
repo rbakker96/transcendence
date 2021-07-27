@@ -314,6 +314,9 @@ class Game extends Component<GameProps> {
 			const winnerID = (this.state.leftPlayerScore === 10 ? this.props.leftPlayerID : this.props.rightPlayerID);
 			const loserID = (this.state.leftPlayerScore === 10 ? this.props.rightPlayerID : this.props.leftPlayerID);
 
+			await axios.post('/updatePlayerStatus', {id: this.props.leftPlayerID});
+			await axios.post('/updatePlayerStatus', {id: this.props.rightPlayerID});
+
 			await axios.post('/updateGameStats', {
 				gameID: this.props.gameID,
 				playerOneScore: this.state.leftPlayerScore,

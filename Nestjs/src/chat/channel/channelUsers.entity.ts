@@ -1,5 +1,5 @@
 import {BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn} from "typeorm";
-import {User} from "../../user/models/user.entity";
+import {User} from "../../user/user.entity";
 import {Channel} from "./channel.entity";
 
 export enum ChannelUserType {

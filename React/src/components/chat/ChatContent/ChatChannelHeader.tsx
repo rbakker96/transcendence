@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import API from "../../../API/API";
 import { Divider } from "antd";
 import {Redirect} from "react-router-dom";
-
+import axios from "axios";
+import "./ChatContent.css"
 
 type ChatChannelHeaderProps = {
     activeChannelID: number;
@@ -14,10 +15,24 @@ function ChatChannelHeader(props: ChatChannelHeaderProps) {
   const [ChannelName, setChannelName] = useState("");
   const [admins, setAdmins] = useState<boolean>();
   const [toAdmins, setToAdmins] = useState<boolean>(false);
+  const [unauthorized, setUnauthorized] = useState(false);
+
+    useEffect(() => {
+        let mounted = true;
+
+        const authorization = async () => {
+            try { await axios.get('userData'); }
+            catch(err){
+                if(mounted)
+                    setUnauthorized(true);
+            }
+        }
+        authorization();
+        return () => {mounted = false;}
+    }, []);
 
   useEffect(() => {
     const getChannelName = async () => {
-      console.log("Hoevaak kom ik hierin?")
       if (props.activeChannelID) {
         const { data } = await API.Channels.findName(props.activeChannelID);
         setChannelName(data.ChannelName);
@@ -43,13 +58,14 @@ function ChatChannelHeader(props: ChatChannelHeaderProps) {
     props.setActiveChannelID(0);
   }
 
-  function goToAdminSettings()
-  {
+  function goToAdminSettings() {
       setToAdmins(true);
   }
 
-  if (toAdmins === true)
-  {
+  if (unauthorized)
+      return <Redirect to={'/'}/>;
+
+  if (toAdmins) {
       console.log("active channel in the redirect = ", props.activeChannelID);
       return (
           <Redirect to={{
@@ -60,32 +76,32 @@ function ChatChannelHeader(props: ChatChannelHeaderProps) {
       )
   }
 
-  if (admins === true)
-  {
+  if (admins === true) {
     return(
         <div>
           <Divider orientation={"center"} style={{ color: "#5B8FF9" }}>
             {ChannelName}
           </Divider>
-        <button type="button" className="btn btn-outline-danger" onClick={leaveChannel}>Leave Channel</button>
-        <button type="button" className="btn btn-primary" onClick={goToAdminSettings} >Go to admin settings</button>
+        <div className="buttonsBar">
+            <button type="button" className="btn btn-danger leaveChannel" onClick={leaveChannel}>Leave Channel</button>
+            <button type="button" className="btn btn-primary adminPanel" onClick={goToAdminSettings} >Admin panel</button>
         </div>
-        )
+        </div>
+    )
   }
-  else if(ChannelName !== "Select a channel on the left to view messages")
-  {
-
+  else if(ChannelName !== "Select a channel on the left to view messages") {
     return (
         <div>
           <Divider orientation={"center"} style={{ color: "#5B8FF9" }}>
             {ChannelName}
           </Divider>
-          <button type="button" className="btn btn-outline-danger" onClick={leaveChannel}>Leave Channel</button>
+          <div className="buttonsBar">
+              <button type="button" className="btn btn-danger leaveChannel" onClick={leaveChannel}>Leave Channel</button>
+          </div>
         </div>
     );
   }
-  else
-  {
+  else {
     return (
         <div>
           <Divider orientation={"center"} style={{ color: "#5B8FF9" }}>

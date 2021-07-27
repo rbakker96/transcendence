@@ -1,8 +1,5 @@
-//The most crucial concept to grasp when using TypeORM is the entity. It is a class that maps to a database table.
-
-import {Column, Entity, ManyToMany, OneToMany, PrimaryColumn} from "typeorm";
-import {Channel} from "../../chat/channel/channel.entity";
-import {ChannelUser} from "../../chat/channel/channelUsers.entity";
+import {Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryColumn} from "typeorm";
+import {ChannelUser} from "../chat/channel/channelUsers.entity";
 
 @Entity('users')
 export class User {
@@ -26,6 +23,9 @@ export class User {
     pendingInvite: boolean;
 
     @Column()
+    status: string;
+
+    @Column()
     authentication: boolean;
 
     @Column({ nullable: true })
@@ -34,5 +34,7 @@ export class User {
     @OneToMany(() => ChannelUser, (channelUser) => channelUser.user)
     channelLinks: Promise<ChannelUser[]>;
 
-
+    @ManyToMany(() => User)
+    @JoinTable()
+    friends: User[];
 }

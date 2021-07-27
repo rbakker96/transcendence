@@ -14,6 +14,22 @@ function CreateDirectMessage() {
   const [redirect, setRedirect] = useState(false);
   const [valid, setValid] = useState(false);
   const [activeUserID, setActiveUserID] = useState<User>();
+  const [unauthorized, setUnauthorized] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const authorization = async () => {
+      try { await axios.get('userData'); }
+      catch(err){
+        if(mounted)
+          setUnauthorized(true);
+      }
+    }
+    authorization();
+    return () => {mounted = false;}
+  }, []);
+
   useEffect(() => {
     const getUser = async () => {
       const { data } = await axios.get("users");
@@ -60,6 +76,9 @@ function CreateDirectMessage() {
     else if (selectedList.length === 1 || selectedList.length > 2)
       setValid(false);
   }
+
+  if (unauthorized)
+    return <Redirect to={'/'}/>;
 
   return (
     <div>

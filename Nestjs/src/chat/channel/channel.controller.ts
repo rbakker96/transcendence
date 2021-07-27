@@ -1,10 +1,11 @@
-import {BadRequestException, Body, Controller, Get, Param, Patch, Post, Query} from "@nestjs/common";
-import { ChannelService } from "./channel.service";
-import { Channel } from "./channel.entity";
-import {User} from "../../user/models/user.entity";
+import {Body, Controller, Get, Patch, Post, Query, UseGuards} from "@nestjs/common";
+import {ChannelService} from "./channel.service";
+import {Channel} from "./channel.entity";
+import {User} from "../../user/user.entity";
 import * as bcrypt from 'bcryptjs'
-import { IsDefined, IsOptional } from "class-validator";
+import {IsDefined, IsOptional} from "class-validator";
 import { ChannelUserType } from "./channelUsers.entity";
+import { verifyUser } from "../../user/auth/strategy/auth.guard";
 
 export class UpdateChannelUserDto {
   @IsDefined()
@@ -15,34 +16,39 @@ export class UpdateChannelUserDto {
 
   @IsOptional()
   channelId?: string
-};
+}
 
 
 @Controller('channels/')
 export class ChannelController {
   constructor(private channelService: ChannelService) {}
 
+  @UseGuards(verifyUser)
   @Get()
   async all(@Query() query): Promise<Channel[]> {
     return this.channelService.getAll(query);
   }
 
+  @UseGuards(verifyUser)
   @Get('/one')
   async getOne(@Query() query): Promise<Channel> {
     console.log('channelId', query.channelID)
     return this.channelService.getOne(query.channelID);
   }
 
+  @UseGuards(verifyUser)
   @Get('/channel-users')
   async getChannelUsers(@Query('id') channelId: any) {
     return await this.channelService.getChannelUsers(channelId);
   }
 
+  @UseGuards(verifyUser)
   @Get('/test')
   async gettest(@Query('id') userId: any) {
     return await this.channelService.test(userId);
   }
 
+  @UseGuards(verifyUser)
   @Get('/is-admin')
   async getIsAdmin(@Query() query: any)
   {
@@ -56,6 +62,7 @@ export class ChannelController {
   }
 
 
+  @UseGuards(verifyUser)
   @Post()
   async addOneChannel(
     @Body('Name') ChannelName:string,
@@ -69,13 +76,11 @@ export class ChannelController {
     channel.IsPrivate = Private;
     channel.ownerId = ownerId;
     channel.IsDirect = IsDirect;
-    const hashed = await bcrypt.hash(Password, 12);
-    channel.Password = hashed;
+    channel.Password = await bcrypt.hash(Password, 12);
     const generatedID = await this.channelService.create(channel);
     if(!generatedID)
         return;
-    else
-    {
+    else {
         Users.forEach((user : User) => {
           this.createChannelUser(generatedID.Id, user.id);
       })
@@ -84,22 +89,20 @@ export class ChannelController {
     return {id: generatedID.Id}
   }
 
+  @UseGuards(verifyUser)
   @Post('/channel-user')
-  async createChannelUser(channelId: number, userId : number)
-{
-
+  async createChannelUser(channelId: number, userId : number) {
     const channelUser = await this.channelService.getUserLink(channelId, userId);
     if (!channelUser) {
-      const newUserChannel = await this.channelService.createChannelUser(channelId, userId);
-      return newUserChannel;
+      return await this.channelService.createChannelUser(channelId, userId);
     }
     return channelUser;
   }
 
+  @UseGuards(verifyUser)
   @Get("findName")
   async findUserName(@Query() query): Promise<Channel> {
-    const res = await this.channelService.findChannelName(query)
-    return res ;
+    return await this.channelService.findChannelName(query) ;
   }
 
 
@@ -111,20 +114,17 @@ export class ChannelController {
     await this.channelService.deleteChannelUser(userId, channelId);
   }
 
-
+  @UseGuards(verifyUser)
   @Post('login')
   async login(@Body('password') password: string,
               @Body('channelId') channelId: number,)
   {
     const channel : Channel = await this.channelService.login(channelId);
-    if(!await bcrypt.compare(password, channel.Password)) {
-      return false;
-    }
-    else
-      return true;
+    return await bcrypt.compare(password, channel.Password);
 
   }
 
+  @UseGuards(verifyUser)
   @Patch('change-state')
   async patchState(
       @Body('newState') newState : number,
@@ -134,6 +134,7 @@ export class ChannelController {
     await this.channelService.updateChannelUser(newState, channelId, userId)
   }
 
+  @UseGuards(verifyUser)
   @Patch('change-password')
   async patchPassword(
       @Body('newPassword') newPassword : string,
