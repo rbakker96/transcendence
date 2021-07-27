@@ -37,82 +37,108 @@ const Profile = () => {
     }, []);
 
     useEffect(() => {
+        let mounted = true;
         const getUser = async () => {
             try {
                 const {data} = await axios.get('userData')
-                setUser(data);
+                if (mounted) setUser(data);
             }
-            catch (err) {setUnauthorized(true);}
+            catch(err){
+                if(mounted)
+                    setUnauthorized(true);
+            }
         }
         getUser();
+        return () => {mounted = false;}
     }, []);
 
     useEffect(() => {
+        let mounted = true;
         const getUserFriends = async () => {
             try {
                 const {data} = await axios.get('users/userWithFriends')
-                setUserFriends(data.friends);
+                if (mounted) setUserFriends(data.friends);
             }
-            catch (err) {setUnauthorized(true);}
+            catch(err){
+                if(mounted)
+                    setUnauthorized(true);
+            }
         }
         getUserFriends();
+        return () => {mounted = false;}
     }, [user]);
 
     useEffect(() => {
+        let mounted = true;
         const getPendingInvite = async () => {
-            setPendingInvite(user.pendingInvite);
+            if (mounted)
+                setPendingInvite(user.pendingInvite);
         }
         getPendingInvite();
+        return () => {mounted = false;}
     }, [user]);
 
     useEffect(() => {
+        let mounted = true;
         const getGameData = async () => {
             try {
                 const {data} = await axios.get('/allGameData');
-                setGames(data);
+                if (mounted) setGames(data);
             }
-            catch (err) {setUnauthorized(true);}
+            catch(err){
+                if(mounted)
+                    setUnauthorized(true);
+            }
         }
         getGameData();
+        return () => {mounted = false;}
     }, []);
 
     useEffect(() => {
+        let mounted = true;
         let counter = 0;
 
         const getPlayedGames = async () => {
             games.filter((game: GameModel) => !game.active && (game.playerOne === user.id || game.playerTwo === user.id)).map((gameData: GameModel) =>
                 counter++
             )
-            setGamesPlayed(counter);
+            if (mounted)
+                setGamesPlayed(counter);
         }
         getPlayedGames();
+        return () => {mounted = false;}
     }, [user.id, games]);
 
     useEffect(() => {
+        let mounted = true;
         let counter = 0;
 
         const getGamesWon = async () => {
             games.filter((game: GameModel) => !game.active && game.winner === user.id ).map((gameData: GameModel) =>
                 counter++
             )
-            setWins(counter);
+            if (mounted) setWins(counter);
         }
         getGamesWon();
+        return () => {mounted = false;}
     }, [user.id, games]);
 
     useEffect(() => {
+        let mounted = true;
         let counter = 0;
 
         const getGamesLost = async () => {
             games.filter((game: GameModel) => !game.active && game.loser === user.id ).map((gameData: GameModel) =>
                 counter++
             )
-            setLoses(counter);
+            if (mounted) setLoses(counter);
         }
         getGamesLost();
+        return () => {mounted = false;}
     }, [user.id, games]);
 
     useEffect(() => {
+        let mounted = true;
         let rank = 'ROOKIE'
 
         const getRank = async () => {
@@ -122,9 +148,11 @@ const Profile = () => {
                 rank = 'RISING STAR';
             if (wins >= 15)
                 rank = 'ENDBOSS';
-            setRank(rank);
+            if (mounted)
+                setRank(rank);
         }
         getRank();
+        return () => {mounted = false;}
     }, [user.id, games, wins]);
 
     const acceptGameInvite = async (e: SyntheticEvent) => {
