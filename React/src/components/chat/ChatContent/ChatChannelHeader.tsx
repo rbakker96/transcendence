@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import API from "../../../API/API";
 import { Divider } from "antd";
-import {Redirect} from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import axios from "axios";
 import "./ChatContent.css"
 
@@ -17,19 +17,19 @@ function ChatChannelHeader(props: ChatChannelHeaderProps) {
   const [toAdmins, setToAdmins] = useState<boolean>(false);
   const [unauthorized, setUnauthorized] = useState(false);
 
-    useEffect(() => {
-        let mounted = true;
+  useEffect(() => {
+      let mounted = true;
 
-        const authorization = async () => {
-            try { await axios.get('userData'); }
-            catch(err){
-                if(mounted)
-                    setUnauthorized(true);
-            }
-        }
-        authorization();
-        return () => {mounted = false;}
-    }, []);
+      const authorization = async () => {
+          try { await axios.get('userData'); }
+          catch(err){
+              if(mounted)
+                  setUnauthorized(true);
+          }
+      }
+      authorization();
+      return () => {mounted = false;}
+  }, []);
 
   useEffect(() => {
     const getChannelName = async () => {

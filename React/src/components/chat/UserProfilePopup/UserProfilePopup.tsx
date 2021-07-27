@@ -4,7 +4,6 @@ import {
   CloseOutlined,
   LinkOutlined,
   HeartOutlined,
-  PlayCircleOutlined,
 } from "@ant-design/icons";
 import React, { SyntheticEvent, useEffect, useState } from "react";
 import {Link, Redirect} from "react-router-dom";
@@ -27,7 +26,6 @@ const { Meta } = Card;
 
 function UserProfilePopup(props: UserProfilePopupType) {
   const [usersData, setUsersData] = useState<User>();
-  const [privateGame, setprivateGame] = useState(false);
   const [unauthorized, setUnauthorized] = useState(false);
 
   useEffect(() => {
@@ -73,24 +71,12 @@ function UserProfilePopup(props: UserProfilePopupType) {
     else console.log("Error when adding friend");
   }
 
-  async function sendGameInvite(e: SyntheticEvent, id: number) {
-    e.preventDefault();
-
-    try {
-      const ret = await axios.put('sendGameInvite', {id});
-      console.log(ret);
-      setprivateGame(true);
-      console.log("HELLO");
-    }
-    catch (err) { }
-  }
+  if (unauthorized)
+    return <Redirect to={'/'}/>;
 
   let actions: JSX.Element[];
   if (props.ActiveUserID === props.MessageUserID) {
     actions = [
-      <Link to={{ pathname: "/publicProfile", state: { usersData } }}>
-        <LinkOutlined />
-      </Link>,
       <CloseOutlined onClick={props.handleClose} />,
     ];
   } else {
@@ -98,24 +84,11 @@ function UserProfilePopup(props: UserProfilePopupType) {
       <Link to={{ pathname: "/publicProfile", state: { usersData } }}>
         <LinkOutlined />
       </Link>,
-      <PlayCircleOutlined onClick={(e) => {sendGameInvite(e, props.MessageUserID)}}/>,
       <HeartOutlined onClick={handleLikeFriend} />,
       <UserDeleteOutlined onClick={onclick} />,
       <CloseOutlined onClick={props.handleClose} />,
     ];
   }
-
-  if (unauthorized)
-    return <Redirect to={'/'}/>;
-
-  if (privateGame)
-  {
-    console.log("private redirect");
-    return <Redirect to={{pathname:"/WaitingRoom", state: "private"}}/>;
-  }
-
-  if (!privateGame)
-    console.log("not private");
 
   return (
     <Card

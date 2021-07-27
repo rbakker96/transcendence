@@ -1,11 +1,13 @@
 import { Channel } from "../../../models/Channel.model";
-import { SyntheticEvent, useEffect, useState } from "react";
+import React, { SyntheticEvent, useEffect, useState } from "react";
 import API from "../../../API/API";
+import {FaLock} from "react-icons/fa";
 
 type EachDirectChannelType = {
   setActiveChannelId: Function;
   ActiveUserName: string;
   directChannel: Channel;
+  private: boolean;
 };
 
 function EachDirectChannel(props: EachDirectChannelType) {
@@ -24,8 +26,7 @@ function EachDirectChannel(props: EachDirectChannelType) {
     const setChannelName = () => {
       if (Users.length === 2) {
         Users.forEach((channelUser: any ) => {
-          if (channelUser.user.username !== props.ActiveUserName)
-          {
+          if (channelUser.user.username !== props.ActiveUserName) {
             setDirectChannelName(channelUser.user.username);
           }
         });
@@ -39,9 +40,20 @@ function EachDirectChannel(props: EachDirectChannelType) {
     props.setActiveChannelId(props.directChannel.Id);
   }
 
+  function renderLocks(item : any) {
+    if (item === true){
+      return (
+          <FaLock />
+      )
+    }
+    else
+      return ;
+  }
+
   return (
-    <ul key={props.directChannel.Id} onClick={onclick}>
-      {DirectChannelName}
+    <ul className="chatChannelsLock" key={props.directChannel.Id} onClick={onclick}>
+      <p className="channelName">{DirectChannelName}</p>
+      <p className="lockImg">{renderLocks(props.private)}</p>
     </ul>
   );
 }

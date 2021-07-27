@@ -30,10 +30,8 @@ function RenderChatChannels (props: RenderChatChannelsType) {
     getChannels();
   }, [props.ActiveUserId]);
 
-  function renderLocks(item : any)
-  {
-    if (item.IsPrivate === true)
-    {
+  function renderLocks(item : any) {
+    if (item.IsPrivate === true) {
       return (
           <FaLock />
       )
@@ -48,9 +46,9 @@ function RenderChatChannels (props: RenderChatChannelsType) {
         Chat channels
       </Divider>
       {channel.map((item: Channel) => (
-        <ul key={item.Id} onClick={() => setActiveChannelId(item.Id)}>
-          {item.ChannelName}
-          {renderLocks(item)}
+        <ul className="chatChannelsLock" key={item.Id} onClick={() => setActiveChannelId(item.Id)}>
+          <p className="channelName">{item.ChannelName}</p>
+          <p className="lockImg">{renderLocks(item)}</p>
         </ul>
       ))}
     </div>
