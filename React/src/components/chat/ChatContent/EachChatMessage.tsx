@@ -36,7 +36,6 @@ function EachChatMessage(props: EachChatMessageProps) {
 
   useEffect(() => {
     let mounted = true;
-
     const authorization = async () => {
       try {
         await axios.get("userData");
@@ -57,7 +56,7 @@ function EachChatMessage(props: EachChatMessageProps) {
       setAvatar(data.avatar);
     };
     getUser();
-  }, [props, setUserName, setAvatar]);
+  }, [props.message.senderID]);
 
   useEffect(() => {
     const getMuted = async () => {
@@ -65,13 +64,12 @@ function EachChatMessage(props: EachChatMessageProps) {
         props.message.senderID,
         props.message.channelID
       );
-      console.log("data is", data);
       if (data === 3) setIsMuted(true);
     };
     getMuted();
   }, [props.message.senderID, props.message.channelID]);
 
-  if (IsMuted) return <div />;
+  if (unauthorized)
     return <Redirect to={'/'}/>;
 
   if (IsMuted) return <div />;
@@ -91,7 +89,6 @@ function EachChatMessage(props: EachChatMessageProps) {
               MessageUserID={props.message.senderID}
               UserName={UserName}
               Avatar={Avatar}
-              ProfileLink={"http://placeholder"}
               handleClose={togglePopup}
               activeChannelId={props.message.channelID}
             />

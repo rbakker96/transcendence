@@ -17,7 +17,6 @@ type UserProfilePopupType = {
   MessageUserID: number;
   UserName: string;
   Avatar: string;
-  ProfileLink: string;
   handleClose: any;
   activeChannelId: number;
 };
@@ -31,7 +30,6 @@ function UserProfilePopup(props: UserProfilePopupType) {
 
   useEffect(() => {
     let mounted = true;
-
     const authorization = async () => {
       try { await axios.get('userData'); }
       catch(err){
