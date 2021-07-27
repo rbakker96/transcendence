@@ -20,6 +20,22 @@ function RenderCreateChannel() {
     const [invalid, setInvalid] = useState(false);
     const [activeUserID, setActiveUserID] = useState<User>();
 
+    const [unauthorized, setUnauthorized] = useState(false);
+
+    useEffect(() => {
+        let mounted = true;
+
+        const authorization = async () => {
+            try { await axios.get('userData'); }
+            catch(err){
+                if(mounted)
+                    setUnauthorized(true);
+            }
+        }
+        authorization();
+        return () => {mounted = false;}
+    }, []);
+
     useEffect(() => {
         const getUser = async () => {
             const {data} = await axios.get('users')
@@ -49,6 +65,9 @@ function RenderCreateChannel() {
         });
         setRedirect(true);
     }
+
+    if (unauthorized)
+        return <Redirect to={'/'}/>;
 
     function renderChannelName() {
         return (

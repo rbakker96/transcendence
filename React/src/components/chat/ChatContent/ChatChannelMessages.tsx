@@ -1,7 +1,9 @@
 import EachChatMessage from "./EachChatMessage";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import API from "../../../API/API";
 import ChatInputBar from "./ChatInputBar";
+import axios from "axios";
+import {Redirect} from "react-router-dom";
 
 type ChatChannelMessagesProps = {
   activeChannelID: number;
@@ -29,9 +31,24 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
   const [historicChatMessages, setHistoricChatMessages] = useState([]);
   const [newMessages, setNewMessages] = useState<SocketMessageType[]>([]);
   const [oneShownPopup, setOneShownPopup] = useState("");
+  const [unauthorized, setUnauthorized] = useState(false);
 
   const websocket: any = useRef<WebSocket>(null);
   const URL = `ws://localhost:8000/chat/${props.activeChannelID}`;
+
+  useEffect(() => {
+    let mounted = true;
+
+    const authorization = async () => {
+      try { await axios.get('userData'); }
+      catch(err){
+        if(mounted)
+          setUnauthorized(true);
+      }
+    }
+    authorization();
+    return () => {mounted = false;}
+  }, []);
 
   useEffect(() => {
     const getChatMessages = async () => {
@@ -70,6 +87,9 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
       websocket.current.close();
     };
   }, [props.activeChannelID, URL]);
+
+  if (unauthorized)
+    return <Redirect to={'/'}/>;
 
   return (
     <div>

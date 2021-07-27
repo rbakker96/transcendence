@@ -1,6 +1,7 @@
 import React, {SyntheticEvent, useEffect, useState} from "react";
 import {Redirect} from "react-router-dom";
 import API from "../../../API/API";
+import axios from "axios";
 
 
 type RenderChangePasswordProps = {
@@ -14,6 +15,21 @@ function RenderChangePassword(props : RenderChangePasswordProps){
     const [renderPasswordBox, setRenderPasswordBox] = useState(false);
     const [newPassword, setNewPassword] = useState('')
     const [redirect, setRedirect] = useState(false );
+    const [unauthorized, setUnauthorized] = useState(false);
+
+    useEffect(() => {
+        let mounted = true;
+
+        const authorization = async () => {
+            try { await axios.get('userData'); }
+            catch(err){
+                if(mounted)
+                    setUnauthorized(true);
+            }
+        }
+        authorization();
+        return () => {mounted = false;}
+    }, []);
 
     useEffect(() => {
         const checkIsPrivate = async () => {
@@ -64,13 +80,14 @@ function RenderChangePassword(props : RenderChangePasswordProps){
             return ;
     }
 
-    if(redirect)
-    {
+    if (unauthorized)
+        return <Redirect to={'/'}/>;
+
+    if(redirect) {
         return <Redirect to={'/chat'}/>;
     }
 
-    if (isPrivate)
-    {
+    if (isPrivate) {
         return (
             <div className="form-group">
                 <label htmlFor="exampleInputPassword1">Old Password</label>

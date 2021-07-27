@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import API from "../../../API/API";
 import { Divider } from "antd";
 import {Redirect} from "react-router-dom";
+import axios from "axios";
 
 
 type ChatChannelHeaderProps = {
@@ -14,6 +15,21 @@ function ChatChannelHeader(props: ChatChannelHeaderProps) {
   const [ChannelName, setChannelName] = useState("");
   const [admins, setAdmins] = useState<boolean>();
   const [toAdmins, setToAdmins] = useState<boolean>(false);
+  const [unauthorized, setUnauthorized] = useState(false);
+
+    useEffect(() => {
+        let mounted = true;
+
+        const authorization = async () => {
+            try { await axios.get('userData'); }
+            catch(err){
+                if(mounted)
+                    setUnauthorized(true);
+            }
+        }
+        authorization();
+        return () => {mounted = false;}
+    }, []);
 
   useEffect(() => {
     const getChannelName = async () => {
@@ -42,13 +58,14 @@ function ChatChannelHeader(props: ChatChannelHeaderProps) {
     props.setActiveChannelID(0);
   }
 
-  function goToAdminSettings()
-  {
+  function goToAdminSettings() {
       setToAdmins(true);
   }
 
-  if (toAdmins)
-  {
+  if (unauthorized)
+      return <Redirect to={'/'}/>;
+
+  if (toAdmins) {
       console.log("active channel in the redirect = ", props.activeChannelID);
       return (
           <Redirect to={{
@@ -59,8 +76,7 @@ function ChatChannelHeader(props: ChatChannelHeaderProps) {
       )
   }
 
-  if (admins === true)
-  {
+  if (admins === true) {
     return(
         <div>
           <Divider orientation={"center"} style={{ color: "#5B8FF9" }}>
@@ -71,9 +87,7 @@ function ChatChannelHeader(props: ChatChannelHeaderProps) {
         </div>
         )
   }
-  else if(ChannelName !== "Select a channel on the left to view messages")
-  {
-
+  else if(ChannelName !== "Select a channel on the left to view messages") {
     return (
         <div>
           <Divider orientation={"center"} style={{ color: "#5B8FF9" }}>
@@ -83,8 +97,7 @@ function ChatChannelHeader(props: ChatChannelHeaderProps) {
         </div>
     );
   }
-  else
-  {
+  else {
     return (
         <div>
           <Divider orientation={"center"} style={{ color: "#5B8FF9" }}>

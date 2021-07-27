@@ -21,46 +21,39 @@ function AdminSettings(props: any) {
         getChannelUsers()
     },[props.location.state.activeChannelId])
 
-    function kickUser(userId : number)
-    {
+    function kickUser(userId : number) {
         API.Channels.leaveChannel(userId, props.location.state.activeChannelId)
     }
 
-    function renderKickButton(userId : number)
-    {
+    function renderKickButton(userId : number) {
         return (
             <button type="button" className="btn btn-danger" onClick={() => kickUser(userId)}>Kick this user</button>
         )
     }
 
-    function changeStatus(userId: number, newStatus: number)
-    {
+    function changeStatus(userId: number, newStatus: number) {
         API.Channels.changeState(newStatus, props.location.state.activeChannelId, userId);
     }
 
-    function renderMuteButton(userId : number)
-    {
+    function renderMuteButton(userId : number) {
         return(
             <button type="button" className="btn btn-warning" onClick={() => changeStatus(userId, 3)}>Mute this user</button>
         )
     }
 
-    function renderMakeAdminButton(userId : number)
-    {
+    function renderMakeAdminButton(userId : number) {
         return (
             <button type="button" className="btn btn-success" onClick={() => changeStatus(userId, 2)}>Make admin</button>
         )
     }
 
-    function renderUndoAdmin(userId : number)
-    {
+    function renderUndoAdmin(userId : number) {
         return (
             <button type="button" className="btn btn-dark" onClick={() => changeStatus(userId, 0)}>Undo Admin</button>
         )
     }
 
-    if (redirect === true)
-    {
+    if (redirect === true) {
         return <Redirect to={'/chat'}/>;
     }
     return (
