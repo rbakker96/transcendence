@@ -28,14 +28,20 @@ const WaitingRoom = (props: any) => {
     }, []);
 
     useEffect(() => {
+        let mounted = true;
+
         const getUser = async () => {
             try {
                 const {data} = await axios.get('userData')
                 setUser(data);
             }
-            catch (err) {setUnauthorized(true);}
+            catch (err) {
+                if (mounted)
+                    setUnauthorized(true);
+            }
         }
         getUser();
+        return () => {mounted = false;}
     }, []);
 
 
