@@ -29,22 +29,26 @@ function RenderGivePassword(props : ChatContentProps) {
     }, []);
 
      async function retrievePassword() {
-        const {data} = await API.Channels.login(givenPassword, props.activeChannelID)
-        return data;
+         try {
+             const {data} = await API.Channels.login(givenPassword, props.activeChannelID)
+             return data;
+         }catch (err) {setUnauthorized(true);}
     }
 
     async function verifyPassword() {
-        const password = await retrievePassword()
-        if (password === true) {
-            console.log("Password is ", password);
-            props.setPasswordValid(true);
-            setInvalid(false);
-        }
-        else
-        {
-            setInvalid(true);
-            props.setPasswordValid(false);
-        }
+         try {
+             const password = await retrievePassword()
+             if (password === true) {
+                 console.log("Password is ", password);
+                 props.setPasswordValid(true);
+                 setInvalid(false);
+             }
+             else
+             {
+                 setInvalid(true);
+                 props.setPasswordValid(false);
+             }
+         }catch (err) {setUnauthorized(true);}
     }
 
     if (unauthorized)

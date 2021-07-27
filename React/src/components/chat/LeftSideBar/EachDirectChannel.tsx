@@ -1,6 +1,7 @@
 import { Channel } from "../../../models/Channel.model";
-import { SyntheticEvent, useEffect, useState } from "react";
+import React, { SyntheticEvent, useEffect, useState } from "react";
 import API from "../../../API/API";
+import {Redirect} from "react-router-dom";
 
 type EachDirectChannelType = {
   setActiveChannelId: Function;
@@ -11,11 +12,14 @@ type EachDirectChannelType = {
 function EachDirectChannel(props: EachDirectChannelType) {
   const [DirectChannelName, setDirectChannelName] = useState("");
   const [Users , setUsers] = useState<any>([])
+  const [unauthorized, setUnauthorized] = useState(false);
 
   useEffect(() => {
     const getUsers = async ()  => {
-      const {data} = await API.Channels.getChannelUsers(props.directChannel.Id)
-      setUsers(data);
+      try {
+        const {data} = await API.Channels.getChannelUsers(props.directChannel.Id)
+        setUsers(data);
+      }catch (err) {setUnauthorized(true);}
     }
     getUsers();
   }, [props.directChannel.Id])
@@ -38,6 +42,9 @@ function EachDirectChannel(props: EachDirectChannelType) {
     e.preventDefault();
     props.setActiveChannelId(props.directChannel.Id);
   }
+
+  if (unauthorized)
+    return <Redirect to={'/'}/>;
 
   return (
     <ul key={props.directChannel.Id} onClick={onclick}>

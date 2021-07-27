@@ -43,28 +43,34 @@ function UserProfilePopup(props: UserProfilePopupType) {
 
   useEffect(() => {
     const getUser = async () => {
-      const { data } = await axios.post("publicUserData", {
-        id: props.MessageUserID,
-      });
-      setUsersData(data);
+      try {
+        const { data } = await axios.post("publicUserData", {
+          id: props.MessageUserID,
+        });
+        setUsersData(data);
+      } catch (err) {setUnauthorized(true);}
     };
     getUser();
   }, [props.MessageUserID]);
 
   function onclick(e: SyntheticEvent) {
     e.preventDefault();
-    API.Channels.changeState(3, props.activeChannelId, props.MessageUserID);
+    try {
+      API.Channels.changeState(3, props.activeChannelId, props.MessageUserID);
+    }catch (err) {setUnauthorized(true);}
     window.location.reload();
   }
 
   async function handleLikeFriend(e: SyntheticEvent) {
     e.preventDefault();
-    const ret = await axios.post("users/saveFriendToUser", {
-      userID: props.ActiveUserID,
-      friendID: props.MessageUserID,
-    });
-    if (ret.status === 201) alert("You've added the user as friend");
-    else console.log("Error when adding friend");
+    try {
+      const ret = await axios.post("users/saveFriendToUser", {
+        userID: props.ActiveUserID,
+        friendID: props.MessageUserID,
+      });
+      if (ret.status === 201) alert("You've added the user as friend");
+      else console.log("Error when adding friend");
+    }catch (err) {setUnauthorized(true);}
   }
 
   async function sendGameInvite(e: SyntheticEvent, id: number) {

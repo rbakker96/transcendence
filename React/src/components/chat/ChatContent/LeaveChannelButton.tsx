@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import API from "../../../API/API";
+import {Redirect} from "react-router-dom";
 
 type LeaveChannelProps = {
   activeChannelID: number;
@@ -7,16 +8,22 @@ type LeaveChannelProps = {
 };
 
 function LeaveChannelButton(props: LeaveChannelProps) {
+  const [unauthorized, setUnauthorized] = useState(false);
+
   function leaveChannel() {
     const deleteUser = async () => {
-      await API.Channels.leaveChannel(
-        props.activeUserID,
-        props.activeChannelID
-      );
-      window.location.reload();
+      try {
+        await API.Channels.leaveChannel(
+            props.activeUserID,
+            props.activeChannelID);
+        window.location.reload();
+      }catch (err) {setUnauthorized(true);}
     };
     deleteUser();
   }
+
+  if (unauthorized)
+    return <Redirect to={'/'}/>;
 
   return (
     <div>

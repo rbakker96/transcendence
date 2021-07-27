@@ -18,7 +18,7 @@ function RenderCreateChannel() {
     const [users, setUsers] = useState<Array<User>>([]);
     const [channelUsers, setChannelUsers] = useState<Array<User>>([]);
     const [invalid, setInvalid] = useState(false);
-    const [activeUserID, setActiveUserID] = useState(0);
+    const [activeUserID, setActiveUserID] = useState<User>();
 
     const [unauthorized, setUnauthorized] = useState(false);
 
@@ -38,19 +38,23 @@ function RenderCreateChannel() {
 
     useEffect(() => {
         const getUser = async () => {
-            const {data} = await axios.get('users')
-            setUsers(data);
+            try {
+                const {data} = await axios.get('users')
+                setUsers(data);
+            }catch (err) {setUnauthorized(true);}
         }
         getUser();
     }, []);
 
     useEffect(() => {
         const setActiveID = async () => {
-            const {data} = await API.User.getActiveUserID();
-            setActiveUserID(data.activeUserID);
-            users.forEach((user: User) => {
-                if (user.id === data.activeUserID) setChannelUsers([user]);
-            });
+            try {
+                const {data} = await API.User.getActiveUserID();
+                setActiveUserID(data.activeUserID);
+                users.forEach((user: User) => {
+                    if (user.id === data.activeUserID) setChannelUsers([user]);
+                });
+            } catch (err) {setUnauthorized(true);}
         };
         setActiveID();
     },[users]);
@@ -58,18 +62,20 @@ function RenderCreateChannel() {
 
     let submit = async (e: SyntheticEvent) => {
         e.preventDefault();
-        if (!invalid)
-        {
-            await axios.post('channels', {
-                Name: channelName,
-                IsPrivate: isPrivate,
-                IsDirect: false,
-                Users: channelUsers,
-                ownerId : activeUserID,
-                Password: Password,
-            });
-            setRedirect(true);
-        }
+        try {
+            if (!invalid)
+            {
+                await axios.post('channels', {
+                    Name: channelName,
+                    IsPrivate: isPrivate,
+                    IsDirect: false,
+                    Users: channelUsers,
+                    ownerId : activeUserID,
+                    Password: Password,
+                });
+                setRedirect(true);
+            }
+        }catch (err) {setUnauthorized(true);}
     }
 
     if (unauthorized)
@@ -163,7 +169,6 @@ function RenderCreateChannel() {
             </main>
         )
     }
-
 }
 
 export default RenderCreateChannel

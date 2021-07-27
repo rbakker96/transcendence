@@ -34,8 +34,10 @@ function ChatContent(props: ChatContentProps) {
 
   useEffect(() => {
     const getChannelType = async () => {
-      const { data } = await API.Channels.findName(active_channel_ID);
-      setIsPrivate(data.IsPrivate);
+      try {
+        const { data } = await API.Channels.findName(active_channel_ID);
+        setIsPrivate(data.IsPrivate);
+      }catch (err) {setUnauthorized(true);}
     };
     getChannelType();
   });
