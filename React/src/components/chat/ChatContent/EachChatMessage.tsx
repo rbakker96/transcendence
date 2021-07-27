@@ -44,37 +44,44 @@ function EachChatMessage(props: EachChatMessageProps) {
       }
     };
     authorization();
-    return () => {
-      mounted = false;
-    };
+    return () => {mounted = false;}
   }, []);
 
   useEffect(() => {
+    let mounted = true;
     const getUser = async () => {
       try {
-        const {data} = await API.User.findName(props.message.senderID);
-        setUserName(data.username);
-        setAvatar(data.avatar);
-      }catch (err) {setUnauthorized(true);}
+        const { data } = await API.User.findName(props.message.senderID);
+        if (mounted) {
+          setUserName(data.username);
+          setAvatar(data.avatar);
+        }
+      } catch (err) {
+        if (mounted) setUnauthorized(true);
+      }
     };
     getUser();
+    return () => {mounted = false;}
   }, [props.message.senderID]);
 
   useEffect(() => {
+    let mounted = true;
     const getMuted = async () => {
       try {
-        const {data} = await API.Channels.getState(
-            props.message.senderID,
-            props.message.channelID
+        const { data } = await API.Channels.getState(
+          props.message.senderID,
+          props.message.channelID
         );
-        if (data === 3) setIsMuted(true);
-      }  catch (err) {setUnauthorized(true);}
+        if (data === 3 && mounted) setIsMuted(true);
+      } catch (err) {
+        if (mounted) setUnauthorized(true);
+      }
     };
     getMuted();
+    return () => {mounted = false;}
   }, [props.message.senderID, props.message.channelID]);
 
-  if (unauthorized)
-    return <Redirect to={'/'}/>;
+  if (unauthorized) return <Redirect to={"/"} />;
 
   if (IsMuted) return <div />;
   else

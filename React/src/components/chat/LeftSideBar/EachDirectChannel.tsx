@@ -13,26 +13,31 @@ function EachDirectChannel(props: EachDirectChannelType) {
   const [Users, setUsers] = useState<any>([]);
 
   useEffect(() => {
+    let mounted = true;
     const getUsers = async () => {
       const { data } = await API.Channels.getChannelUsers(
         props.directChannel.Id
       );
-      setUsers(data);
+      if (mounted)
+        setUsers(data);
     };
     getUsers();
+    return () => {mounted = false;}
   }, [props.directChannel.Id]);
 
   useEffect(() => {
+    let mounted = true;
     const setChannelName = () => {
       if (Users.length === 2) {
         Users.forEach((channelUser: any) => {
-          if (channelUser.user.username !== props.ActiveUserName) {
+          if (channelUser.user.username !== props.ActiveUserName && mounted) {
             setDirectChannelName(channelUser.user.username);
           }
         });
       }
     };
     setChannelName();
+    return () => {mounted = false;}
   }, [
     props.ActiveUserName,
     props.directChannel.users,

@@ -40,15 +40,20 @@ function UserProfilePopup(props: UserProfilePopupType) {
   }, []);
 
   useEffect(() => {
+    let mounted = true;
     const getUser = async () => {
       try {
         const { data } = await axios.post("publicUserData", {
           id: props.MessageUserID,
         });
-        setUsersData(data);
-      } catch (err) {setUnauthorized(true);}
+        if (mounted) setUsersData(data);
+      } catch(err){
+        if(mounted)
+          setUnauthorized(true);
+      }
     };
     getUser();
+    return () => {mounted = false;}
   }, [props.MessageUserID]);
 
   function onclick(e: SyntheticEvent) {

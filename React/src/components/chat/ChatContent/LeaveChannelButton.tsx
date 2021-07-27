@@ -17,7 +17,9 @@ function LeaveChannelButton(props: LeaveChannelProps) {
             props.activeUserID,
             props.activeChannelID);
         window.location.reload();
-      }catch (err) {setUnauthorized(true);}
+      } catch (err) {
+        setUnauthorized(true);
+      }
     };
     deleteUser();
   }
