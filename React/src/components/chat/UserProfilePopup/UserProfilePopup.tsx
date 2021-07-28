@@ -1,6 +1,5 @@
 import { Card } from "antd";
 import {
-  UserDeleteOutlined,
   CloseOutlined,
   LinkOutlined,
   HeartOutlined,
@@ -9,7 +8,6 @@ import React, { SyntheticEvent, useEffect, useState } from "react";
 import {Link, Redirect} from "react-router-dom";
 import axios from "axios";
 import { User } from "../../../models/User.model";
-import API from "../../../API/API";
 
 type UserProfilePopupType = {
   ActiveUserID: number;
