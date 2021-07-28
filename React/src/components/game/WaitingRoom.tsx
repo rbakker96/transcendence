@@ -101,6 +101,18 @@ const WaitingRoom = (props: any) => {
         };
     }, [user, props.location.state]);
 
+    useEffect(() => {
+        let mounted = true;
+
+        window.onpopstate = () => {
+            websocket.current.send(JSON.stringify({ event: 'leaveWaitingRoom'}));
+        }
+        window.onbeforeunload = () => {
+            websocket.current.send(JSON.stringify({ event: 'leaveWaitingRoom'}));
+        }
+        return () => {mounted = false;}
+    }, []);
+
 
     if (unauthorized)
         return <Redirect to={'/'} />;
