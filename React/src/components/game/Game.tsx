@@ -147,17 +147,13 @@ class Game extends Component<GameProps> {
 	}
 
 	handleQuit() {
-		if (this.isMountedVal && this.props.role === 'leftPlayer') {
-			if (this.state.websocket) {
-				this.resetBall(RIGHT_PLAYER_SCORED);
-				this.state.websocket.send(JSON.stringify({event: 'rightPlayerScored', data: [this.state.gameID, 10]}))
-			}
+		if (this.props.role === 'leftPlayer') {
+			this.resetBall(RIGHT_PLAYER_SCORED);
+			this.state.websocket.send(JSON.stringify({event: 'rightPlayerScored', data: [this.state.gameID, 10]}))
 			return ;
-		} else if (this.isMountedVal && this.props.role === 'rightPlayer') {
-			if (this.state.websocket) {
-				this.resetBall(LEFT_PLAYER_SCORED);
-				this.state.websocket.send(JSON.stringify({ event: 'leftPlayerScored', data: [this.state.gameID, 10] }));
-			}
+		} else if (this.props.role === 'rightPlayer') {
+			this.resetBall(LEFT_PLAYER_SCORED);
+			this.state.websocket.send(JSON.stringify({ event: 'leftPlayerScored', data: [this.state.gameID, 10] }));
 			return ;
 		}
 	}
@@ -369,7 +365,8 @@ class Game extends Component<GameProps> {
 
 		document.removeEventListener("keydown", this.keyDown, false);
 		document.removeEventListener("keyup", this.keyUp, false);
-		this.state.websocket.close();
+		if (this.state.gameFinished)
+			this.state.websocket.close();
 	}
 
 	bouncedAgainstTopOrBottom(): boolean {
