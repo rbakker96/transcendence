@@ -105,14 +105,14 @@ function RenderChangePassword(props: RenderChangePasswordProps) {
       <div className="form-floating">
         <input required type="password" className="form-control" id="floatingInput"
           onChange={(e) => setGivenPassword(e.target.value)}/>
-        <label htmlFor="floatingInput">Current password</label>
+        <label htmlFor="floatingInput">Enter current password</label>
         {invalid ? (
           <p className="registerSubTitle">Wrong password try another</p>
         ) : (
           <p />
         )}
         <div className="passwordButtons">
-          <button type="submit" className="btn btn-primary" onClick={verifyPassword}>Submit current password</button>
+          <button type="submit" className="btn btn-primary" onClick={verifyPassword}>Change password</button>
           <button type="submit" className="btn btn-danger removeButton" onClick={removePassword}>Remove Password</button>
         </div>
           {renderNewPasswordBox()}
