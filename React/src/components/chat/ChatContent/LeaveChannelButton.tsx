@@ -1,36 +1,38 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import API from "../../../API/API";
+import {Redirect} from "react-router-dom";
 
 type LeaveChannelProps = {
   activeChannelID: number;
+  activeUserID: number;
 };
 
 function LeaveChannelButton(props: LeaveChannelProps) {
-  const [userID, setUserID] = useState(0);
-
-  useEffect(() => {
-    const getUser = async () => {
-      const { data } = await axios.get("userData");
-      setUserID(data.id);
-    };
-    getUser();
-  }, []);
+  const [unauthorized, setUnauthorized] = useState(false);
 
   function leaveChannel() {
     const deleteUser = async () => {
-      await API.Channels.leaveChannel(userID, props.activeChannelID);
-      window.location.reload();
+      try {
+        await API.Channels.leaveChannel(
+            props.activeUserID,
+            props.activeChannelID);
+        window.location.reload();
+      } catch (err) {
+        setUnauthorized(true);
+      }
     };
     deleteUser();
   }
+
+  if (unauthorized)
+    return <Redirect to={'/'}/>;
 
   return (
     <div>
       {props.activeChannelID ? (
         <button
           type="button"
-          className="btn btn-outline-danger"
+          className="btn btn-danger leaveChannel"
           onClick={leaveChannel}
         >
           Leave Channel

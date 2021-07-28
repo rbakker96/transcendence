@@ -24,3 +24,12 @@
 .adminPanel {
     margin: 10px;
 }
+
+.passwordButtons {
+    display: flex;
+    flex-direction: column;
+}
+
+.removeButton {
+    margin-top: 10px;
+}

@@ -27,85 +27,95 @@ const PublicProfile = (props: any) => {
 
         const authorization = async () => {
             try { await axios.get('userData'); }
-            catch(err){
-                if(mounted)
-                    setUnauthorized(true);
-            }
+            catch(err){if(mounted) setUnauthorized(true);}
         }
         authorization();
         return () => {mounted = false;}
     }, []);
 
     useEffect(() => {
+        let mounted = true;
         const getUser = async () => {
             try {
                 const {data} = await axios.get('userData')
-                setUser(data);
+                if (mounted) setUser(data);
             }
-            catch (err) {setUnauthorized(true);}
+            catch(err){if(mounted) setUnauthorized(true);}
         }
         getUser();
+        return () => {mounted = false;}
     }, []);
 
     useEffect(() => {
+        let mounted = true;
         const getPublicUser = async () => {
             try {
                 const {data} = await axios.post('publicUserData', {id: props.location.state.usersData.id});
-                setPublicUser(data);
+                if (mounted) setPublicUser(data);
             }
-            catch (err) {setUnauthorized(true);}
+            catch(err){if(mounted) setUnauthorized(true);}
         }
         getPublicUser();
-    }, [props.location.state.usersData.id]);
+        return () => {mounted = false;}
+    }, [props]);
 
     useEffect(() => {
+        let mounted = true;
         const getGameData = async () => {
             try {
                 const {data} = await axios.get('/allGameData');
-                setGames(data);
+                if (mounted) setGames(data);
             }
-            catch (err) {setUnauthorized(true);}
+            catch(err){if(mounted) setUnauthorized(true);}
         }
         getGameData();
+        return () => {mounted = false;}
     }, []);
 
     useEffect(() => {
+        let mounted = true;
         let counter = 0;
 
         const getPlayedGames = async () => {
             games.filter((game: GameModel) => !game.active && (game.playerOne === publicUser.id || game.playerTwo === publicUser.id)).map((gameData: GameModel) =>
                 counter++
             )
-            setGamesPlayed(counter);
+            if (mounted) setGamesPlayed(counter);
         }
         getPlayedGames();
+        return () => {mounted = false;}
     }, [publicUser.id, games]);
 
     useEffect(() => {
+        let mounted = true;
         let counter = 0;
 
         const getGamesWon = async () => {
             games.filter((game: GameModel) => !game.active && game.winner === publicUser.id ).map((gameData: GameModel) =>
                 counter++
             )
-            setWins(counter);
+            if (mounted) setWins(counter);
         }
         getGamesWon();
+        return () => {mounted = false;}
     }, [publicUser.id, games]);
 
     useEffect(() => {
+        let mounted = true;
         let counter = 0;
 
         const getGamesLost = async () => {
             games.filter((game: GameModel) => !game.active && game.loser === publicUser.id ).map((gameData: GameModel) =>
                 counter++
             )
-            setLoses(counter);
+            if (mounted) setLoses(counter);
         }
         getGamesLost();
+        return () => {mounted = false;}
     }, [publicUser.id, games]);
 
     useEffect(() => {
+        let mounted = true;
         let rank = 'ROOKIE'
 
         const getRank = async () => {
@@ -115,9 +125,11 @@ const PublicProfile = (props: any) => {
                 rank = 'RISING STAR';
             if (wins >= 15)
                 rank = 'ENDBOSS';
-            setRank(rank);
+            if (mounted)
+                setRank(rank);
         }
         getRank();
+        return () => {mounted = false;}
     }, [publicUser.id, games, wins]);
 
 

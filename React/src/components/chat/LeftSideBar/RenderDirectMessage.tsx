@@ -22,27 +22,28 @@ function RenderDirectMessage(props: RenderDirectMessageType) {
 
     const authorization = async () => {
       try { await axios.get('userData'); }
-      catch(err){
-        if(mounted)
-          setUnauthorized(true);
-      }
+      catch(err){ if(mounted) setUnauthorized(true); }
     }
     authorization();
     return () => {mounted = false;}
   }, []);
 
   useEffect(() => {
+    let mounted = true;
     const getChannels = async () => {
-      const { data } = await API.Channels.getWithUser(props.ActiveUserId);
-      if (data)
-      {
-        let result: Channel[];
-        result = data.filter((channel : any) => channel.IsDirect);
-        setDirectChannels(result);
-      }
+      try {
+        const { data } = await API.Channels.getWithUser(props.ActiveUserId);
+        if (data)
+        {
+          let result: Channel[];
+          result = data.filter((channel : any) => channel.IsDirect);
+          if (mounted) setDirectChannels(result);
+        }
+      } catch(err){ if(mounted) setUnauthorized(true); }
     };
     getChannels();
-  }, [props.ActiveUserId, props.ActiveChannelID]);
+    return () => {mounted = false;}
+  }, [props.ActiveUserId]);
 
   if (unauthorized)
     return <Redirect to={'/'}/>;

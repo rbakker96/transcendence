@@ -30,8 +30,8 @@ waitingUsers[game.private] = [];
 @WebSocketGateway()
 export class WaitingRoomGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   constructor(
-      private gameService: GameService,
-      private userService: UserService,
+    private gameService: GameService,
+    private userService: UserService,
   ) {}
 
   @WebSocketServer() server: Server;
@@ -109,8 +109,6 @@ export class WaitingRoomGateway implements OnGatewayInit, OnGatewayConnection, O
         await this.gameService.updateGameURL(gameID, gameURL);
 
         console.log(await this.gameService.findOne(gameID));
-
-
 
         // send event for redirect to game page
         const gameData = {

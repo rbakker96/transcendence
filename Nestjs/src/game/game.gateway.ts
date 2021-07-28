@@ -77,8 +77,6 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			}
 			connectedClients[gameID].push(client);				//Add client to gameID
 			activeGameIDs.push(gameID);							//Add gameID to active IDs
-
-			console.log('game ', gameID, ' has ', connectedClients[gameID].length, 'users');
 		}
 	}
 
@@ -89,16 +87,13 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 			if (connectedClients[gameID]) {
 				if ((index = connectedClients[gameID].indexOf(client)) != -1) {
 					connectedClients[gameID].splice(index, 1);
-					console.log('returnkey captured');
 				}
 				if (!connectedClients[gameID].length) {
-					console.log('end of game');
 					connectedClients.splice(gameID, 1);
 					activeGameIDs.splice(gameID, 1);
 				}
 			}
 		});
-		console.log('Game: client disconnected');
 	}
 
 	afterInit(server: any): any {
@@ -275,10 +270,7 @@ export class GameGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
 	@SubscribeMessage("setLeftPlayerName")
 	setLeftPlayerName(client: any, data: any): void {
-		console.log(data);
-
 		let gameID = data[0];
-
 		allGameStates[gameID][0].leftPlayerName = data[1];
 	}
 

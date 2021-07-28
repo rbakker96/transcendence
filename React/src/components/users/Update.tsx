@@ -23,27 +23,28 @@ const UpdateUser = () => {
 
         const authorization = async () => {
             try { await axios.get('userData'); }
-            catch(err){
-                if(mounted)
-                    setUnauthorized(true);
-            }
+            catch(err){if(mounted) setUnauthorized(true);}
         }
         authorization();
         return () => {mounted = false;}
     }, []);
 
     useEffect(() => {
+        let mounted = true;
         const setDefaults = async () => {
-            const {data} = await axios.get('userData')
-            setId(data.id);
-            setAvatar(data.avatar);
-            setUsername(data.username);
-            setEmail(data.email);
-            setPhonenumber(data.phonenumber);
-            setAuthentication(data.authentication);
+            try {
+                const {data} = await axios.get('userData')
+                if(mounted) setId(data.id);
+                if(mounted) setAvatar(data.avatar);
+                if(mounted) setUsername(data.username);
+                if(mounted) setEmail(data.email);
+                if(mounted) setPhonenumber(data.phonenumber);
+                if(mounted) setAuthentication(data.authentication);
+            }
+            catch(err){if(mounted) setUnauthorized(true);}
         }
-
         setDefaults();
+        return () => {mounted = false;}
     }, []);
 
     const submit = async (e: SyntheticEvent) => {

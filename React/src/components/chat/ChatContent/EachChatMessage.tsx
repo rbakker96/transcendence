@@ -36,43 +36,46 @@ function EachChatMessage(props: EachChatMessageProps) {
 
   useEffect(() => {
     let mounted = true;
-
     const authorization = async () => {
       try {
         await axios.get("userData");
-      } catch (err) {
-        if (mounted) setUnauthorized(true);
-      }
+      } catch (err) { if (mounted) setUnauthorized(true); }
     };
     authorization();
-    return () => {
-      mounted = false;
-    };
+    return () => {mounted = false;}
   }, []);
 
   useEffect(() => {
+    let mounted = true;
     const getUser = async () => {
-      const { data } = await API.User.findName(props.message.senderID);
-      setUserName(data.username);
-      setAvatar(data.avatar);
+      try {
+        const { data } = await API.User.findName(props.message.senderID);
+        if (mounted) {
+          setUserName(data.username);
+          setAvatar(data.avatar);
+        }
+      } catch (err) { if (mounted) setUnauthorized(true); }
     };
     getUser();
-  }, [props, setUserName, setAvatar]);
+    return () => {mounted = false;}
+  }, [props.message.senderID]);
 
   useEffect(() => {
+    let mounted = true;
     const getMuted = async () => {
-      const { data } = await API.Channels.getState(
-        props.message.senderID,
-        props.message.channelID
-      );
-      console.log("data is", data);
-      if (data === 3) setIsMuted(true);
+      try {
+        const { data } = await API.Channels.getState(
+          props.message.senderID,
+          props.message.channelID
+        );
+        if (data === 3 && mounted) setIsMuted(true);
+      } catch (err) { if (mounted) setUnauthorized(true); }
     };
     getMuted();
+    return () => {mounted = false;}
   }, [props.message.senderID, props.message.channelID]);
 
-  if (IsMuted) return <div />;
-    return <Redirect to={'/'}/>;
+  if (unauthorized) return <Redirect to={"/"} />;
 
   if (IsMuted) return <div />;
   else
@@ -91,7 +94,6 @@ function EachChatMessage(props: EachChatMessageProps) {
               MessageUserID={props.message.senderID}
               UserName={UserName}
               Avatar={Avatar}
-              ProfileLink={"http://placeholder"}
               handleClose={togglePopup}
               activeChannelId={props.message.channelID}
             />

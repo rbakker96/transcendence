@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import API from "../../../API/API";
 import ChatInputBar from "./ChatInputBar";
 import axios from "axios";
-import {Redirect} from "react-router-dom";
+import { Redirect } from "react-router-dom";
 
 type ChatChannelMessagesProps = {
   activeChannelID: number;
@@ -36,36 +36,38 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
 
   useEffect(() => {
     let mounted = true;
-
     const authorization = async () => {
-      try { await axios.get('userData'); }
-      catch(err){
-        if(mounted)
-          setUnauthorized(true);
-      }
-    }
+      try {
+        await axios.get("userData");
+      } catch (err) { if (mounted) setUnauthorized(true); }
+    };
     authorization();
-    return () => {mounted = false;}
+    return () => { mounted = false; };
   }, []);
 
   useEffect(() => {
+    let mounted = true;
     const getChatMessages = async () => {
-      const { data } = await API.ChatMessage.getChannelMessages(props.activeChannelID);
-      setHistoricChatMessages(data);
+      try {
+        const { data } = await API.ChatMessage.getChannelMessages(
+          props.activeChannelID
+        );
+        if (mounted) setHistoricChatMessages(data);
+      } catch (err) { if (mounted) setUnauthorized(true); }
     };
     getChatMessages();
+    return () => { mounted = false; };
   }, [props.activeChannelID]);
 
   useEffect(() => {
+    let mounted = true;
+
     websocket.current = new WebSocket(URL);
 
-    websocket.current.onopen = () => {
-      // console.log(`ws opened & active channel: ${props.activeChannelID}`);
-    };
+    websocket.current.onopen = () => {};
 
     websocket.current.onclose = () => {
-      // console.log(`ws closed & active channel: ${props.activeChannelID}`);
-      setNewMessages([]);
+      if (mounted) setNewMessages([]);
     };
 
     websocket.current.addEventListener("message", function (event: any) {
@@ -77,17 +79,21 @@ function ChatChannelMessages(props: ChatChannelMessagesProps) {
           messageContent: object.data.messageContent,
           messageTimestamp: object.data.messageTimestamp,
         };
-        if (object.data.channelID === props.activeChannelID)
-          setNewMessages((prevState: SocketMessageType[]) => [...prevState, new_message]);
+        if (object.data.channelID === props.activeChannelID && mounted)
+          setNewMessages((prevState: SocketMessageType[]) => [
+            ...prevState,
+            new_message,
+          ]);
       }
     });
+
     return () => {
       websocket.current.close();
+      mounted = false;
     };
   }, [props.activeChannelID, URL]);
 
-  if (unauthorized)
-    return <Redirect to={'/'}/>;
+  if (unauthorized) return <Redirect to={"/"} />;
 
   return (
     <div>

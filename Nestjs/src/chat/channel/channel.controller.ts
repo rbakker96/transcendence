@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Patch, Post, Query, UseGuards} from "@nestjs/common";
+import {Body, Controller, Get, Patch, Post, Put, Query, UseGuards} from "@nestjs/common";
 import {ChannelService} from "./channel.service";
 import {Channel} from "./channel.entity";
 import {User} from "../../user/user.entity";
@@ -32,7 +32,6 @@ export class ChannelController {
   @UseGuards(verifyUser)
   @Get('/one')
   async getOne(@Query() query): Promise<Channel> {
-    console.log('channelId', query.channelID)
     return this.channelService.getOne(query.channelID);
   }
 
@@ -85,7 +84,6 @@ export class ChannelController {
           this.createChannelUser(generatedID.Id, user.id);
       })
     }
-
     return {id: generatedID.Id}
   }
 
@@ -144,4 +142,11 @@ export class ChannelController {
 
     await this.channelService.updatePassword(hashed, channelId)
   }
+
+  @UseGuards(verifyUser)
+  @Put('removePassword')
+  async removePassword(@Body('channelId') channelId : number) {
+    await this.channelService.removePassword(channelId);
+  }
+
 }

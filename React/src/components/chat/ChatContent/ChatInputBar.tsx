@@ -1,8 +1,8 @@
 import styles from "./ChatInputBar.module.css";
-import React, {SyntheticEvent, useEffect, useState} from "react";
+import React, { SyntheticEvent, useEffect, useState } from "react";
 import API from "../../../API/API";
 import axios from "axios";
-import {Redirect} from "react-router-dom";
+import { Redirect } from "react-router-dom";
 
 type TextBarType = {
   websocket: WebSocket;
@@ -26,14 +26,11 @@ function ChatInputBar(props: TextBarType) {
 
   useEffect(() => {
     let mounted = true;
-
     const authorization = async () => {
-      try { await axios.get('userData'); }
-      catch(err){
-        if(mounted)
-          setUnauthorized(true);
-      }
-    }
+      try {
+        await axios.get("userData");
+      } catch (err) { if (mounted) setUnauthorized(true); }
+    };
     authorization();
     return () => {mounted = false;}
   }, []);
@@ -50,7 +47,11 @@ function ChatInputBar(props: TextBarType) {
     };
 
     // send new message to database
-    await API.ChatMessage.createChatMessage(new_message);
+    try {
+      await API.ChatMessage.createChatMessage(new_message);
+    } catch (err) {
+      setUnauthorized(true);
+    }
 
     // send new message to socket
     props.websocket.send(
@@ -61,8 +62,7 @@ function ChatInputBar(props: TextBarType) {
     setMessage("");
   }
 
-  if (unauthorized)
-    return <Redirect to={'/'}/>;
+  if (unauthorized) return <Redirect to={"/"} />;
 
   return (
     <div className={styles.textBar}>

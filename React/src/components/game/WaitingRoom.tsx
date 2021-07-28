@@ -18,10 +18,7 @@ const WaitingRoom = (props: any) => {
 
         const authorization = async () => {
             try { await axios.get('userData'); }
-            catch(err){
-                if(mounted)
-                    setUnauthorized(true);
-            }
+            catch(err){if(mounted) setUnauthorized(true);}
         }
         authorization();
         return () => {mounted = false;}
@@ -33,12 +30,9 @@ const WaitingRoom = (props: any) => {
         const getUser = async () => {
             try {
                 const {data} = await axios.get('userData')
-                setUser(data);
+                if (mounted) setUser(data);
             }
-            catch (err) {
-                if (mounted)
-                    setUnauthorized(true);
-            }
+            catch(err){if(mounted) setUnauthorized(true);}
         }
         getUser();
         return () => {mounted = false;}
@@ -48,6 +42,8 @@ const WaitingRoom = (props: any) => {
     const websocket: any = useRef<WebSocket>(null);
 
     useEffect(() => {
+        let mounted = true;
+
         if (props.location.state === "classic")// get form url
             websocket.current = new WebSocket("ws://localhost:8000/classicWaitingRoom");
         else if ((props.location.state === "deluxe"))
@@ -55,49 +51,50 @@ const WaitingRoom = (props: any) => {
         else if ((props.location.state === "private"))
             websocket.current = new WebSocket("ws://localhost:8000/privateWaitingRoom");
 
-        websocket.current.onopen = () => {
-            console.log("ws entered waitingRoom: ");
-
-            if (user.id) {
-                if (props.location.state === "classic") {
-                    const classicPlayer = JSON.stringify({event: "newPlayer", data: [user.id, "classic"]});
-                    websocket.current.send(classicPlayer);
+        if (websocket.current)
+        {
+            websocket.current.onopen = () => {
+                if (user.id) {
+                    if (props.location.state === "classic") {
+                        const classicPlayer = JSON.stringify({event: "newPlayer", data: [user.id, "classic"]});
+                        websocket.current.send(classicPlayer);
+                    }
+                    else if (props.location.state === "deluxe") {
+                        let deluxePlayer = JSON.stringify({event: "newPlayer", data: [user.id, "deluxe"]});
+                        websocket.current.send(deluxePlayer);
+                    }
+                    else if (props.location.state === "private")  {
+                        let privatePlayer = JSON.stringify({event: "newPlayer", data: [user.id, "private"]});
+                        websocket.current.send(privatePlayer);
+                    }
                 }
-                else if (props.location.state === "deluxe") {
-                    let deluxePlayer = JSON.stringify({event: "newPlayer", data: [user.id, "deluxe"]});
-                    websocket.current.send(deluxePlayer);
+            };
+
+            websocket.current.onclose = () => { };
+
+            websocket.current.addEventListener("message", function (event: any) {
+                const object = JSON.parse(event.data);
+
+
+                if (object.event === "newPlayer") {
+                    if (mounted) setRedirectURL(object.data.gameURL);
+                    if (mounted) setGameData(object.data);
+                    if (mounted) setStartGame(true);
                 }
-                else if (props.location.state === "private")  {
-                    let privatePlayer = JSON.stringify({event: "newPlayer", data: [user.id, "private"]});
-                    websocket.current.send(privatePlayer);
+
+                if (object.event === "duplicateClient") {
+                    if (mounted) setRedirectURL(object.data.URL);
+                    if (mounted) setProfilePage(true);
                 }
-            }
-        };
 
-        websocket.current.onclose = () => {
-            console.log("ws left waitingRoom ");
-        };
+            });
+        }
 
-        websocket.current.addEventListener("message", function (event: any) {
-            const object = JSON.parse(event.data);
-
-            if (object.event === "newPlayer") {
-                console.log("React: newPlayer event triggered");
-                setRedirectURL(object.data.gameURL);
-                setGameData(object.data);
-                setStartGame(true);
-            }
-
-            if (object.event === "duplicateClient") {
-                console.log("React: duplicateClient event triggered");
-                setRedirectURL(object.data.URL);
-                setProfilePage(true);
-            }
-
-        });
 
         return () => {
-            websocket.current.close();
+            if (websocket.current)
+                websocket.current.close();
+            mounted = false;
         };
     }, [user, props.location.state]);
 

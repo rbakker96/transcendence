@@ -15,10 +15,7 @@ const WatchGame = () => {
 
         const authorization = async () => {
             try { await axios.get('userData'); }
-            catch(err){
-                if(mounted)
-                    setUnauthorized(true);
-            }
+            catch(err){if(mounted) setUnauthorized(true);}
         }
         authorization();
         return () => {mounted = false;}
@@ -26,15 +23,17 @@ const WatchGame = () => {
 
 
     useEffect(() => {
+        let mounted = true;
 
         const getGames = async () => {
             try {
                 const {data} = await axios.get('/allGameData');
-                setGames(data);
+                if (mounted) setGames(data);
             }
-            catch (err) {setUnauthorized(true);}
+            catch(err){if(mounted) setUnauthorized(true);}
         }
         getGames();
+        return () => {mounted = false;}
     }, []);
 
 

@@ -11,7 +11,6 @@ class Ruleset extends Component<RulesetProps> {
 
     onClick = async (e: SyntheticEvent) => {
         e.preventDefault();
-        console.log('leaveGame send');
         this.props.websocket.send(JSON.stringify({ event: 'leaveGame', data: [this.props.gameID, this.props.role]}))
     }
 

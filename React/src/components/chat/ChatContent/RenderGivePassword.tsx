@@ -19,32 +19,32 @@ function RenderGivePassword(props : ChatContentProps) {
 
         const authorization = async () => {
             try { await axios.get('userData'); }
-            catch(err){
-                if(mounted)
-                    setUnauthorized(true);
-            }
+            catch(err){ if(mounted) setUnauthorized(true); }
         }
         authorization();
         return () => {mounted = false;}
     }, []);
 
      async function retrievePassword() {
-        const {data} = await API.Channels.login(givenPassword, props.activeChannelID)
-        return data;
+         try {
+             const {data} = await API.Channels.login(givenPassword, props.activeChannelID)
+             return data;
+         }catch (err) {setUnauthorized(true);}
     }
 
     async function verifyPassword() {
-        const password = await retrievePassword()
-        if (password === true) {
-            console.log("Password is ", password);
-            props.setPasswordValid(true);
-            setInvalid(false);
-        }
-        else
-        {
-            setInvalid(true);
-            props.setPasswordValid(false);
-        }
+         try {
+             const password = await retrievePassword()
+             if (password === true) {
+                 props.setPasswordValid(true);
+                 setInvalid(false);
+             }
+             else
+             {
+                 setInvalid(true);
+                 props.setPasswordValid(false);
+             }
+         }catch (err) {setUnauthorized(true);}
     }
 
     if (unauthorized)
