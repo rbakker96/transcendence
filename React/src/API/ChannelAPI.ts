@@ -13,107 +13,106 @@ export type ChannelUpdate = ChannelCreate;
 export default class ChannelAPI {
 
 
-  static show(id: number) {
-    return axios.get(`http://localhost:8000/api/channels`, {
+  static async show(id: number) {
+    return await axios.get(`http://localhost:8000/api/channels`, {
       params: {
         channelID: id,
       }
     });
   }
 
-  static getOne(channelId : number) {
-    return axios.get(`http://localhost:8000/api/channels/one` , {
+  static async getOne(channelId : number) {
+    return await axios.get(`http://localhost:8000/api/channels/one` , {
       params: {
         channelID: channelId,
       }
     });
   }
-  static create(body: ChannelCreate): Promise<Channel> {
-    return axios.post("channels", body);
+  static async create(body: ChannelCreate): Promise<Channel> {
+    return await axios.post("channels", body);
   }
 
-  static update(channel: Channel, body: ChannelUpdate): Promise<Channel> {
-    return axios.post(`channels/${channel.Id}`, body);
+  static async update(channel: Channel, body: ChannelUpdate): Promise<Channel> {
+    return await axios.post(`channels/${channel.Id}`, body);
   }
 
-  static destroy(channel: Channel): Promise<void> {
-    return axios.delete(`channels/${channel.Id}`);
+  static async destroy(channel: Channel): Promise<void> {
+    return await axios.delete(`channels/${channel.Id}`);
   }
 
-  static findName(channelID: number) {
-    return axios.get("channels/findName", {
+  static async findName(channelID: number) {
+    return await axios.get("channels/findName", {
       params: {
         channelID: channelID,
       },
     });
   }
 
-  static leaveChannel(userID: number, channelID : number) {
-      return axios.post("channels/remove", {
+  static async leaveChannel(userID: number, channelID : number) {
+      return await axios.post("channels/remove", {
         userId: userID,
         channelId: channelID
       })
   }
 
-  static login(password :string, channelID: number) {
-    return axios.post("channels/login", {
+  static async login(password :string, channelID: number) {
+    return await axios.post("channels/login", {
       password : password,
       channelId : channelID
     })
   }
 
-  static getAll(userId : number)
+  static async getAll(userId : number)
   {
-    return axios.get('channels', {
+    return await axios.get('channels', {
       params: {userId : userId}
     })
   }
 
-  static getChannelUsers(channelID : number)
+  static async getChannelUsers(channelID : number)
   {
-    return axios.get('channels/channel-users', {
+    return await axios.get('channels/channel-users', {
       params: {id : channelID}
     })
   }
 
-  static getWithUser(userID : number)
+  static async getWithUser(userID : number)
   {
-    return axios.get('channels/test', {
+    return await axios.get('channels/test', {
       params: {id : userID}
     })
   }
 
-  static getIsAdmin(userID : number, activeChannelID : number)
+  static async getIsAdmin(userID : number, activeChannelID : number)
   {
-    return axios.get('channels/is-admin', {
+    return await axios.get('channels/is-admin', {
       params: {
         userId : userID,
         channelId: activeChannelID}
     })
   }
 
-  static getState(userID : number, activeChannelID : number)
+  static async getState(userID : number, activeChannelID : number)
   {
-    return axios.get('channels/get-state', {
+    return await axios.get('channels/get-state', {
       params: {
         userId : userID,
         channelId: activeChannelID}
     })
   }
 
-
-  static changeState(newState : number, channelId : number, userId: number)
+  static async changeState(newState : number, channelId : number, userId: number)
   {
-    return axios.patch('channels/change-state', {
+    return await axios.patch('channels/change-state', {
         newState: newState,
         channelId: channelId,
         userId: userId
     })
   }
 
-  static changePassword(newPassword : string, channelId: number)
+  static async changePassword(newPassword : string, channelId: number)
   {
-    return axios.patch('channels/change-password', {
+    return await axios.patch('channels/change-password', {
         newPassword: newPassword,
         channelId: channelId
     })

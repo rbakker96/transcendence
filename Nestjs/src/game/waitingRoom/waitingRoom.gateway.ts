@@ -144,7 +144,6 @@ export class WaitingRoomGateway implements OnGatewayInit, OnGatewayConnection, O
   }
 
   handleDisconnect(client: Socket): any {
-    console.log("---------- handleDisconnect() ----------")
     let leaving_client;
     if ((leaving_client = waitingRoom_sockets[game.classic].indexOf(client)) != -1) {
       console.log("Waiting room: classic game client disconnected");
