@@ -82,15 +82,19 @@ function RenderChangePassword(props: RenderChangePasswordProps) {
   function renderNewPasswordBox() {
     if (renderPasswordBox) {
       return (
-        <div className="form-floating newPassword">
-          <input required type="password" className="form-control" id="floatingInput"
-            onChange={(e) => setNewPassword(e.target.value)}/>
-          <label htmlFor="floatingInput">New password</label>
-          <button type="submit" className="btn btn-primary" onClick={submit}>Submit</button>
-        </div>
+          <form onSubmit={submit}>
+            <div className="form-floating newPassword">
+              <input required type="password" className="form-control" id="floatingInput"
+                onChange={(e) => setNewPassword(e.target.value)}/>
+              <label htmlFor="floatingInput">New password</label>
+              <button type="submit" className="btn btn-primary">Submit</button>
+            </div>
+          </form>
       );
     } else return;
   }
+
+  // onClick={submit}
 
   if (unauthorized) return <Redirect to={"/"} />;
 
