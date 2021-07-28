@@ -136,17 +136,10 @@ export class ChannelService {
   public getIsAdmin = async (userId: number, channelId : number) => {
    const channelUserType : ChannelUser = await this.channelUserRepository
        .createQueryBuilder('channelUsers')
-       .where('channelUsers.userId = :userId',
-           {
-             userId: userId
-       })
-       .andWhere('channelUsers.channelId = :channelId',
-           {
-             channelId: channelId
-           })
+       .where('channelUsers.userId = :userId', {userId: userId})
+       .andWhere('channelUsers.channelId = :channelId', {channelId: channelId})
        .getOne();
-   if (channelUserType)
-   {
+   if (channelUserType) {
      return (channelUserType.userType === 2 || channelUserType.userType === 1);
    }
   }
@@ -154,14 +147,8 @@ export class ChannelService {
   public getState = async (userId: number, channelId : number) => {
     const channelUserType : ChannelUser = await this.channelUserRepository
         .createQueryBuilder('channelUsers')
-        .where('channelUsers.userId = :userId',
-            {
-              userId: userId
-            })
-        .andWhere('channelUsers.channelId = :channelId',
-            {
-              channelId: channelId
-            })
+        .where('channelUsers.userId = :userId', {userId: userId})
+        .andWhere('channelUsers.channelId = :channelId', {channelId: channelId})
         .getOne();
     return channelUserType.userType;
   }
@@ -169,14 +156,8 @@ export class ChannelService {
   updateChannelUser = async (newstate : number, channelId : number, userId : number) => {
     const channelUserType : ChannelUser = await this.channelUserRepository
         .createQueryBuilder('channelUsers')
-        .where('channelUsers.userId = :userId',
-            {
-              userId: userId
-            })
-        .andWhere('channelUsers.channelId = :channelId',
-            {
-              channelId: channelId
-            })
+        .where('channelUsers.userId = :userId', {userId: userId})
+        .andWhere('channelUsers.channelId = :channelId', {channelId: channelId})
         .getOne();
     return this.channelUserRepository.update(channelUserType, {userType: newstate})
   }
@@ -184,11 +165,16 @@ export class ChannelService {
   updatePassword = async (newPassword: string, channelId : number) => {
     const channel : Channel = await this.channelRepository
         .createQueryBuilder('channel')
-        .where('channel.Id = :channelId',
-            {
-              channelId: channelId
-            })
+        .where('channel.Id = :channelId', {channelId: channelId})
         .getOne();
     return this.channelRepository.update(channel, {Password: newPassword, IsPrivate: true})
   }
+
+  removePassword = async (channelId : number) => {
+      const channel : Channel = await this.channelRepository
+          .createQueryBuilder('channel')
+            .where('channel.Id = :channelId', {channelId: channelId})
+            .getOne();
+        return this.channelRepository.update(channel, {IsPrivate: false})
+    }
 }
