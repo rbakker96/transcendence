@@ -50,14 +50,6 @@ function UserProfilePopup(props: UserProfilePopupType) {
     return () => {mounted = false;}
   }, [props.MessageUserID]);
 
-  async function onclick(e: SyntheticEvent) {
-    e.preventDefault();
-    try {
-      await API.Channels.changeState(3, props.activeChannelId, props.MessageUserID);
-    }catch (err) {setUnauthorized(true);}
-    window.location.reload();
-  }
-
   async function handleLikeFriend(e: SyntheticEvent) {
     e.preventDefault();
     try {
@@ -84,7 +76,6 @@ function UserProfilePopup(props: UserProfilePopupType) {
         <LinkOutlined />
       </Link>,
       <HeartOutlined onClick={handleLikeFriend} />,
-      <UserDeleteOutlined onClick={onclick} />,
       <CloseOutlined onClick={props.handleClose} />,
     ];
   }
