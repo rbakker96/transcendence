@@ -26,6 +26,7 @@ const WaitingRoom = (props: any) => {
 
     useEffect(() => {
         let mounted = true;
+
         const getUser = async () => {
             try {
                 const {data} = await axios.get('userData')
@@ -74,6 +75,7 @@ const WaitingRoom = (props: any) => {
             websocket.current.addEventListener("message", function (event: any) {
                 const object = JSON.parse(event.data);
 
+
                 if (object.event === "newPlayer") {
                     if (mounted) setRedirectURL(object.data.gameURL);
                     if (mounted) setGameData(object.data);
@@ -95,6 +97,16 @@ const WaitingRoom = (props: any) => {
             mounted = false;
         };
     }, [user, props.location.state]);
+
+    useEffect(() => {
+
+        window.onpopstate = () => {
+            websocket.current.send(JSON.stringify({ event: 'leaveWaitingRoom'}));
+        }
+        window.onbeforeunload = () => {
+            websocket.current.send(JSON.stringify({ event: 'leaveWaitingRoom'}));
+        }
+    }, []);
 
 
     if (unauthorized)

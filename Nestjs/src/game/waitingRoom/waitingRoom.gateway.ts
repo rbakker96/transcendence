@@ -76,6 +76,7 @@ export class WaitingRoomGateway implements OnGatewayInit, OnGatewayConnection, O
     }
     else {
       waitingUsers[gameType].push(data[0]);
+      console.log("ARRAY LENGTH = ", waitingUsers[gameType].length);
       if (waitingUsers[gameType].length == 2) {
         const playerOne = await this.userService.findOne(waitingUsers[gameType][0]);
         const playerTwo = await this.userService.findOne(waitingUsers[gameType][1]);
@@ -129,8 +130,22 @@ export class WaitingRoomGateway implements OnGatewayInit, OnGatewayConnection, O
     }
   }
 
+  @SubscribeMessage("leaveWaitingRoom")
+  leaveWaitingRoom(client: Socket): void {
+    if (waitingRoom_sockets[game.classic].indexOf(client) != -1) {
+      waitingUsers[game.classic].splice(0, 1);
+    }
+    else if (waitingRoom_sockets[game.deluxe].indexOf(client) > -1) {
+      waitingUsers[game.deluxe].splice(0, 1);
+    }
+    else if (waitingRoom_sockets[game.private].indexOf(client) > -1) {
+      waitingUsers[game.private].splice(0, 1);
+    }
+  }
+
   handleDisconnect(client: Socket): any {
     let leaving_client;
+
     if ((leaving_client = waitingRoom_sockets[game.classic].indexOf(client)) != -1) {
       console.log("Waiting room: classic game client disconnected");
       waitingRoom_sockets[game.classic].splice(leaving_client, 1);

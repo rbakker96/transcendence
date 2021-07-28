@@ -52,9 +52,9 @@ function AdminSettings(props: any) {
     return () => {mounted = false;}
   }, [props]);
 
-  function kickUser(userId: number) {
+  async function kickUser(userId: number) {
     try {
-      API.Channels.leaveChannel(userId, props.location.state.activeChannelId);
+      await API.Channels.leaveChannel(userId, props.location.state.activeChannelId);
       alert("This user is now kicked from this channel");
       window.location.reload();
     } catch (err) {
@@ -62,9 +62,9 @@ function AdminSettings(props: any) {
     }
   }
 
-  function changeStatus(userId: number, newStatus: number) {
+  async function changeStatus(userId: number, newStatus: number) {
     try {
-      API.Channels.changeState(
+      await API.Channels.changeState(
         newStatus,
         props.location.state.activeChannelId,
         userId
@@ -135,7 +135,7 @@ function AdminSettings(props: any) {
       <img className="mb-4" src={logo} alt="./img/42_logo.svg" width="72" height="57"/>
       <h1 className="h3 mb-3 fw-normal register_title">Admin panel</h1>
       <table>
-        <thead></thead>
+        <thead/>
         <tbody>
           {channelUsers.map((item: any) => (
             <tr key={item.user.id}>
@@ -153,7 +153,7 @@ function AdminSettings(props: any) {
         <RenderChangePassword activeChannelID={channelID}/>
       </Divider>
       <Divider>
-        <button type="submit" className="btn btn-primary" onClick={(e) => setRedirect(true)}>Go back to Chat</button>
+        <button type="submit" className="btn btn-primary" onClick={() => setRedirect(true)}>Go back to Chat</button>
       </Divider>
     </div>
   );

@@ -50,10 +50,10 @@ function UserProfilePopup(props: UserProfilePopupType) {
     return () => {mounted = false;}
   }, [props.MessageUserID]);
 
-  function onclick(e: SyntheticEvent) {
+  async function onclick(e: SyntheticEvent) {
     e.preventDefault();
     try {
-      API.Channels.changeState(3, props.activeChannelId, props.MessageUserID);
+      await API.Channels.changeState(3, props.activeChannelId, props.MessageUserID);
     }catch (err) {setUnauthorized(true);}
     window.location.reload();
   }
