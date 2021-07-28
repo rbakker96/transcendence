@@ -94,8 +94,6 @@ function RenderChangePassword(props: RenderChangePasswordProps) {
     } else return;
   }
 
-  // onClick={submit}
-
   if (unauthorized) return <Redirect to={"/"} />;
 
   if (redirect) {
