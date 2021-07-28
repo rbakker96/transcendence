@@ -150,7 +150,10 @@ export class ChannelService {
         .where('channelUsers.userId = :userId', {userId: userId})
         .andWhere('channelUsers.channelId = :channelId', {channelId: channelId})
         .getOne();
-    return channelUserType.userType;
+    if (!channelUserType)
+      return 4;
+    else
+      return channelUserType.userType;
   }
 
   updateChannelUser = async (newstate : number, channelId : number, userId : number) => {
