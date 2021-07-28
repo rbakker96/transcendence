@@ -144,8 +144,8 @@ export class WaitingRoomGateway implements OnGatewayInit, OnGatewayConnection, O
   }
 
   handleDisconnect(client: Socket): any {
-    console.log("---------- handleDisconnect() ----------")
     let leaving_client;
+
     if ((leaving_client = waitingRoom_sockets[game.classic].indexOf(client)) != -1) {
       console.log("Waiting room: classic game client disconnected");
       waitingRoom_sockets[game.classic].splice(leaving_client, 1);
@@ -153,12 +153,10 @@ export class WaitingRoomGateway implements OnGatewayInit, OnGatewayConnection, O
     else if (((leaving_client = waitingRoom_sockets[game.deluxe].indexOf(client)) > -1)) {
       console.log("Waiting room: deluxe game client disconnected");
       waitingRoom_sockets[game.deluxe].splice(leaving_client, 1);
-      waitingUsers[game.deluxe].splice(0, 1);
     }
     else if (((leaving_client = waitingRoom_sockets[game.private].indexOf(client)) > -1)) {
       console.log("Waiting room: private game client disconnected");
       waitingRoom_sockets[game.private].splice(leaving_client, 1);
-      waitingUsers[game.private].splice(0, 1);
     }
   }
 
