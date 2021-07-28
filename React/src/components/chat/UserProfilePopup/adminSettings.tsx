@@ -132,13 +132,7 @@ function AdminSettings(props: any) {
 
   return (
     <div className="adminPage">
-      <img
-        className="mb-4"
-        src={logo}
-        alt="./img/42_logo.svg"
-        width="72"
-        height="57"
-      />
+      <img className="mb-4" src={logo} alt="./img/42_logo.svg" width="72" height="57"/>
       <h1 className="h3 mb-3 fw-normal register_title">Admin panel</h1>
       <table>
         <thead></thead>
@@ -146,46 +140,20 @@ function AdminSettings(props: any) {
           {channelUsers.map((item: any) => (
             <tr key={item.user.id}>
               <td className="userNameCol">{item.user.username}</td>
-              <td>
-                {item.userType === 1 ||
-                item.userType === 2 ||
-                item.userType === 4
-                  ? ""
-                  : renderKickButton(item.user.id)}
-              </td>
-              <td>
-                {item.userType === 1 ||
-                item.userType === 2 ||
-                item.userType === 3
-                  ? ""
-                  : renderMuteButton(item.user.id)}
-              </td>
-              <td>
-                {item.userType === 1 || item.userType === 2
-                  ? ""
-                  : renderMakeAdminButton(item.user.id)}
-              </td>
-              <td>
-                {item.userType === 2 ? "" : renderUndoAdmin(item.user.id)}
-              </td>
+              <td>{item.userType === 1 || item.userType === 2 || item.userType === 4 ? "" : renderKickButton(item.user.id)}</td>
+              <td>{item.userType === 1 || item.userType === 2 || item.userType === 3 ? "" : renderMuteButton(item.user.id)}</td>
+              <td>{item.userType === 1 || item.userType === 2 ? "" : renderMakeAdminButton(item.user.id)}</td>
+              <td>{item.userType === 2 ? "" : renderUndoAdmin(item.user.id)}</td>
             </tr>
           ))}
         </tbody>
       </table>
       <Divider>
-        <h1 className="h3 mb-3 fw-normal register_title">Change Password</h1>
-        <RenderChangePassword
-          activeChannelID={channelID}
-        />
+        <h1 className="h3 mb-3 fw-normal register_title">Password settings</h1>
+        <RenderChangePassword activeChannelID={channelID}/>
       </Divider>
       <Divider>
-        <button
-          type="submit"
-          className="btn btn-primary"
-          onClick={(e) => setRedirect(true)}
-        >
-          Go back to Chat
-        </button>
+        <button type="submit" className="btn btn-primary" onClick={(e) => setRedirect(true)}>Go back to Chat</button>
       </Divider>
     </div>
   );
