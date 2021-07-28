@@ -147,13 +147,17 @@ class Game extends Component<GameProps> {
 	}
 
 	handleQuit() {
-		if (this.props.role === 'leftPlayer') {
-			this.resetBall(RIGHT_PLAYER_SCORED);
-			this.state.websocket.send(JSON.stringify({ event: 'rightPlayerScored', data: [this.state.gameID, 10] }))
+		if (this.isMountedVal && this.props.role === 'leftPlayer') {
+			if (this.state.websocket) {
+				this.resetBall(RIGHT_PLAYER_SCORED);
+				this.state.websocket.send(JSON.stringify({event: 'rightPlayerScored', data: [this.state.gameID, 10]}))
+			}
 			return ;
-		} else if (this.props.role === 'rightPlayer') {
-			this.resetBall(LEFT_PLAYER_SCORED);
-			this.state.websocket.send(JSON.stringify({ event: 'leftPlayerScored', data: [this.state.gameID, 10] }));
+		} else if (this.isMountedVal && this.props.role === 'rightPlayer') {
+			if (this.state.websocket) {
+				this.resetBall(LEFT_PLAYER_SCORED);
+				this.state.websocket.send(JSON.stringify({ event: 'leftPlayerScored', data: [this.state.gameID, 10] }));
+			}
 			return ;
 		}
 	}

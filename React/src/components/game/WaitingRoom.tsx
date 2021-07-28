@@ -83,7 +83,6 @@ const WaitingRoom = (props: any) => {
 
             if (object.event === "newPlayer") {
                 console.log("React: newPlayer event triggered");
-                websocket.current.close();
                 setRedirectURL(object.data.gameURL);
                 setGameData(object.data);
                 setStartGame(true);
@@ -91,7 +90,6 @@ const WaitingRoom = (props: any) => {
 
             if (object.event === "duplicateClient") {
                 console.log("React: duplicateClient event triggered");
-                websocket.current.close();
                 setRedirectURL(object.data.URL);
                 setProfilePage(true);
             }
