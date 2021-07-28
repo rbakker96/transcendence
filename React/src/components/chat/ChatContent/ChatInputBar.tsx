@@ -38,48 +38,40 @@ function ChatInputBar(props: TextBarType) {
   async function submitHandler(e: SyntheticEvent) {
     e.preventDefault();
     // setup new message
-    setMessageTimeStamp(new Date().toLocaleString());
-    const new_message: newMessageType = {
-      channelID: props.activeChannelID,
-      senderID: props.activeUserID,
-      messageContent: message,
-      messageTimestamp: messageTimestamp,
-    };
 
-    // send new message to database
-    try {
-      await API.ChatMessage.createChatMessage(new_message);
-    } catch (err) {
-      setUnauthorized(true);
+    if (message !== "") {
+      setMessageTimeStamp(new Date().toLocaleString());
+      const new_message: newMessageType = {
+        channelID: props.activeChannelID,
+        senderID: props.activeUserID,
+        messageContent: message,
+        messageTimestamp: messageTimestamp,
+      };
+
+      // send new message to database
+      try {
+        await API.ChatMessage.createChatMessage(new_message);
+      } catch (err) {
+        setUnauthorized(true);
+      }
+
+      // send new message to socket
+      props.websocket.send(
+          JSON.stringify({event: "newMessage", data: new_message})
+      );
+
+      // reset input box to nothing
+      setMessage("");
     }
-
-    // send new message to socket
-    props.websocket.send(
-      JSON.stringify({ event: "newMessage", data: new_message })
-    );
-
-    // reset input box to nothing
-    setMessage("");
   }
 
   if (unauthorized) return <Redirect to={"/"} />;
 
   return (
     <div className={styles.textBar}>
-      <input
-        className={styles.textBarInput}
-        value={message}
-        type="text"
-        placeholder={"Enter message..."}
-        onChange={(e) => setMessage(e.target.value)}
-      />
-      <button
-        className={styles.textBarSend}
-        type={"submit"}
-        onClick={submitHandler}
-      >
-        Send
-      </button>
+      <input className={styles.textBarInput} value={message} type="text" placeholder={"Enter message..."}
+        onChange={(e) => setMessage(e.target.value)}/>
+      <button className={styles.textBarSend} type={"submit"} onClick={submitHandler}>Send</button>
     </div>
   );
 }
