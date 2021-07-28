@@ -8,18 +8,17 @@ type newMessageType = {
 };
 
 export default class ChatMessageAPI {
-  static getAllChatMessages() {
-    return axios.get("chatMessage");
+  static async getAllChatMessages() {
+    return await axios.get("chatMessage");
   }
 
-  static getChannelMessages(id : number) {
+  static async getChannelMessages(id : number) {
     let url = 'chatMessage/' + id.toString();
-    return axios.get(url);
+    return await axios.get(url);
   }
 
-
-  static createChatMessage(new_message: newMessageType) {
-    return axios.post("chatMessage/newMessage", {
+  static async createChatMessage(new_message: newMessageType) {
+    return await axios.post("chatMessage/newMessage", {
       channelID: new_message.channelID,
       senderID: new_message.senderID,
       messageContent: new_message.messageContent,
