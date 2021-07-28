@@ -149,7 +149,7 @@ class Game extends Component<GameProps> {
 	handleQuit() {
 		if (this.props.role === 'leftPlayer') {
 			this.resetBall(RIGHT_PLAYER_SCORED);
-			this.state.websocket.send(JSON.stringify({ event: 'rightPlayerScored', data: [this.state.gameID, 10] }))
+			this.state.websocket.send(JSON.stringify({event: 'rightPlayerScored', data: [this.state.gameID, 10]}))
 			return ;
 		} else if (this.props.role === 'rightPlayer') {
 			this.resetBall(LEFT_PLAYER_SCORED);
@@ -175,7 +175,7 @@ class Game extends Component<GameProps> {
 		});
 
 		this.state.websocket.addEventListener("close", () => {
-			this.state.websocket.send(JSON.stringify({event: 'closeConnection'})); //discuss this
+
 		});
 
 		const updateLeftPlayer = (data: any) => {
@@ -236,8 +236,10 @@ class Game extends Component<GameProps> {
 		}
 
 		const updateLeftPlayerScore = (data: any) => {
-			this.setState({leftPlayerScore: data[1]});
-			resetPowerUps();
+			if (this.isMountedVal) {
+				this.setState({leftPlayerScore: data[1]});
+				resetPowerUps();
+			}
 		}
 
 		const updateRightPlayerScore = (data: any) => {
@@ -360,6 +362,11 @@ class Game extends Component<GameProps> {
 
 	componentWillUnmount(){
 		this.isMountedVal = false;
+
+		document.removeEventListener("keydown", this.keyDown, false);
+		document.removeEventListener("keyup", this.keyUp, false);
+		if (this.state.gameFinished)
+			this.state.websocket.close();
 	}
 
 	bouncedAgainstTopOrBottom(): boolean {
@@ -565,8 +572,7 @@ class Game extends Component<GameProps> {
 			return <Redirect to={'/profile'}/>;
 		}
 		else if (this.state.gameFinished) {
-			this.state.websocket.send(JSON.stringify({event: 'finishGame', data: [this.state.gameID]}))
-			this.state.websocket.close();
+			this.state.websocket.send(JSON.stringify({event: 'finishGame', data: [this.state.gameID]}));
 			return (
 				<Stats
 					leftPlayerName = { this.state.leftPlayerName }
