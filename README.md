@@ -2,7 +2,7 @@
   <img src="https://github.com/rbakker96/images/blob/master/codam_logo.png">
 </p>
 
-# ft_containers
+# ft_transcendence
 ***Final project to show that with your current knowledge you can make the transition to programming languages and frameworks that you have not used before***
 
 ---
