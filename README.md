@@ -123,7 +123,7 @@ http://localhost:8080
 ---
 
 ### Preview
-> Screenshot of important pages of the webapplication
+> Screenshot of main pages of the webapplication
 
 | **Login screen** | **Profile page** | **Game page** | **Chat page** |
 | :---: |:---:| :---:| :---:|
