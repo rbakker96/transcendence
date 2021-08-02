@@ -122,6 +122,15 @@ http://localhost:8080
 
 ---
 
+### Preview
+> Screenshot of important pages of the webapplication
+
+| **Login screen** | **Profile page** | **Game page** | **Chat page** |
+| :---: |:---:| :---:| :---:|
+| [![FVCproductions](https://github.com/rbakker96/images/blob/master/loginpage.jpg?w=220&s=220)](http://fvcproductions.com) | [![FVCproductions](https://github.com/rbakker96/images/blob/master/profilepage.png?w=220&s=22)](http://fvcproductions.com) | [![FVCproductions](https://github.com/rbakker96/images/blob/master/gamepage.png?w=220&s=22)](http://fvcproductions.com)  | [![FVCproductions](https://github.com/rbakker96/images/blob/master/chatpage.png?w=220&s=22)](http://fvcproductions.com)  |
+
+---
+
 ### Used resources
 > Most noteworthy resources used during this project
 
@@ -129,5 +138,5 @@ http://localhost:8080
 - <a href="https://reactjs.org/" target="_blank">React documentation</a>
 - <a href="https://api.intra.42.fr/apidoc" target="_blank">42 Api documentation</a>
 - <a href="https://docs.nestjs.com/security/cors" target="_blank">Cross-origin resource sharing (CORS)</a>
-- <a href="https://wanago.io/2021/03/08/api-nestjs-two-factor-authentication/" target="_blank">SFINAE "Two-factor authentication"</a>
+- <a href="https://wanago.io/2021/03/08/api-nestjs-two-factor-authentication/" target="_blank">Two-factor authentication</a>
 - <a href="https://www.akashmittal.com/cant-perform-react-state-update-unmounted-component/" target="_blank">React state updates</a>
